@@ -30,6 +30,8 @@ const config: ViteUserConfig = defineConfig({
           exclude: [...configDefaults.exclude, 'archive/**'],
         },
       },
+      // CodeRace: the circuit, car and laps are pure functions, tested like a package.
+      'apps/code-race',
       // CodeSong: every stage is a pure function of an atlas, tested like a package.
       'apps/codesong',
       // Its site: how a played note is traced back to the files behind it.

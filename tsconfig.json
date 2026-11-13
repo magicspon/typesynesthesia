@@ -57,6 +57,7 @@
     "**/test/fixtures",
     "apps/code-art",
     "apps/codesong",
-    "apps/codesong-site"
+    "apps/codesong-site",
+    "apps/code-race"
   ]
 }

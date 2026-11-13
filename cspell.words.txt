@@ -1,6 +1,7 @@
 ablx
 afplay
 ALLPASSES
+Angvel
 arps
 attero
 blep
@@ -8,6 +9,7 @@ boombap
 breezystack
 calcom
 callees
+Catmull
 chaikin
 charang
 codegen
@@ -15,6 +17,7 @@ codegens
 codeguide
 codesong
 devicecard
+dimforge
 drei
 emissivemap
 esbuild
@@ -41,6 +44,7 @@ interners
 Kythe
 lamejs
 lerp
+linvel
 LLBT
 lockfiles
 lofi
@@ -87,6 +91,7 @@ Tarjan
 Tauri
 Thinger
 treemap
+trimesh
 trimmable
 tsdown
 tsyn
@@ -107,10 +112,12 @@ unwarp
 uprn
 vinxi
 vitest
+WASD
 Wavetable
 wayfinder
 wayfinding
 worktree
 worktrees
 xorshift
+xyww
 yargs
