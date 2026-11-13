@@ -1,0 +1,13 @@
+{
+  // Its own project for the same reason as code-art: the root config has no JSX setting.
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    // A private app that never emits a `.d.ts`.
+    "isolatedDeclarations": false,
+    "declaration": false,
+    "types": ["vite/client", "node"]
+  },
+  "include": ["src", "test", "vite.config.ts"],
+  "exclude": []
+}
