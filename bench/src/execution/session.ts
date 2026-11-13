@@ -68,7 +68,7 @@ async function runInWorktree(
   try {
     // Only the arm that is told about the index pays for one being there.
     const index =
-      arm.toolset === 'codedocs'
+      arm.toolset === 'tsyn'
         ? warmIndex(worktree.root, bench.base.commit)
         : null
     const prompt = buildPrompt(bench, arm, worktree.root)

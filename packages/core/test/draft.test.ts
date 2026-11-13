@@ -34,7 +34,7 @@ const fixture = join(
 
 /** A copy of the fixture, prepared or not, which is what decides its fidelity. */
 function plant(prepared: boolean): string {
-  const root = mkdtempSync(join(tmpdir(), 'codedocs-draft-'))
+  const root = mkdtempSync(join(tmpdir(), 'tsyn-draft-'))
   cpSync(fixture, root, { recursive: true })
   writeFileSync(
     join(root, 'package.json'),
@@ -191,7 +191,7 @@ describe('what a draft holds', () => {
 
   it('asks the question it cannot answer, and writes no prose', () => {
     expect(report(ask('charge')).markdown).toContain(
-      'codedocs does not know, and will not guess',
+      'tsyn does not know, and will not guess',
     )
   })
 
@@ -224,11 +224,11 @@ describe('honesty a committed file has to carry', () => {
   it('names a syntactic file in the draft itself', () => {
     const markdown = report(ask('charge', null, unprepared)).markdown
     expect(markdown).toContain('syntactically')
-    expect(markdown).toContain('codedocs doctor')
+    expect(markdown).toContain('tsyn doctor')
   })
 
   it('names the commit it was taken at', () => {
     const markdown = report(ask('charge')).markdown
-    expect(markdown).toContain('Drafted by codedocs')
+    expect(markdown).toContain('Drafted by tsyn')
   })
 })

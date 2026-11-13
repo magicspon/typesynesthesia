@@ -66,7 +66,7 @@ describe('the classification report', () => {
       label('src/b.ts', 'authorship', 'authored', 'default', 'inferred'),
     ])
 
-    // `default` is not a guess codedocs made: it is what fires when nothing did.
+    // `default` is not a guess tsyn made: it is what fires when nothing did.
     expect(found.inferred).toEqual(['src/a.ts'])
   })
 
@@ -152,12 +152,12 @@ describe('a specifier as a blind spot', () => {
       'same',
     ])
     expect(spots[1]?.reason).toContain('imported but declared nowhere')
-    expect(spots[2]?.reason).toContain('a resolver codedocs does not run')
+    expect(spots[2]?.reason).toContain('a resolver tsyn does not run')
   })
 
   it('says what each cause means, and never which command would clear it', () => {
     // ADR 0001 forbids a remediation for `broken`, and ADR 0009 extends that to
-    // `unmapped`: naming a framework needs a lookup codedocs does not ship.
+    // `unmapped`: naming a framework needs a lookup tsyn does not ship.
     const reasons = specifierSpots([
       site('a', 'unprepared'),
       site('b', 'missing-generated'),

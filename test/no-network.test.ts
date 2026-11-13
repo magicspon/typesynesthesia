@@ -1,5 +1,5 @@
 /**
- * The invariant of ADR 0011: no codedocs package reaches the network.
+ * The invariant of ADR 0011: no tsyn package reaches the network.
  *
  * Two halves are tested, because the check has two halves. The dependency
  * closure is `scripts/no-network.ts`, tested here directly. First-party source
@@ -32,7 +32,7 @@ describe('the dependency closure', () => {
 
     // Named, not counted: a failure should say which dependency and where.
     expect(report(result).split('\n')[0]).toBe(
-      'No codedocs package reaches the network.',
+      'No tsyn package reaches the network.',
     )
     expect(result.reach).toEqual([])
   })
@@ -91,7 +91,7 @@ describe('isAllowed', () => {
 })
 
 describe('the lint half', () => {
-  const directory = mkdtempSync(join(tmpdir(), 'codedocs-no-network-'))
+  const directory = mkdtempSync(join(tmpdir(), 'tsyn-no-network-'))
 
   afterAll(() => {
     rmSync(directory, { recursive: true, force: true })
@@ -136,7 +136,7 @@ describe('the lint half', () => {
 })
 
 describe('scanPackage', () => {
-  const directory = mkdtempSync(join(tmpdir(), 'codedocs-scan-'))
+  const directory = mkdtempSync(join(tmpdir(), 'tsyn-scan-'))
 
   afterAll(() => {
     rmSync(directory, { recursive: true, force: true })
@@ -178,7 +178,7 @@ describe('the report', () => {
     report({ reach: [], unread: [], ...result })
 
   it('says plainly that nothing reaches the network', () => {
-    expect(audited({})).toBe('No codedocs package reaches the network.')
+    expect(audited({})).toBe('No tsyn package reaches the network.')
   })
 
   it('names the dependency, the chain that pulled it in, and where', () => {
@@ -187,13 +187,13 @@ describe('the report', () => {
         {
           dependency: 'chatty@1.0.0',
           path: '/somewhere/chatty',
-          chain: ['@codedocs/core', 'chatty'],
+          chain: ['@tsyn/core', 'chatty'],
           uses: [use(3)],
         },
       ],
     })
     expect(text).toContain('1 runtime dependency reaches the network:')
-    expect(text).toContain('chatty@1.0.0  via @codedocs/core → chatty')
+    expect(text).toContain('chatty@1.0.0  via @tsyn/core → chatty')
     expect(text).toContain('index.js:3')
     // The refusal names the ADR, so the fix is a decision rather than a patch.
     expect(text).toContain('ADR 0011')

@@ -1,4 +1,4 @@
-import type { SongFile } from '@codedocs/codesong/browser'
+import type { SongFile } from '@tsyn/codesong/browser'
 
 /**
  * The songs on the site: every `<name>.song.json` in `songs/`, which the

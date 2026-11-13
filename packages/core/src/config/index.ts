@@ -1,5 +1,5 @@
 /**
- * `codedocs.jsonc`: the facts about a repository codedocs cannot determine.
+ * `tsyn.jsonc`: the facts about a repository tsyn cannot determine.
  *
  * ADR 0010 admits a key only where an ADR found something undetectable, gives
  * every key a default so the file stays optional, and forbids any key that

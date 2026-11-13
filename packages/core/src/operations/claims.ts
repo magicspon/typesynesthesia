@@ -1,9 +1,9 @@
 /**
  * The facts of an `evidence` answer, restated as ADR 0005 claim expressions.
  *
- * ADR 0005's consequence is that codedocs hands back **candidate claims** rather
+ * ADR 0005's consequence is that tsyn hands back **candidate claims** rather
  * than writing documents: an agent that has the syntax handed to it never
- * invents one, and codedocs never puts an unreviewed fact into a committed file.
+ * invents one, and tsyn never puts an unreviewed fact into a committed file.
  * ADR 0006 then trimmed it from always-on to an opt-in `--claims` on the machine
  * renderer alone, because a claim string is a restatement of a fact already in
  * the payload — always sending it would spend budget saying the same thing twice.

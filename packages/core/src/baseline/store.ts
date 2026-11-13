@@ -8,7 +8,7 @@
  * and diffed against a typed working tree.
  *
  * So there is no `baseline save` operation. A baseline exists only because
- * codedocs analysed that commit while it was the working tree.
+ * tsyn analysed that commit while it was the working tree.
  */
 
 import { DatabaseSync } from 'node:sqlite'
@@ -40,8 +40,7 @@ export interface StoredBaseline {
 }
 
 /** The directory baselines are kept in, created on demand. */
-const directoryFor = (root: string): string =>
-  join(root, '.codedocs', BASELINE_DIR)
+const directoryFor = (root: string): string => join(root, '.tsyn', BASELINE_DIR)
 
 /**
  * Every stored baseline, newest commit first.
@@ -143,7 +142,7 @@ export interface Capture {
  * file — so a commit made after an analysis would otherwise name its baseline
  * after its parent.
  *
- * @param cap - `codedocs.jsonc`'s `baselines`. `0` disables capture entirely.
+ * @param cap - `tsyn.jsonc`'s `baselines`. `0` disables capture entirely.
  */
 export function capture(root: string, store: Store, cap: number): Capture {
   const nothing = { commit: null, evicted: [], bytes: 0 }
@@ -190,7 +189,7 @@ export function capture(root: string, store: Store, cap: number): Capture {
  * Evicting non-ancestors first *is* the whole branch-switching story — a
  * baseline for yesterday's abandoned branch tip is an ancestor of nothing, so it
  * is worthless to the selection rule and leaves first. That is why there is no
- * branch tracking anywhere in codedocs.
+ * branch tracking anywhere in tsyn.
  */
 function evict(root: string, cap: number): string[] {
   const held = listBaselines(root)

@@ -1,6 +1,6 @@
 /**
  * Where the repository root lands, which decides both the project set and where
- * `.codedocs/index.db` is written.
+ * `.tsyn/index.db` is written.
  */
 
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
@@ -29,7 +29,7 @@ function tree(
 beforeEach(() => {
   // The enclosing temp directory has no `.git` above it, so each case sees only
   // the markers it writes.
-  root = mkdtempSync(join(tmpdir(), 'codedocs-discovery-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-discovery-'))
 })
 
 afterEach(() => {
@@ -165,18 +165,18 @@ describe('discoverProjects', () => {
     ).toHaveLength(1)
   })
 
-  it('refuses a second `codedocs.jsonc` below the root, naming both', () => {
+  it('refuses a second `tsyn.jsonc` below the root, naming both', () => {
     const path = repository()
-    writeFileSync(join(path, 'packages', 'core', 'codedocs.jsonc'), '{}\n')
+    writeFileSync(join(path, 'packages', 'core', 'tsyn.jsonc'), '{}\n')
 
     expect(() => discoverProjects(path, DEFAULT_CONFIG)).toThrowError(
-      /packages\/core\/codedocs\.jsonc is below the repository root/,
+      /packages\/core\/tsyn\.jsonc is below the repository root/,
     )
   })
 
   it('allows the one at the root', () => {
     const path = repository()
-    writeFileSync(join(path, 'codedocs.jsonc'), '{}\n')
+    writeFileSync(join(path, 'tsyn.jsonc'), '{}\n')
 
     expect(() => discoverProjects(path, DEFAULT_CONFIG)).not.toThrow()
   })

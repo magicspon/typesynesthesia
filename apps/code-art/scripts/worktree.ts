@@ -24,9 +24,7 @@ export interface Tree {
 
 /** Worth descending into: a directory, and not one a tool owns. */
 function searchable(entry: Dirent): boolean {
-  return (
-    entry.isDirectory() && entry.name !== '.git' && entry.name !== '.codedocs'
-  )
+  return entry.isDirectory() && entry.name !== '.git' && entry.name !== '.tsyn'
 }
 
 /** Every `node_modules` directory near the top of the repo, so a worktree can borrow them. */
@@ -39,7 +37,7 @@ export function nodeModules(dir: string, depth = 0): string[] {
   })
 }
 
-/** A scope directory — `@types`, `@codedocs` — whose packages are mirrored one by one. */
+/** A scope directory — `@types`, `@tsyn` — whose packages are mirrored one by one. */
 function isScope(entry: Dirent): boolean {
   return entry.name.startsWith('@') && entry.isDirectory()
 }

@@ -41,7 +41,7 @@ const SKIP_DIRS: ReadonlySet<string> = new Set([
   '.next',
   '.turbo',
   '.cache',
-  '.codedocs',
+  '.tsyn',
   '.yarn',
 ])
 
@@ -62,7 +62,7 @@ export interface DocumentScan {
  * over a repository with no documents is one string search per Markdown file.
  *
  * @param config - Read for `discover.skip` alone. A directory a repository has
- * excluded from project discovery is not part of what codedocs reports on, and
+ * excluded from project discovery is not part of what tsyn reports on, and
  * a README inside one belongs to whoever put it there — this repository's own
  * `repos/` holds five fixture checkouts and 11,776 Markdown files between them.
  */

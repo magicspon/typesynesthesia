@@ -30,7 +30,7 @@ import { openSession } from '../src/session/index.ts'
 import { walkSourceFiles } from '../src/drift.ts'
 
 /**
- * codedocs' own `packages/`, which is the largest tree a test can rely on.
+ * tsyn's own `packages/`, which is the largest tree a test can rely on.
  *
  * Not the repository root: `repos/` holds the cloned fixtures the ADRs were
  * measured on, so a walk from there measures whatever a developer has checked
@@ -46,7 +46,7 @@ const fixture = join(
 let root: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-labels-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-labels-'))
   cpSync(fixture, root, { recursive: true })
   writeFileSync(
     join(root, 'package.json'),
@@ -181,7 +181,7 @@ describe('the signals, and what each one is worth', () => {
   })
 })
 
-describe('codedocs.jsonc `classify`', () => {
+describe('tsyn.jsonc `classify`', () => {
   const config = (text: string) => parseConfig(text)
 
   it('overrides every other signal, at the highest precedence', () => {
@@ -317,7 +317,7 @@ describe('the scope channel, over a real index', () => {
     const entry = scoped.result?.[0]
 
     expect(entry?.excluded).toBeGreaterThan(0)
-    // The one rule the channel exists to obey: codedocs knows exactly what it
+    // The one rule the channel exists to obey: tsyn knows exactly what it
     // withheld, so it is a count rather than something it could not see.
     expect(entry?.blindSpots).toEqual([])
     expect(
@@ -425,7 +425,7 @@ describe('what the pass costs', () => {
     const files = walkSourceFiles(packages)
     const pass = labelFiles(packages, files, DEFAULT_CONFIG)
 
-    // `codedocs analyse` prints this line on every run that relabels, which is
+    // `tsyn analyse` prints this line on every run that relabels, which is
     // where a reader actually meets the number; the annotation is for whoever
     // is reading the test.
     await annotate(

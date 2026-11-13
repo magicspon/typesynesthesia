@@ -4,7 +4,7 @@
  * Settled constraint 4 on the map: aggregates lead. `callers` and `callees`
  * answer one hop, which any editor already does; a *path* is the answer no
  * editor offers. ADR 0006 also absorbed `walkthrough` into this operation,
- * because what was left of `walkthrough` once codedocs writes no prose was a
+ * because what was left of `walkthrough` once tsyn writes no prose was a
  * natural-language parser we do not have and a walk we do.
  *
  * The walk is outward — what does this call, and what does *that* call. There is

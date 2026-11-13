@@ -8,14 +8,14 @@ import type {
   RegionEvidence,
   Section,
   Song,
-} from '@codedocs/codesong/browser'
+} from '@tsyn/codesong/browser'
 import {
   BUSY,
   GENRES,
   KNOTTED,
   NOTE_NAMES,
   TANGLED,
-} from '@codedocs/codesong/browser'
+} from '@tsyn/codesong/browser'
 
 /**
  * Why the piece is the way it is, in plain words. Each explanation restates

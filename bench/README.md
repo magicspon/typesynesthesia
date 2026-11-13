@@ -1,17 +1,17 @@
 # The fix benchmark
 
-One question: **does codedocs let an agent reach the same fix while reading less
+One question: **does Typesynesthesia let an agent reach the same fix while reading less
 of the repository?**
 
 Not "is the agent smarter with it". Smarter is not measurable here. What is
 measurable is the cost of getting to the code that has to change — tokens
 processed, tools called, exploration steps taken, files opened, lines of source
-read, seconds spent — and whether the arm holding codedocs pays less of it.
+read, seconds spent — and whether the arm holding Typesynesthesia pays less of it.
 
 **Where this sits.** [ADR 0012](../docs/adr/0012-audience-and-the-fallow-boundary.md)
-makes the reader of codedocs a developer, and an agent one more caller of the
+makes the reader of Typesynesthesia a developer, and an agent one more caller of the
 same operations. So what this benchmark measures is not the product's validation
-criterion — that is [#21](https://github.com/magicspon/codedocs/issues/21), a
+criterion — that is [#21](https://github.com/magicspon/typesynesthesia/issues/21), a
 developer question answered correctly that ripgrep and an editor could not
 answer at all, and it was deliberately rescoped away from the agent-against-agent
 framing used here. This is a second measurement, of a second claim, and it
@@ -41,9 +41,9 @@ rather than in place of it. See [Judging the fix](#judging-the-fix).
 ## What an arm is
 
 An arm is a **toolset paired with a model**, named `toolset@model` — for
-instance `codedocs@haiku-4-5`. Any number of them run in one invocation.
+instance `tsyn@haiku-4-5`. Any number of them run in one invocation.
 
-|              | baseline                                       | codedocs                                   |
+|              | baseline                                       | Typesynesthesia                            |
 | ------------ | ---------------------------------------------- | ------------------------------------------ |
 | Tools        | Read, Grep, Glob, Bash, TodoWrite, Edit, Write | the same                                   |
 | Extra prompt | none                                           | ~150 tokens describing the five operations |
@@ -56,8 +56,8 @@ arms differing in both halves, and it cannot be posed while one model is fixed
 across the session:
 
 ```sh
-node bench/src/run.ts --arms baseline,codedocs                  # like for like
-node bench/src/run.ts --arms baseline@claude-opus-5,codedocs@claude-haiku-4-5-20251001
+node bench/src/run.ts --arms baseline,tsyn                  # like for like
+node bench/src/run.ts --arms baseline@claude-opus-5,tsyn@claude-haiku-4-5-20251001
 ```
 
 Both arms get `Bash`, because grep and find are how anyone searches a repository
@@ -67,33 +67,33 @@ is thrown away afterwards. Subagents and the network are off in both: a
 subagent's tokens are accounted separately from the loop being measured, and a
 run that fetched the upstream fix would be measuring nothing.
 
-The codedocs briefing costs input tokens on every turn, and those tokens are
-charged to the codedocs arm. That is the real cost of putting a tool in front of
+The Typesynesthesia briefing costs input tokens on every turn, and those tokens are
+charged to the Typesynesthesia arm. That is the real cost of putting a tool in front of
 an agent, and hiding it would flatter the tool.
 
 A run is thrown out, not silently counted, when the baseline reaches for
-`codedocs` anyway, when the codedocs arm never calls it, or when the agent left
+`tsyn` anyway, when the Typesynesthesia arm never calls it, or when the agent left
 no patch at all. The report prints how many were thrown out, and why.
 
 **That third rule has a bias in it, and it runs towards the tool.** On an easy
-case the right move is not to reach for codedocs — the stack trace names the
+case the right move is not to reach for Typesynesthesia — the stack trace names the
 file, so the agent opens it and fixes it — and that run is then discarded. So
-the surviving codedocs runs are not a random sample of codedocs runs: they are
+the surviving Typesynesthesia runs are not a random sample of Typesynesthesia runs: they are
 the ones where the agent judged the tool worth using. The alternative is worse,
 because counting a run with no tool in it as evidence about the tool measures
 nothing at all, but the effect is real and it is strongest on exactly the
 control cases that exist to keep the benchmark honest. `#329610` is the first
 case to show it: both arms grepped, opened one file and fixed it, and the
-codedocs run was discarded for never calling codedocs.
+Typesynesthesia run was discarded for never calling tsyn.
 
 ### Take-up, and why the bias is reported rather than repaired
 
 The decision taken on that bias (issue #112) is to **report it, in two parts**.
 Neither corrects for it. Both stop it being read past.
 
-**Take-up is a reported figure.** Every run records whether it called codedocs
+**Take-up is a reported figure.** Every run records whether it called Typesynesthesia
 at all, and `RESULTS.md` prints how often each arm did, per level. On the
-codedocs arm that is take-up, and a rate below 1 is a finding rather than a
+Typesynesthesia arm that is take-up, and a rate below 1 is a finding rather than a
 hole — the agent held the tool and did not want it. On the baseline arm the same
 number is contamination. This converts the discard from missing data into a
 measurement, and it answers a question the benchmark could not otherwise ask:
@@ -101,7 +101,7 @@ _when does an agent reach for structural facts at all?_
 
 **Every pooled figure says which cases it rests on**, wherever the two arms do
 not rest on the same ones. A pooled row over two baseline cases against one
-codedocs case is not a like-for-like delta, and the note sits directly under the
+Typesynesthesia case is not a like-for-like delta, and the note sits directly under the
 number rather than in a limits section at the end.
 
 Two alternatives were weighed and rejected:
@@ -133,7 +133,7 @@ reference did not run in prints no delta rather than a misleading one.
 `prospects/`. Only the ones `src/cases/active.ts` names are run, preflighted or reported
 on — `node bench/src/writeup/writeup.ts` counts the running set, not the pool.
 
-The split is about cost, not about quality. Every codedocs run needs an index of
+The split is about cost, not about quality. Every Typesynesthesia run needs an index of
 its own fresh worktree, and building one on vscode is minutes with a long tail.
 The [index cache](#the-index-cache) means a case costs one build however many
 times it is run — but that is still a cost per case, so the pool is researched
@@ -141,7 +141,7 @@ wide and run narrow, and prospects are promoted as there is budget to index and
 run them.
 
 The running set today is `#333230` and `#329610` — both level 1 controls, both
-cases where the file is handed over in the stack trace and codedocs should
+cases where the file is handed over in the stack trace and Typesynesthesia should
 therefore buy little. Starting where the tool is least likely to look good is
 deliberate. The write-up says in its own words that a set inside one level
 cannot show the gradient the whole hypothesis is about.
@@ -176,7 +176,7 @@ rather than assumed:
 | [#329326](prospects/329326.json) | 4     | `symptom-only` | a quick pick that closes itself when opened from a menu   | `contextview.ts`                              |
 
 Three cases per level, and the spread is the point. `#333230` and `#329610` are
-controls: the file is handed over on a plate, so codedocs should buy little, and
+controls: the file is handed over on a plate, so Typesynesthesia should buy little, and
 a benchmark whose every case favours the tool is a brochure. `#333085` is the
 case where grep on a product noun may well win, and it is kept for exactly that
 reason. `#329074` is the opposite extreme — every word of the report points at
@@ -217,7 +217,7 @@ run touches, and what it asks for are immutable hashes.
 
 ### The index cache
 
-A fresh worktree has no index either, so the codedocs arm's has to be put there
+A fresh worktree has no index either, so the Typesynesthesia arm's has to be put there
 before the agent starts, in a process the benchmark is not measuring.
 
 Building it every time is the same work over and over. An index is a pure
@@ -237,7 +237,7 @@ and never anything an earlier run wrote.
 
 Restoring is not free either, and the reason is worth knowing: `git worktree
 add` writes every file with a new mtime, so every file's stat signature differs
-from the one the index recorded and codedocs hashes each to find the content
+from the one the index recorded and Typesynesthesia hashes each to find the content
 identical. That pass costs seconds where a build costs minutes, and it happens
 in the warm step, so the run under test never pays it.
 
@@ -252,7 +252,7 @@ git-ignored, and deleting it costs only the rebuild.
 `node bench/src/execution/verify-cache.ts` checks the trade is real — that each case restores
 rather than silently rebuilding, and that the restored index still answers for a
 ground-truth symbol. A cache that is present but stale would otherwise look
-exactly like a repository in which codedocs can find nothing.
+exactly like a repository in which Typesynesthesia can find nothing.
 
 The figures quoted further down come from the run set measured on the earlier
 localization task, when the agent named files instead of changing them and every
@@ -260,8 +260,8 @@ case read one pinned checkout. They are kept because they are the evidence
 behind decisions this harness still makes, and each is labelled where it
 appears. They are not fix-task results. The only fix-task runs so far are one
 replicate of `#333230` on each arm, which proved the path end to end: both hit,
-both were judged `correct`, the codedocs patch graded `same-change` against the
-baseline's `same-area`, and the codedocs arm cost more on every axis. One
+both were judged `correct`, the Typesynesthesia patch graded `same-change` against the
+baseline's `same-area`, and the Typesynesthesia arm cost more on every axis. One
 replicate of the control case is a smoke test, not a result.
 
 ## Difficulty levels
@@ -314,10 +314,10 @@ mean somewhere no typical run goes.
 
 **One tool call that asked the repository something.** A `Read`, a `Grep`, a
 `Glob`, or a `Bash` command that prints a file, searches the tree, or queries
-codedocs. Everything else is not a step: `git log`, `wc`, `true`. Those are
+tsyn. Everything else is not a step: `git log`, `wc`, `true`. Those are
 bookkeeping about the checkout rather than a look at what is in it.
 
-A read, a search and a codedocs query all count as one step each. Charging them
+A read, a search and a Typesynesthesia query all count as one step each. Charging them
 differently would decide the comparison in advance, which is the one thing the
 metric must not do.
 
@@ -329,17 +329,17 @@ not a look at the repository, and the `Read` it needs first already counted.
 ### Lines of source read
 
 **`src` counts what every step returned, in non-blank lines.** A `Read` of 90
-lines is 90; a `grep` that printed 12 matching lines is 12; a `codedocs symbol`
+lines is 90; a `grep` that printed 12 matching lines is 12; a `tsyn symbol`
 answer of 19 lines is 19. Blank lines are dropped, so a sparsely spaced file
 does not score above the same code packed tighter — that is a fact about
 formatting, not about how much was read.
 
 This is the number `files` cannot give. Case `#333085` opens exactly one file on
 both arms, so `files` reads 0%; `src` reads −52%, because the baseline read
-1,167 lines of that file and the codedocs arm read 563.
+1,167 lines of that file and the Typesynesthesia arm read 563.
 
-Counting the tool's own output is deliberate. `codedocs` answers are repository
-content pulled into the context by a step, so they are charged to the codedocs
+Counting the tool's own output is deliberate. `tsyn` answers are repository
+content pulled into the context by a step, so they are charged to the Typesynesthesia
 arm exactly as its briefing tokens are. Over the runs on disk that is 1,891
 lines the arm has to carry.
 
@@ -356,7 +356,7 @@ the same method edited in the wrong file is not the code the fix changed.
 
 `sym` is what separates landing in the same code from landing in the same file,
 and on `#333230` it does exactly that. Both arms changed `listView.ts` and both
-score a hit. The codedocs run clamped the range inside `getVisibleRange`, which
+score a hit. The Typesynesthesia run clamped the range inside `getVisibleRange`, which
 is where the maintainers fixed it; the baseline run clamped the array length
 downstream in `probeDynamicHeights`, one hop from the cause. `sym` reads 1 and 0.
 
@@ -374,7 +374,7 @@ cases.
 ### Where the counts are wrong, and which way
 
 Four known undercounts. Each is stated with its direction, and none of them
-favours codedocs. The figures in them were measured on the localization runs
+favours tsyn. The figures in them were measured on the localization runs
 that preceded the fix task, and are the evidence the choices were made on:
 
 - **The shell-command parser is conservative.** It recognises commands that
@@ -382,8 +382,8 @@ that preceded the fix task, and are the evidence the choices were made on:
   undercounts `files`, `steps` and `src` for whichever arm ran the command.
 - **Excluding searches from `src` was rejected for this reason.** Search output
   is repository content, and the baseline searched more of it: 2,072 lines
-  against the codedocs arm's 1,017. Leaving searches out would have removed
-  twice as much from the baseline as from codedocs and flattered the tool by
+  against the Typesynesthesia arm's 1,017. Leaving searches out would have removed
+  twice as much from the baseline as from Typesynesthesia and flattered the tool by
   roughly a thousand lines a set. Counting them keeps the comparison honest.
 - **`git log` and `wc` are not steps.** Across those runs the two arms spent
   almost the same on them — 13 calls against 11 over fifteen runs each — so the
@@ -432,7 +432,7 @@ wrote" would collapse into "wrong", and the second axis would have nothing left
 to say.
 
 `#333230` is what the pair buys. Both arms hit, and both were judged `correct`.
-The codedocs patch graded `same-change`: it is the maintainers' edit. The
+The Typesynesthesia patch graded `same-change`: it is the maintainers' edit. The
 baseline patch graded `same-area`, and the judge's own reasoning says why —
 _"the candidate guards at the point of consumption in `probeDynamicHeights` …
 inverted ranges could still flow to other consumers of `getVisibleRange`."_
@@ -448,7 +448,7 @@ repository could find the fix, the tests around it, or the commit that landed
 it, and would be grading its own search rather than the patch in front of it.
 
 One tell survives, and it is a property of the diff rather than of the harness:
-a patch that names `codedocs` in its own text says which arm wrote it. That is
+a patch that names `tsyn` in its own text says which arm wrote it. That is
 recorded on the judgement as `selfIdentifying` rather than scrubbed out, because
 a scrubbed diff is no longer the run's answer.
 
@@ -504,7 +504,7 @@ caveat cannot go stale while the data underneath it changes.
 **The two questions are reported in separate blocks**, never pooled:
 
 - **like for like** — one model, holding the tool and not holding it. The claim
-  codedocs is sold on.
+  Typesynesthesia is sold on.
 - **a cheaper model holding the tool** — a different model on each side. Its
   deltas carry the models' difference as well as the toolset's, which is exactly
   why averaging the two blocks together would answer neither.
@@ -514,7 +514,7 @@ those into difficulty levels, and covers requests, input, output and total
 tokens, cost, tool calls, files, lines of source read, time, and correctness on
 both the exact and the judged reading. Runs that were thrown out are counted by
 arm, by level and by reason rather than folded into a total, and **Tool
-take-up** prints how often each arm reached for codedocs at all — see [Take-up,
+take-up** prints how often each arm reached for Typesynesthesia at all — see [Take-up,
 and why the bias is reported rather than repaired](#take-up-and-why-the-bias-is-reported-rather-than-repaired).
 
 `src/reporting/report.ts` remains the quick console view. It reads every delta against a
@@ -528,7 +528,7 @@ node bench/src/run.ts                    # every case, both arms, 3 replicates
 node bench/src/run.ts --cases 331102     # one case
 node bench/src/run.ts --replicates 1     # a smoke run
 node bench/src/run.ts --model claude-opus-5          # the default model for every arm
-node bench/src/run.ts --arms baseline,codedocs@claude-haiku-4-5-20251001
+node bench/src/run.ts --arms baseline,tsyn@claude-haiku-4-5-20251001
 node bench/src/reporting/report.ts                 # the comparison table
 node bench/src/reporting/report.ts --json          # the same numbers, machine readable
 node bench/src/writeup/writeup.ts                # regenerate RESULTS.md from the records
@@ -543,7 +543,7 @@ node bench/src/run.ts --judge-model claude-sonnet-5  # a cheaper judge
 `src/run.ts` refuses to start when a case's declared base is not the commit under
 its fix, or when a file that fix touched is missing from that tree, because
 either voids the ground truth. It fetches the commits the cases name, then
-builds each codedocs run's index in that run's worktree, so the arm pays the
+builds each Typesynesthesia run's index in that run's worktree, so the arm pays the
 per-question cost rather than the cold build.
 
 Each run leaves three files in `bench/results/`: `<case>-<arm>-r<n>.json`, the
@@ -600,7 +600,7 @@ process spawning. Code lives under `src/`, grouped by what it's for; `prospects/
 | `src/execution/warm.ts`          | the index cache: build once per commit, restore into each run                 |
 | `src/execution/prewarm.ts`       | filling that cache ahead of any run                                           |
 | `src/execution/verify-cache.ts`  | proving a restored index is one a build would have produced                   |
-| `src/execution/prompt.ts`        | the task, and the briefing the codedocs arm gets                              |
+| `src/execution/prompt.ts`        | the task, and the briefing the Typesynesthesia arm gets                       |
 | `src/execution/agent.ts`         | spawning `claude -p` and collecting its stream                                |
 | `src/execution/session.ts`       | running (case, arm, replicate) in a worktree, and filing it                   |
 | `src/execution/preflight.ts`     | the ground-truth checks that run before any quota is spent                    |

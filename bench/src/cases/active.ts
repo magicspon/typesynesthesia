@@ -5,7 +5,7 @@
  * named here are run, preflighted, or reported on.
  *
  * The split exists because a case is expensive in a way that has nothing to do
- * with how good a case it is. Every codedocs run needs an index of its own
+ * with how good a case it is. Every tsyn run needs an index of its own
  * fresh worktree, and building one on vscode is minutes with a long tail.
  * `warm.ts` builds each commit once and restores it into later worktrees, so a
  * case costs one build however many times it is run — but that build is still a
@@ -23,7 +23,7 @@
  * The running set, in the order the pool defines them.
  *
  * `333230` and `329610` are the two level 1 controls: both hand the file over
- * in the stack trace, so codedocs should buy little on either. Starting on the
+ * in the stack trace, so tsyn should buy little on either. Starting on the
  * cases least likely to flatter the tool is deliberate — a benchmark that
  * begins where it expects to win learns nothing from the first result.
  *

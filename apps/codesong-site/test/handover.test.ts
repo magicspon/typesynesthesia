@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Section } from '@codedocs/codesong/browser'
+import type { Section } from '@tsyn/codesong/browser'
 import { carry, takeOver, type Resumable } from '../src/audio/handover.ts'
 
 /** Sections of these lengths, back to back. */

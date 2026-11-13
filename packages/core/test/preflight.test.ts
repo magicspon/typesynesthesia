@@ -28,7 +28,7 @@ const fixture = join(
 let root: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-preflight-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-preflight-'))
   cpSync(fixture, root, { recursive: true })
   writeFileSync(
     join(root, 'package.json'),

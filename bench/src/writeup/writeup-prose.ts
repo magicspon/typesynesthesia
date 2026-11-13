@@ -61,8 +61,8 @@ export function howToRead(): string {
     heading(2, 'How to read this'),
     `**Medians, not means.** One runaway agent loop would drag a mean somewhere
 no typical run goes.`,
-    `**Negative is a saving.** Every \`change\` column reads the codedocs arm
-against the baseline it is paired with, so \`-20%\` means the codedocs arm spent
+    `**Negative is a saving.** Every \`change\` column reads the tsyn arm
+against the baseline it is paired with, so \`-20%\` means the tsyn arm spent
 a fifth less.`,
     `**Input counts cache reads.** A cached token is still a token the model
 read, and a shorter search is exactly what shrinks the number — so \`in\` is the
@@ -90,7 +90,7 @@ export function provenance(coverage: Coverage): string {
     heading(2, 'What was run'),
     `${coverage.runs} run${coverage.runs === 1 ? '' : 's'} over ${coverage.cases} of the ${coverage.casesDefined} case${coverage.casesDefined === 1 ? '' : 's'} in the running set, on ${arms}, up to ${coverage.replicates} replicate${coverage.replicates === 1 ? '' : 's'} per cell. ${coverage.valid} counted; the rest are accounted for under [Discarded runs](#discarded-runs).`,
     `The running set is ${coverage.casesDefined} of ${coverage.prospects} researched cases. The pool is deliberately
-researched wider than it is run: every codedocs run needs an index of its own
+researched wider than it is run: every tsyn run needs an index of its own
 fresh worktree, and building one on vscode is minutes with a long tail. The
 harness builds each commit once and restores it thereafter, so a case costs one
 build however many times it is run — but a case still has to be promoted
@@ -128,7 +128,7 @@ export function standing(coverage: Coverage): string {
     coverage.levels === 1 ? 'a single level' : `${coverage.levels} levels`
   const gradient = flat
     ? `**No gradient.** These runs cover ${coverage.levels} of the ${coverage.levelsDefined} difficulty levels. The
-hypothesis is not "codedocs is cheaper" — it is that the saving _grows_ with
+hypothesis is not "tsyn is cheaper" — it is that the saving _grows_ with
 structural complexity, and a set inside ${span} cannot show a slope whichever way
 its numbers fall. Whatever the deltas below say, they are a reading of
 ${coverage.levels === 1 ? 'one level' : 'part of the range'} and not of the claim.`
@@ -169,7 +169,7 @@ export function limits(coverage: Coverage): string {
 without \`node_modules\` installed, so all 91 projects index without a type
 checker and the call edges that resolve only through vscode's dependency
 injection and interface layers are missing. Installing would cost several
-gigabytes and make the benchmark far harder to reproduce. Read every codedocs
+gigabytes and make the benchmark far harder to reproduce. Read every tsyn
 number as a floor: typed fidelity can add edges, not remove them.`,
     `**Repository coverage is one repository, and a thin slice of it.** Every
 case is a VS Code bug. The pool spreads across ${areas} so that it does not
@@ -182,7 +182,7 @@ whether an effect is there and whether the spread swamps it. It is never enough
 for a confidence interval, and it is not a claim about any repository but this
 one.`,
     `**The index build is amortized out, and it is not free.** A fresh worktree
-has no index, so one has to be there before every codedocs run, in a process no
+has no index, so one has to be there before every tsyn run, in a process no
 metric reads. Five builds have been timed: four between 186 and 223
 seconds, and one at 3,716 that is unexplained — treat it as minutes with a long
 tail rather than as a constant. The harness now builds each commit
@@ -198,18 +198,18 @@ times, and every grade's reasoning is on disk to be argued with. Where the
 agreement figure is below 1.00 the judge disagreed with itself, and the honest
 reading is that the case is arguable rather than that the grade is wrong.`,
     `**Discarding unused-tool runs selects for the cases the tool suits.** A
-codedocs run that never called codedocs is thrown out, because counting it would
+tsyn run that never called tsyn is thrown out, because counting it would
 put a run with no tool in it on the tool's side of the comparison. But on an easy
 case not reaching for the tool is the _right_ move — the stack trace names the
 file, so the agent opens it and fixes it — and those runs are exactly the ones
-discarded. The surviving codedocs runs are therefore not a random sample of
-codedocs runs: they are the ones where the agent judged the tool worth using.
-That biases the comparison **towards** codedocs on any pooled figure, and it
+discarded. The surviving tsyn runs are therefore not a random sample of
+tsyn runs: they are the ones where the agent judged the tool worth using.
+That biases the comparison **towards** tsyn on any pooled figure, and it
 bites hardest on the easy cases, which are the ones meant to keep the benchmark
 honest.`,
     `**The bias is reported, not repaired.** Nothing here corrects for it, and
 two things stop it being invisible. [Tool take-up](#tool-take-up) prints how
-often each arm reached for codedocs at all, per level, which turns the discard
+often each arm reached for tsyn at all, per level, which turns the discard
 from missing data into a measurement and answers a question this benchmark
 otherwise cannot ask: when does an agent reach for structural facts? And every
 pooled figure whose two arms do not rest on the same cases says so directly

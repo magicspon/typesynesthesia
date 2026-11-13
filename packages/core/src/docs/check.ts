@@ -14,7 +14,7 @@
  * source files its prose links to. A Markdown link to a file that no longer
  * exists is a contradiction with no inference in it — no rename hint, no
  * candidate list, because a path in prose is not a symbol that could have moved
- * under a name codedocs still knows.
+ * under a name tsyn still knows.
  */
 
 import { existsAt } from './discover.ts'

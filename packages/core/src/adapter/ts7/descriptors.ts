@@ -100,7 +100,7 @@ const DECLARATION_SPACE: ReadonlySet<SyntaxKind> = new Set([
  * be a sentence. Uncapped, cal.com's longest id reaches 827 characters; at 96 it
  * reaches 540, and the shortening costs 31 extra colliding declarations out of
  * 48,517. The bytes are the smaller half of that trade — ids are interned by
- * [#29](https://github.com/magicspon/codedocs/issues/29), so an id's length is
+ * [#29](https://github.com/magicspon/typesynesthesia/issues/29), so an id's length is
  * paid once per symbol rather than once per edge — and readability is the larger.
  */
 const SEGMENT_CAP = 96

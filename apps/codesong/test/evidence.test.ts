@@ -1,13 +1,13 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Atlas } from '@codedocs/code-art/atlas'
+import type { Atlas } from '@tsyn/code-art/atlas'
 import { describe, expect, it } from 'vitest'
 import { compose, DEFAULT_OPTIONS } from '../src/compose/compose.ts'
 import { evidence } from '../src/evidence.ts'
 import { analyse } from '../src/regions.ts'
 import { readStructure } from '../src/structure.ts'
 
-const path = join(import.meta.dirname, '../../code-art/src/data/codedocs.json')
+const path = join(import.meta.dirname, '../../code-art/src/data/tsyn.json')
 const analysis = analyse(
   readStructure(JSON.parse(readFileSync(path, 'utf8')) as Atlas),
 )

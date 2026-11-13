@@ -33,7 +33,7 @@ const fixture = join(
 
 /** A copy of the fixture. `prepared` is what decides its fidelity. */
 function plant(prepared: boolean): string {
-  const root = mkdtempSync(join(tmpdir(), 'codedocs-docs-'))
+  const root = mkdtempSync(join(tmpdir(), 'tsyn-docs-'))
   cpSync(fixture, root, { recursive: true })
   writeFileSync(
     join(root, 'package.json'),
@@ -123,7 +123,7 @@ describe('discovery', () => {
         'This shows the syntax rather than asserting anything:',
         '',
         '```markdown',
-        '<!-- codedocs: calls(src/nowhere.ts#gone, src/nowhere.ts#also) -->',
+        '<!-- tsyn: calls(src/nowhere.ts#gone, src/nowhere.ts#also) -->',
         '```',
       ].join('\n'),
     )
@@ -156,7 +156,7 @@ describe('the four verdicts', () => {
         '',
         'The audit charges, which it does not.',
         '',
-        '<!-- codedocs: calls(src/payments.ts#audit, src/payments.ts#charge) -->',
+        '<!-- tsyn: calls(src/payments.ts#audit, src/payments.ts#charge) -->',
       ].join('\n'),
     )
     const report = documentAt(check(), 'wrong')
@@ -173,7 +173,7 @@ describe('the four verdicts', () => {
       [
         '# Counted',
         '',
-        '<!-- codedocs: implementations(src/types.ts#Gateway) == 3 -->',
+        '<!-- tsyn: implementations(src/types.ts#Gateway) == 3 -->',
       ].join('\n'),
     )
     const claim = claimNamed(documentAt(check(), 'counted'), 'implementations')
@@ -191,7 +191,7 @@ describe('the four verdicts', () => {
         '',
         'See [the gateway](../src/gone.ts) and [the real one](../src/payments.ts).',
         '',
-        '<!-- codedocs: exists(src/payments.ts#charge) -->',
+        '<!-- tsyn: exists(src/payments.ts#charge) -->',
       ].join('\n'),
     )
     const report = documentAt(check(), 'linked')
@@ -249,7 +249,7 @@ describe('errors in the document', () => {
 
   it('refuses an ambiguous shorthand rather than calling it unverifiable', () => {
     // `capture` is declared by both gateways, so it names two symbols.
-    document(root, 'faulty', '# Faulty\n\n<!-- codedocs: exists(capture) -->\n')
+    document(root, 'faulty', '# Faulty\n\n<!-- tsyn: exists(capture) -->\n')
     const fault = documentAt(check(), 'faulty')?.faults[0]?.fault
     expect(fault?.code).toBe('ambiguous-subject')
     // Named, not counted: the author has to pick one, and the candidates are
@@ -261,42 +261,40 @@ describe('errors in the document', () => {
 
   it('refuses a claim anchored to a local symbol', () => {
     const faults = faultsFor(
-      '# Faulty\n\n<!-- codedocs: exists(src/payments.ts#withLocal.helper) -->\n',
+      '# Faulty\n\n<!-- tsyn: exists(src/payments.ts#withLocal.helper) -->\n',
     )
     expect(faults).toEqual(['local-subject'])
   })
 
   it('refuses a predicate no backend produces, saying which', () => {
     const faults = faultsFor(
-      '# Faulty\n\n<!-- codedocs: exports(src/payments.ts, charge) -->\n' +
-        '<!-- codedocs: dependsOn(a, b) -->\n',
+      '# Faulty\n\n<!-- tsyn: exports(src/payments.ts, charge) -->\n' +
+        '<!-- tsyn: dependsOn(a, b) -->\n',
     )
     expect(faults).toEqual(['no-backend', 'no-backend'])
   })
 
   // cspell:ignore frobnicates — a predicate nothing produces, which is the point
   it('refuses an unknown predicate, a bad arity and a bad comparison', () => {
+    expect(faultsFor('# Faulty\n\n<!-- tsyn: frobnicates(a, b) -->\n')).toEqual(
+      ['unknown-predicate'],
+    )
     expect(
-      faultsFor('# Faulty\n\n<!-- codedocs: frobnicates(a, b) -->\n'),
-    ).toEqual(['unknown-predicate'])
-    expect(
-      faultsFor(
-        '# Faulty\n\n<!-- codedocs: calls(src/payments.ts#charge) -->\n',
-      ),
+      faultsFor('# Faulty\n\n<!-- tsyn: calls(src/payments.ts#charge) -->\n'),
     ).toEqual(['arity'])
     expect(
       faultsFor(
-        '# Faulty\n\n<!-- codedocs: callers(src/payments.ts#audit) >= 1 -->\n',
+        '# Faulty\n\n<!-- tsyn: callers(src/payments.ts#audit) >= 1 -->\n',
       ),
     ).toEqual(['count-invalid'])
     expect(
-      faultsFor('# Faulty\n\n<!-- codedocs: not a claim at all -->\n'),
+      faultsFor('# Faulty\n\n<!-- tsyn: not a claim at all -->\n'),
     ).toEqual(['unparseable'])
   })
 
   it('refuses a label outside the vocabulary', () => {
     const faults = faultsFor(
-      '# Faulty\n\n<!-- codedocs: hasLabel(src/payments.ts, role, nonsense) -->\n',
+      '# Faulty\n\n<!-- tsyn: hasLabel(src/payments.ts, role, nonsense) -->\n',
     )
     expect(faults).toEqual(['label-invalid'])
   })
@@ -317,7 +315,7 @@ describe('a document’s derived scope', () => {
         'See [up](../src/payments.ts), [rooted](/src/checkout.ts) and',
         '[here](./payments.md).',
         '',
-        '<!-- codedocs: exists(src/payments.ts#charge) -->',
+        '<!-- tsyn: exists(src/payments.ts#charge) -->',
       ].join('\n'),
     )
     expect(scope).toContain('src/payments.ts')
@@ -332,7 +330,7 @@ describe('a document’s derived scope', () => {
         '',
         'See [the spec](https://example.test/spec).',
         '',
-        '<!-- codedocs: exists(src/payments.ts#charge) -->',
+        '<!-- tsyn: exists(src/payments.ts#charge) -->',
       ].join('\n'),
     )
     expect(scope).toEqual(['src/payments.ts'])
@@ -342,9 +340,7 @@ describe('a document’s derived scope', () => {
     // `role` and `source` are arguments, not files. The subject still reaches
     // the scope, because it resolved to one.
     expect(
-      scopeOf(
-        '# Scoped\n\n<!-- codedocs: hasLabel(charge, role, source) -->\n',
-      ),
+      scopeOf('# Scoped\n\n<!-- tsyn: hasLabel(charge, role, source) -->\n'),
     ).toEqual(['src/payments.ts'])
   })
 })
@@ -352,11 +348,7 @@ describe('a document’s derived scope', () => {
 describe('the relation predicates', () => {
   /** Check one claim written into the relations fixture, by its predicate. */
   const claimFor = (text: string) => {
-    document(
-      related,
-      'relations',
-      `# Relations\n\n<!-- codedocs: ${text} -->\n`,
-    )
+    document(related, 'relations', `# Relations\n\n<!-- tsyn: ${text} -->\n`)
     return claimsOf(documentAt(check(related), 'relations'))[0]
   }
 
@@ -420,8 +412,8 @@ describe('the relation predicates', () => {
       [
         '# Ambiguous',
         '',
-        '<!-- codedocs: calls(capture, src/payments.ts#audit) -->',
-        '<!-- codedocs: calls(src/payments.ts#charge, capture) -->',
+        '<!-- tsyn: calls(capture, src/payments.ts#audit) -->',
+        '<!-- tsyn: calls(src/payments.ts#charge, capture) -->',
       ].join('\n'),
     )
     const faults = documentAt(check(related), 'ambiguous')?.faults ?? []
@@ -434,12 +426,12 @@ describe('the relation predicates', () => {
 
 describe('the other forms', () => {
   const claimFor = (text: string) => {
-    document(related, 'forms', `# Forms\n\n<!-- codedocs: ${text} -->\n`)
+    document(related, 'forms', `# Forms\n\n<!-- tsyn: ${text} -->\n`)
     return claimsOf(documentAt(check(related), 'forms'))[0]
   }
 
   const faultFor = (text: string) => {
-    document(related, 'forms', `# Forms\n\n<!-- codedocs: ${text} -->\n`)
+    document(related, 'forms', `# Forms\n\n<!-- tsyn: ${text} -->\n`)
     return documentAt(check(related), 'forms')?.faults[0]?.fault
   }
 
@@ -564,7 +556,7 @@ describe('claim coverage', () => {
         '',
         'One claim, three headings.',
         '',
-        '<!-- codedocs: exists(src/payments.ts#charge) -->',
+        '<!-- tsyn: exists(src/payments.ts#charge) -->',
         '',
         '## Second',
         '',
@@ -586,8 +578,8 @@ describe('what the scan costs', () => {
   it('measures itself, so "no configuration" stays a measurement', async ({
     annotate,
   }) => {
-    // codedocs' own checkout rather than a three-file fixture, and the root
-    // rather than `packages/`: the repository's `codedocs.jsonc` skips `repos/`,
+    // tsyn's own checkout rather than a three-file fixture, and the root
+    // rather than `packages/`: the repository's `tsyn.jsonc` skips `repos/`,
     // which is what makes a walk from here both real and repeatable.
     const repository = join(fixture, '..', '..', '..', '..', '..')
     const scan = discoverDocuments(repository, loadConfig(repository))
@@ -627,7 +619,7 @@ function plantRename(): string {
   )
   writeFileSync(
     join(at, 'docs', 'moved.md'),
-    '# Moved\n\n<!-- codedocs: exists(src/old.ts#relocated) -->\n',
+    '# Moved\n\n<!-- tsyn: exists(src/old.ts#relocated) -->\n',
   )
   git('init', '--quiet')
   git('config', 'user.email', 'fixture@example.com')
@@ -687,7 +679,7 @@ function plantRelations(): string {
     [
       "import { missing } from 'not-a-real-package'",
       '',
-      '/** Everything it does goes through a specifier codedocs could not resolve. */',
+      '/** Everything it does goes through a specifier tsyn could not resolve. */',
       'export function report(): unknown {',
       '  return missing()',
       '}',

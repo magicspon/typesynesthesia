@@ -22,7 +22,7 @@
  *
  * The kind ADR 0006 names and this does not yet hold is **documents**: they
  * arrive with `docs check`, step 6 of ADR 0012's order. An empty list would read
- * as "nothing documents this subject" when the truth is that codedocs holds no
+ * as "nothing documents this subject" when the truth is that tsyn holds no
  * documents at all, so the kind is absent until there is one.
  *
  * ADR 0014: several subjects may be given at once, and `result` is one entry

@@ -51,7 +51,7 @@ const CHARGE = 'a-lib/src/money.ts#charge'
 let root: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-cold-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-cold-'))
   cpSync(fixture, root, { recursive: true })
 })
 
@@ -218,7 +218,7 @@ describe('a build interrupted between two projects', () => {
 
   it('is repaired to exactly what a cold build would have written', () => {
     const cold = dump()
-    rmSync(join(root, '.codedocs'), { recursive: true, force: true })
+    rmSync(join(root, '.tsyn'), { recursive: true, force: true })
     halfBuild()
     expect(dump()).toBe(cold)
   })

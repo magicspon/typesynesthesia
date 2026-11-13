@@ -1,5 +1,5 @@
 import type { JSX } from 'react'
-import { GENRES } from '@codedocs/codesong/browser'
+import { GENRES } from '@tsyn/codesong/browser'
 import { genreReason, keyName, keyReason } from '../explain/explain.ts'
 import { FORM_COLOUR, ROLE_COLOUR } from '../scene/layout.ts'
 import type { ViewProps } from './Inspector.tsx'

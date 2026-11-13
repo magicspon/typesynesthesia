@@ -4,7 +4,7 @@ status: accepted
 
 # The reader is a developer, and the boundary is fallow
 
-codedocs is a **deterministic semantic index of a TypeScript repository**, and the questions it
+Typesynesthesia is a **deterministic semantic index of a TypeScript repository**, and the questions it
 exists to answer are asked by a person: what calls what, where a declaration actually comes from, how
 execution flows out of a handler, and what a change could reach. An agent is one more caller of the
 same [[Operation]]s — the third binding ADR 0006 already names — and not the reader the operations are
@@ -12,10 +12,10 @@ shaped for. `evidence` is one operation among thirteen, not the point of the pro
 
 Nothing in ADR 0006 changes. The [[Envelope]], the four renderer rules, the exit codes and the ban on
 composing above an operation all stand. What this decision settles is **which unbuilt operations
-survive**, and it settles it with one rule: **codedocs implements no analysis `fallow` already
+survive**, and it settles it with one rule: **Typesynesthesia implements no analysis `fallow` already
 ships.**
 
-## The questions codedocs is for
+## The questions Typesynesthesia is for
 
 Four shapes, each named against what fails at it today rather than against an audience.
 
@@ -35,19 +35,19 @@ This repository already depends on `fallow`, and half of what a "codebase intell
 expected to report is what `fallow` reports. The split is not negotiated per feature; it follows from
 the rule.
 
-| Capability                                 | Owner      | Why                                                                   |
-| ------------------------------------------ | ---------- | --------------------------------------------------------------------- |
-| Unused files, exports, types, dependencies | `fallow`   | `dead-code`, with `--trace` to confirm before deleting                |
-| Circular dependencies                      | `fallow`   | `dead-code`                                                           |
-| Copy-paste and structural duplication      | `fallow`   | `dupes`                                                               |
-| Complexity, maintainability, hotspots      | `fallow`   | `health`                                                              |
-| Architecture boundary violations           | `fallow`   | configured boundaries in `.fallowrc.jsonc`                            |
-| Changed-file risk in CI                    | `fallow`   | `audit --base`, and `ci` builds the PR envelope                       |
-| Every call edge into or out of a symbol    | `codedocs` | needs a type checker resolving through barrels; `fallow` is syntactic |
-| Call paths out of a root                   | `codedocs` | the index holds the graph; nothing else here walks it                 |
-| What a symbol change reaches               | `codedocs` | needs call edges **and** a baseline index; `fallow` has neither       |
-| Which tests a change reaches               | `codedocs` | the same walk, scoped to `role: test`                                 |
-| Which documents a change contradicts       | `codedocs` | ADR 0005's [[Claim]]s exist nowhere else                              |
+| Capability                                 | Owner    | Why                                                                   |
+| ------------------------------------------ | -------- | --------------------------------------------------------------------- |
+| Unused files, exports, types, dependencies | `fallow` | `dead-code`, with `--trace` to confirm before deleting                |
+| Circular dependencies                      | `fallow` | `dead-code`                                                           |
+| Copy-paste and structural duplication      | `fallow` | `dupes`                                                               |
+| Complexity, maintainability, hotspots      | `fallow` | `health`                                                              |
+| Architecture boundary violations           | `fallow` | configured boundaries in `.fallowrc.jsonc`                            |
+| Changed-file risk in CI                    | `fallow` | `audit --base`, and `ci` builds the PR envelope                       |
+| Every call edge into or out of a symbol    | `tsyn`   | needs a type checker resolving through barrels; `fallow` is syntactic |
+| Call paths out of a root                   | `tsyn`   | the index holds the graph; nothing else here walks it                 |
+| What a symbol change reaches               | `tsyn`   | needs call edges **and** a baseline index; `fallow` has neither       |
+| Which tests a change reaches               | `tsyn`   | the same walk, scoped to `role: test`                                 |
+| Which documents a change contradicts       | `tsyn`   | ADR 0005's [[Claim]]s exist nowhere else                              |
 
 The rule is not politeness. Two tools reporting on the same repository will disagree, and a developer
 holding two dead-code reports has no way to decide which is right — the second answer costs more than
@@ -89,7 +89,7 @@ already labels every file `source`, `test` or `config`, and ADR 0006 already rou
 through the scope channel. Which tests a change reaches is therefore:
 
 ```sh
-codedocs impact --base main --label role=test
+tsyn impact --base main --label role=test
 ```
 
 A dedicated operation would be a second traversal to keep in step with `impact` for the rest of the
@@ -105,7 +105,7 @@ agent needed. Each step is gated by the one above it.
 2. **`doctor`.** All four of ADR 0001's signals are measured and stored and have nowhere to be read
    whole. It is also the first operation that can reach exit code `1`, so CI gets a shape to fail on
    before anything is built that depends on failing.
-3. **The label layer**, which ADR 0003 specified, `codedocs.jsonc` already parses, and both the scope
+3. **The label layer**, which ADR 0003 specified, `tsyn.jsonc` already parses, and both the scope
    channel and affected tests are blocked on.
 4. **`impact`**, with the [[Capture]] and retention of ADR 0008 underneath it.
 5. **`evidence`**, once labels and fidelity exist for it to assemble.
@@ -119,7 +119,7 @@ agent needed. Each step is gated by the one above it.
   about one repository, with no procedure for deciding between them, in exchange for an accuracy gain
   nobody has measured.
 - **Keep `review` as a pull-request report.** Rejected: `fallow ci` builds that envelope today, and
-  what codedocs would add is two of its own operations rendered together.
+  what Typesynesthesia would add is two of its own operations rendered together.
 - **Keep `plan` as an advisory operation** that names files without ranking them. Rejected: without a
   ranking it is `symbol` plus `references`, and with one it is a judgement the determinism rule
   forbids.
@@ -135,7 +135,7 @@ agent needed. Each step is gated by the one above it.
   decision just declined to design for.
 - **Leaving the framing alone**, since the README already says "no LLM" and "the CLI is the product".
   Rejected: `docs/REQUIREMENTS.md` opened with "AI writes the code", every operation in it was
-  addressed to an agent, and PRD §33 measured success as an agent doing better with codedocs than
+  addressed to an agent, and PRD §33 measured success as an agent doing better with Typesynesthesia than
   without. The centre of gravity was in that document, not in the README.
 
 ## Consequences
@@ -147,9 +147,9 @@ agent needed. Each step is gated by the one above it.
 - **`docs/REQUIREMENTS.md` is replaced** by a developer-first product definition. The original is
   frozen at [`docs/PRD-v1.md`](../PRD-v1.md), unedited, because ADRs 0001–0011 cite it by section
   number twenty-eight times and those citations record what was decided against.
-- **PRD §33 is no longer the success criterion.** "An agent with codedocs beats an agent without" is
+- **PRD §33 is no longer the success criterion.** "An agent with Typesynesthesia beats an agent without" is
   measurable but tests the wrong thing; the criterion is a developer question answered correctly that
-  an editor cannot answer at all. [#21](https://github.com/magicspon/codedocs/issues/21) is narrowed, not
+  an editor cannot answer at all. [#21](https://github.com/magicspon/typesynesthesia/issues/21) is narrowed, not
   closed.
 - **`fallow` becomes a documented neighbour** rather than an undiscussed overlap. The README says
   which tool to reach for, so the boundary is visible to someone deciding whether to file a feature

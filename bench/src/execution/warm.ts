@@ -1,5 +1,5 @@
 /**
- * Giving a fresh worktree the index the codedocs arm is told it already has.
+ * Giving a fresh worktree the index the tsyn arm is told it already has.
  *
  * Every run gets its own worktree, and a fresh worktree has no index, so one
  * has to be there before the agent starts — in a process the benchmark is not
@@ -21,10 +21,10 @@
 import { execFileSync } from 'node:child_process'
 import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
-import { CODEDOCS, INDEX_CACHE } from '../core/paths.ts'
+import { TSYN, INDEX_CACHE } from '../core/paths.ts'
 
-/** The directory codedocs keeps a working tree's index in. */
-const STORE = '.codedocs'
+/** The directory tsyn keeps a working tree's index in. */
+const STORE = '.tsyn'
 
 /** What it cost to give one worktree its index, and where that index came from. */
 export type Warmed = {
@@ -39,13 +39,13 @@ function cacheFor(commit: string): string {
 }
 
 /**
- * Asks codedocs one question, which is what builds or revalidates the index.
+ * Asks tsyn one question, which is what builds or revalidates the index.
  *
  * A name nothing matches keeps the answer empty, so the only work done is the
  * work of having an index to answer from.
  */
 function query(root: string): void {
-  execFileSync(CODEDOCS, ['symbol', '__warm__', '--cwd', root], {
+  execFileSync(TSYN, ['symbol', '__warm__', '--cwd', root], {
     encoding: 'utf8',
     maxBuffer: 64 * 1024 * 1024,
   })
@@ -56,7 +56,7 @@ function query(root: string): void {
  *
  * The revalidation is not optional. A fresh checkout writes every file with a
  * new mtime, so the stat signature of every file differs from the one the index
- * recorded, and codedocs hashes each of them to find that the content is
+ * recorded, and tsyn hashes each of them to find that the content is
  * identical. That pass costs seconds where a rebuild costs an hour — but it has
  * to happen here, before the agent starts, or the run under test would pay for
  * it.

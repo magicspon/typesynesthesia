@@ -31,7 +31,7 @@ const fixture = join(
 let root: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-doctor-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-doctor-'))
   cpSync(fixture, root, { recursive: true })
   manifest()
   writeFileSync(join(root, 'pnpm-lock.yaml'), "lockfileVersion: '9.0'\n")
@@ -182,12 +182,12 @@ describe('remediations, and the silences ADR 0001 requires', () => {
     expect(found?.remediable).toBe(true)
   })
 
-  it('takes `missing-generated`’s command from codedocs.jsonc', () => {
+  it('takes `missing-generated`’s command from tsyn.jsonc', () => {
     install()
     install('@scope/pkg')
     write('src/app.ts', "import '@scope/pkg/enums'\nexport const app = 1\n")
     writeFileSync(
-      join(root, 'codedocs.jsonc'),
+      join(root, 'tsyn.jsonc'),
       '{"remediations": [{"specifier": "@scope/pkg/*", "run": "pnpm generate"}]}\n',
     )
 
@@ -451,7 +451,7 @@ describe('--measure, against the working tree', () => {
 
     // And the other direction: analysed with nothing installed, measured with
     // an install in place.
-    rmSync(join(root, '.codedocs'), { recursive: true, force: true })
+    rmSync(join(root, '.tsyn'), { recursive: true, force: true })
     run()
     install()
     const arrived = (run(true, true).measured ?? []).find(

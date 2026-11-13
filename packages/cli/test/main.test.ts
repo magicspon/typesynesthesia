@@ -29,7 +29,7 @@ const fixture = join(here, '..', '..', 'core', 'test', 'fixtures', 'basic')
 let root: string
 
 beforeAll(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-cli-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-cli-'))
   cpSync(fixture, root, { recursive: true })
   cpSync(join(here, 'package.fixture.json'), join(root, 'package.json'))
 })
@@ -137,7 +137,7 @@ describe('the machine renderer', () => {
     // is the fixture's own, and the version is the fixed placeholder ADR 0002
     // normalises a workspace version to.
     expect(entry.resolved).toEqual([
-      'codedocs npm codedocs-cli-fixture . `src/payments.ts`/charge().',
+      'tsyn npm tsyn-cli-fixture . `src/payments.ts`/charge().',
     ])
 
     // The resolved id round-trips: passing it back gives the same answer.
@@ -188,7 +188,7 @@ describe('trace', () => {
     }
     expect(envelope.request.depth).toBeNull()
     expect(envelope.result[0]?.root).toBe(
-      'codedocs npm codedocs-cli-fixture . `src/checkout.ts`/checkout().',
+      'tsyn npm tsyn-cli-fixture . `src/checkout.ts`/checkout().',
     )
     expect(envelope.result[0]?.steps.length).toBeGreaterThan(0)
   })
@@ -304,7 +304,7 @@ describe('docs', () => {
         '',
         'Checkout charges through the payments module.',
         '',
-        '<!-- codedocs: calls(src/checkout.ts#checkout,',
+        '<!-- tsyn: calls(src/checkout.ts#checkout,',
         '                     src/payments.ts#charge) -->',
         '',
         '## Uncovered',
@@ -322,7 +322,7 @@ describe('docs', () => {
         '',
         'See [the gateway](src/gone.ts).',
         '',
-        '<!-- codedocs: exists(src/payments.ts#charge) -->',
+        '<!-- tsyn: exists(src/payments.ts#charge) -->',
       ].join('\n'),
     )
   })
@@ -390,7 +390,7 @@ describe('docs', () => {
     let stale: string
 
     beforeAll(() => {
-      stale = mkdtempSync(join(tmpdir(), 'codedocs-stale-'))
+      stale = mkdtempSync(join(tmpdir(), 'tsyn-stale-'))
       cpSync(fixture, stale, { recursive: true })
       cpSync(join(here, 'package.fixture.json'), join(stale, 'package.json'))
       writeFileSync(
@@ -400,7 +400,7 @@ describe('docs', () => {
           '',
           'Charging is where the money moves.',
           '',
-          '<!-- codedocs: exists(src/payments.ts#charge) -->',
+          '<!-- tsyn: exists(src/payments.ts#charge) -->',
         ].join('\n'),
       )
       // Build the index first, so the edit below reads as drift rather than as
@@ -482,7 +482,7 @@ describe('the human renderer', () => {
       invoke('evidence', 'charge').stdout,
     ]) {
       expect(printed).toMatch(/src\/[a-z]+\.ts#/)
-      expect(printed).not.toContain('codedocs npm')
+      expect(printed).not.toContain('tsyn npm')
     }
   })
 })
@@ -498,7 +498,7 @@ describe('references', () => {
     expect(envelope.operation).toBe('references')
     // Both ends as `SymbolId`s: `--json` is what an agent feeds back in, and
     // ADR 0005's shorthand is what the human renderer prints instead.
-    const pkg = 'codedocs npm codedocs-cli-fixture .'
+    const pkg = 'tsyn npm tsyn-cli-fixture .'
     expect(envelope.result[0]?.result[0]).toMatchObject({
       from: `${pkg} \`src/payments.ts\`/StripeGateway#`,
       to: `${pkg} \`src/payments.ts\`/Gateway#`,
@@ -695,7 +695,7 @@ describe('doctor over a repository with nothing to clear', () => {
   let prepared: string
 
   beforeAll(() => {
-    prepared = mkdtempSync(join(tmpdir(), 'codedocs-doctor-'))
+    prepared = mkdtempSync(join(tmpdir(), 'tsyn-doctor-'))
     cpSync(fixture, prepared, { recursive: true })
     cpSync(join(here, 'package.fixture.json'), join(prepared, 'package.json'))
     // Installed, so signal 1 is met; the only finding left is an import that
@@ -724,8 +724,8 @@ describe('doctor over a repository with nothing to clear', () => {
   })
 })
 
-describe('codedocs.jsonc', () => {
-  const config = () => join(root, 'codedocs.jsonc')
+describe('tsyn.jsonc', () => {
+  const config = () => join(root, 'tsyn.jsonc')
 
   afterEach(() => {
     rmSync(config(), { force: true })
@@ -744,7 +744,7 @@ describe('codedocs.jsonc', () => {
 
     expect(result.code).toBe(2)
     expect(result.stderr).toContain(
-      'config-invalid: codedocs.jsonc: `baselines` must be a non-negative integer',
+      'config-invalid: tsyn.jsonc: `baselines` must be a non-negative integer',
     )
   })
 
@@ -773,7 +773,7 @@ describe('codedocs.jsonc', () => {
     writeFileSync(config(), '{"exlucde": []}\n')
 
     expect(invoke('symbol', '*').stderr).toContain(
-      'config-invalid: codedocs.jsonc: `exlucde` is not a key codedocs knows',
+      'config-invalid: tsyn.jsonc: `exlucde` is not a key tsyn knows',
     )
   })
 

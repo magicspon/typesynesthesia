@@ -6,7 +6,7 @@ import {
   notFound,
   RouterProvider,
 } from '@tanstack/react-router'
-import { GENRE_NAMES, type GenreName } from '@codedocs/codesong/browser'
+import { GENRE_NAMES, type GenreName } from '@tsyn/codesong/browser'
 import type { JSX } from 'react'
 import { HowItWorks } from './HowItWorks.tsx'
 import { Layout } from './Layout.tsx'

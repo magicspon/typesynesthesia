@@ -1,5 +1,5 @@
 /**
- * The codedocs core: one operation set, bound by the CLI and later by MCP.
+ * The tsyn core: one operation set, bound by the CLI and later by MCP.
  *
  * ADR 0006 makes the operation the unit of the product. Composition happens
  * inside an operation and never above one, so this surface is deliberately flat.
@@ -117,7 +117,7 @@ export {
   REPORT_FILE,
   reportBug,
   type BlindSpotReason,
-  type CodedocsFacts,
+  type TsynFacts,
   type ConfigReport,
   type Disclosure,
   type IndexFacts,

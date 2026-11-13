@@ -22,7 +22,7 @@ import {
   type OperationSpec,
   type Scope,
   type Verdict,
-} from '@codedocs/core'
+} from '@tsyn/core'
 
 /**
  * A parsed command line, or the reason it could not be parsed.
@@ -72,7 +72,7 @@ export interface Command {
    * Where to write what an operation produces, or `null` for its own default.
    *
    * Shared by two operations and defaulted differently by each: `report-bug`
-   * writes `./codedocs-report.json` unless told otherwise, and `docs draft`
+   * writes `./tsyn-report.json` unless told otherwise, and `docs draft`
    * derives a path beside the code it drafted about.
    */
   readonly out: string | null
@@ -132,7 +132,7 @@ const failed = <T>(step: Step<T>): step is { readonly error: EnvelopeError } =>
  *
  * @param cwd - What `--cwd` defaults to. `report-bug` passes its own, so that a
  * reproduction runs where the report-bug that asked for it was pointed, and the
- * command line stays the one the user typed rather than one codedocs edited.
+ * command line stays the one the user typed rather than one tsyn edited.
  */
 export function parse(
   argv: readonly string[],
@@ -198,7 +198,7 @@ export function parse(
 }
 
 /**
- * Every flag `argv` gave that codedocs knows, without its value.
+ * Every flag `argv` gave that tsyn knows, without its value.
  *
  * ADR 0011's default report carries "the operation name, and every flag given"
  * and nothing a flag was set *to*, since a value can be a path or a subject.
@@ -328,7 +328,7 @@ function named(
  * An operation whose subject is the command line after `--`.
  *
  * The name has to be on this side of the `--`, or there is no `--` left to start
- * the command with: `codedocs -- report-bug trace X` gave one, and it is the
+ * the command with: `tsyn -- report-bug trace X` gave one, and it is the
  * wrong one.
  */
 function resolveVariadic(
@@ -573,9 +573,9 @@ const flagWidth = (): number =>
 
 /** How one operation is invoked, as `--help` spells it. */
 function invocation(spec: OperationSpec): string {
-  if (spec.subject === null) return `codedocs ${spec.name}`
+  if (spec.subject === null) return `tsyn ${spec.name}`
   const subject = `<${spec.subject.name}>${spec.subject.multiple ? '...' : ''}`
-  return `codedocs ${spec.name} ${spec.subject.variadic ? `-- ${subject}` : subject}`
+  return `tsyn ${spec.name} ${spec.subject.variadic ? `-- ${subject}` : subject}`
 }
 
 /**
@@ -589,17 +589,18 @@ export function usage(): string {
   // Derived, so an operation cannot land without appearing in `--help`.
   const width = Math.max(...OPERATIONS.map((entry) => invocation(entry).length))
   return [
-    'codedocs — a local codebase index for TypeScript',
+    'tsyn — a local codebase index for TypeScript',
     '',
     'Usage:',
     ...OPERATIONS.map(
       (entry) => `  ${invocation(entry).padEnd(width + 2)}${entry.summary}`,
     ),
     '',
-    '  codedocs mcp                serve the operations above over MCP (stdio)',
-    '  codedocs art                draw the index as 3D art in .codedocs/art (--help for more)',
+    '  tsyn mcp                serve the operations above over MCP (stdio)',
+    '  tsyn art [scene]        draw the index as a 3D galaxy, city or landscape (--help for more)',
+    '  tsyn song               play the index as music: mp3, wav or midi (--help for more)',
     '',
-    'A subject is anything codedocs prints as an identifier:',
+    'A subject is anything tsyn prints as an identifier:',
     '  src/auth/service.ts#AuthService.login   exact',
     '  AuthService.login                       may resolve to several',
     '',

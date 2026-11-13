@@ -7,13 +7,13 @@
  * itself is the same check, and keeping them apart would give the two a second
  * chance to disagree about a verdict.
  *
- * ADR 0012 puts "which documents a change contradicts" on the codedocs side of
+ * ADR 0012 puts "which documents a change contradicts" on the tsyn side of
  * the `fallow` boundary for the simplest possible reason: ADR 0005's claims
  * exist nowhere else.
  *
  * **`docs affected` needs one index, not two.** The only thing a second would
  * buy is the sentence "this was verified before your change", at 22.9 s to build
- * on cal.com — which is [#14](https://github.com/magicspon/codedocs/issues/14)'s
+ * on cal.com — which is [#14](https://github.com/magicspon/typesynesthesia/issues/14)'s
  * to grant behind an explicit flag. One index is what keeps this usable inside a
  * pre-commit hook or an agent loop.
  */

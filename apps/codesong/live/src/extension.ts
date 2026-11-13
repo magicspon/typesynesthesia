@@ -42,7 +42,7 @@ function latestPlan(dir: string): LivePlan {
     .sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs)[0]
   if (newest === undefined) {
     throw new Error(
-      `no *.live.json in ${dir}; run \`pnpm --filter @codedocs/codesong compose <repo>\` first`,
+      `no *.live.json in ${dir}; run \`pnpm --filter @tsyn/codesong compose <repo>\` first`,
     )
   }
   return parsePlan(readFileSync(newest, 'utf8'))

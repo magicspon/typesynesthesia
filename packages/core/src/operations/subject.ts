@@ -7,7 +7,7 @@
  * those and round-tripping is the only way an agent can feed an answer back in.
  *
  * The scheme prefix is what tells the third form from the first: a `SymbolId`
- * begins `codedocs `, and neither of the other two may contain a space before a
+ * begins `tsyn `, and neither of the other two may contain a space before a
  * path. Nothing here guesses — a subject that parses as an id is looked up as
  * one, and a subject that does not is a shorthand.
  */

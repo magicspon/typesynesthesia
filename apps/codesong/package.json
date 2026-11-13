@@ -1,5 +1,5 @@
 {
-  "name": "@codedocs/codesong",
+  "name": "@tsyn/codesong",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -14,7 +14,10 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
-    "@codedocs/code-art": "workspace:*",
+    "@tsyn/code-art": "workspace:*",
     "@types/node": "^24.13.3"
+  },
+  "dependencies": {
+    "@breezystack/lamejs": "1.2.7"
   }
 }

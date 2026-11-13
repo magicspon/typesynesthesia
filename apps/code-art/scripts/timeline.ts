@@ -1,9 +1,9 @@
 /**
  * Builds a timeline into `src/data` for the dev viewer.
  *
- *     pnpm --filter @codedocs/code-art timeline <repo> [--frames 16] [--name x] [--no-fallow]
+ *     pnpm --filter @tsyn/code-art timeline <repo> [--frames 16] [--name x] [--no-fallow]
  *
- * `codedocs art --frames` does the same for a published install; this runs
+ * `tsyn art --frames` does the same for a published install; this runs
  * the workspace build of the CLI, so it needs `pnpm build` first.
  */
 
@@ -28,7 +28,7 @@ const here = import.meta.dirname
 const cli = resolve(here, '../../../packages/cli/dist/bin.js')
 if (!existsSync(cli)) {
   console.error(
-    `no codedocs build at ${cli} — run \`pnpm build\` at the repo root first`,
+    `no tsyn build at ${cli} — run \`pnpm build\` at the repo root first`,
   )
   process.exit(1)
 }

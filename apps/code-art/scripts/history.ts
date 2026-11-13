@@ -3,7 +3,7 @@
  *
  * The index holds one moment, so history has to be re-analysed. Each commit is
  * checked out into a throwaway worktree outside the repo — inside it, the next
- * `codedocs analyse` of the repo would discover it as more projects — with the
+ * `tsyn analyse` of the repo would discover it as more projects — with the
  * repo's `node_modules` linked in so old commits still analyse at `typed`
  * fidelity. With fallow on the PATH, each commit also gets its health readings,
  * scored as of that commit. The analysis and the readings are cached by sha
@@ -38,7 +38,7 @@ export interface TimelineOptions {
   readonly fallow: boolean
   /** Where frames are kept by sha between runs. */
   readonly cacheDir: string
-  /** Writes `dir/.codedocs/index.db`; throws when the commit will not analyse. */
+  /** Writes `dir/.tsyn/index.db`; throws when the commit will not analyse. */
   readonly analyse: (dir: string) => void
   /** Progress, one line at a time. */
   readonly log: (line: string) => void
@@ -96,7 +96,7 @@ function analyse(run: Run, dir: string): Atlas {
   run.analyse(dir)
   // The scenes draw at most ~2,000 calls; 8,000 per frame leaves room for
   // the heaviest to change between commits without one frame costing 1 MB.
-  return readAtlas(join(dir, '.codedocs', 'index.db'), run.name, {
+  return readAtlas(join(dir, '.tsyn', 'index.db'), run.name, {
     calls: 8000,
   })
 }

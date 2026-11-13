@@ -8,7 +8,7 @@
  *
  * `report-bug` is the one operation that runs another, and it is still not
  * composition: it re-runs a command line the user gave and reports the envelope
- * that came back, which is the same envelope `codedocs` itself would have
+ * that came back, which is the same envelope `tsyn` itself would have
  * printed. ADR 0011 makes the reproduction the payload precisely so that nothing
  * has to be logged for a report to exist.
  */
@@ -51,12 +51,12 @@ import {
   type Scoping,
   type Reproduction,
   type Session,
-} from '@codedocs/core'
+} from '@tsyn/core'
 
 import { flagsIn, parse, type Command, type ParsedArgs } from './args.ts'
 import { derivedDraftPath, writeDraft } from './draft-out.ts'
 import { formatError } from './messages.ts'
-import { codedocsFrames, messageOf } from './stack.ts'
+import { tsynFrames, messageOf } from './stack.ts'
 import {
   renderAnalyse,
   renderDocs,
@@ -169,7 +169,7 @@ function answered(command: Command, style: Style): Outcome {
       {
         code: 'operation-failed',
         params: { detail: messageOf(error) },
-        stack: codedocsFrames(error),
+        stack: tsynFrames(error),
       },
       session.context,
     )
@@ -433,7 +433,7 @@ function drafted(
  * round, because it is derived from a repository-relative subject.
  *
  * `out` is the spelling a refusal quotes back, so it is what the user typed
- * where they typed one and the repository-relative path where codedocs chose it.
+ * where they typed one and the repository-relative path where tsyn chose it.
  * The note that reports a written file quotes the absolute path either way,
  * because that is the one spelling a reader can open from anywhere.
  */
@@ -539,7 +539,7 @@ function report(command: Command, style: Style): Outcome {
  * Run the failing command again, and record what running it cost.
  *
  * `operation` and `cwd` come from the parse rather than from the run, because a
- * command line that named nothing codedocs knows still has a report owed about
+ * command line that named nothing tsyn knows still has a report owed about
  * it — and the report then says so rather than guessing at an operation.
  */
 function reproduce(command: Command, inner: ParsedArgs): Reproduction {
@@ -591,7 +591,7 @@ function present(
  * Write the report where `--out` said, or report that it could not be.
  *
  * `path` is `null` for `--out -`, which writes no file: `text` is then the
- * payload the caller puts on stdout. codedocs writes the one file it was asked
+ * payload the caller puts on stdout. tsyn writes the one file it was asked
  * for and edits nothing else — not the user's `.gitignore`, not their config.
  */
 interface Written {
@@ -619,7 +619,7 @@ function write(command: Command, envelope: ReportEnvelope): Written {
       error: {
         code: 'report-unwritable',
         params: { out, detail: messageOf(error) },
-        stack: codedocsFrames(error),
+        stack: tsynFrames(error),
       },
     }
   }
@@ -730,12 +730,12 @@ function emit(
 /**
  * Why the session could not be opened.
  *
- * A bad `codedocs.jsonc` keeps its own code: ADR 0010 makes it a different
+ * A bad `tsyn.jsonc` keeps its own code: ADR 0010 makes it a different
  * repair from an index that will not open, and the refusal already carries the
  * parameters that say which key was wrong.
  */
 function unavailable(error: unknown): EnvelopeError {
-  const stack = codedocsFrames(error)
+  const stack = tsynFrames(error)
   if (error instanceof ConfigError) return { ...error.refusal, stack }
   return {
     code: 'index-unavailable',

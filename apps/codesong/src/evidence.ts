@@ -4,7 +4,7 @@
  * composition names its files; the evidence says what was measured in them.
  */
 
-import type { SymbolNames } from '@codedocs/code-art/atlas'
+import type { SymbolNames } from '@tsyn/code-art/atlas'
 import { fifths } from './compose/compose.ts'
 import { suggest, type Suggestion } from './compose/genre.ts'
 import type { Composition, GenreName } from './model.ts'

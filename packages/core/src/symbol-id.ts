@@ -4,7 +4,7 @@
  *
  * A `SymbolId` is a [SCIP](https://github.com/scip-code/scip) symbol string —
  * `<scheme> ' ' <manager> ' ' <package> ' ' <version> ' ' <descriptors>` — in
- * codedocs' own scheme, with ADR 0002's two normalisations:
+ * tsyn's own scheme, with ADR 0002's two normalisations:
  *
  * 1. **The version is a placeholder for a workspace package.** A routine
  *    `version` bump would otherwise invalidate every symbol in a package and
@@ -28,8 +28,8 @@
 
 import type { CallSource, FilePath, SymbolId, SymbolKind } from './model.ts'
 
-/** codedocs' own SCIP scheme. Also what tells a `SymbolId` from a shorthand. */
-const SCHEME = 'codedocs'
+/** tsyn's own SCIP scheme. Also what tells a `SymbolId` from a shorthand. */
+const SCHEME = 'tsyn'
 
 /**
  * The `<version>` every workspace package's symbols carry.
@@ -43,7 +43,7 @@ export const WORKSPACE_VERSION = '.'
 /** The `<package>` of a file no manifest above it names. Same convention. */
 export const ABSENT_PACKAGE = '.'
 
-/** The one manager codedocs resolves through. */
+/** The one manager tsyn resolves through. */
 export const NPM = 'npm'
 
 /** SCIP's `<package>` field: the three parts that name where a symbol lives. */
@@ -233,7 +233,7 @@ export function splitShorthand(subject: string): [FilePath, string] {
 /**
  * The first `count` space-separated fields, the last of which is the remainder.
  *
- * SCIP escapes a space inside a field by doubling it. None of codedocs' first
+ * SCIP escapes a space inside a field by doubling it. None of tsyn's first
  * four fields can hold one — an npm package name and a semver range both forbid
  * it — so this only has to *read* the escape, never write it.
  */

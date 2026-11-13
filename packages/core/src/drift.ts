@@ -26,7 +26,7 @@ const SKIP_DIRS: ReadonlySet<string> = new Set([
   '.next',
   '.turbo',
   '.cache',
-  '.codedocs',
+  '.tsyn',
   '.yarn',
 ])
 

@@ -1,8 +1,8 @@
-import type { GenreName, RealisedTrack } from '@codedocs/codesong/browser'
+import type { GenreName, RealisedTrack } from '@tsyn/codesong/browser'
 import { button, folder, LevaPanel, useControls, useCreateStore } from 'leva'
 import type { Schema } from 'leva/plugin'
 import { useEffect, useMemo, type JSX } from 'react'
-import { controls, defaults, type Sound } from './audio/sound.ts'
+import { controls, defaults, type Sound } from '@tsyn/codesong/browser'
 import { ROLE_COLOUR } from './scene/layout.ts'
 
 interface Props {

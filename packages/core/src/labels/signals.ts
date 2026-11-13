@@ -82,7 +82,7 @@ export function hasGeneratedHeader(root: string, path: FilePath): boolean {
  *
  * `inferred`, and deliberately: nothing about a name proves what wrote it. Every
  * entry is a convention ADR 0001 measured on a real repository rather than one
- * codedocs invented.
+ * tsyn invented.
  */
 const CODEGEN_PATHS: readonly RegExp[] = [
   /(^|\/)[^/]*\.generated\.[^/]+$/,

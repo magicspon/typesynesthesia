@@ -1,8 +1,4 @@
-import {
-  realise,
-  type GenreName,
-  type SongFile,
-} from '@codedocs/codesong/browser'
+import { realise, type GenreName, type SongFile } from '@tsyn/codesong/browser'
 import { getRouteApi, Link } from '@tanstack/react-router'
 import { useMemo, useState, type JSX } from 'react'
 import { usePlayer } from './audio/usePlayer.ts'

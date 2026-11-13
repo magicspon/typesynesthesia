@@ -11,7 +11,7 @@
  * claim at all.
  *
  * `analysedIn` is deliberately absent rather than refused. A document asserting
- * which project globbed a file is asserting something about codedocs, not about
+ * which project globbed a file is asserting something about tsyn, not about
  * the repository, so it is not a predicate and never will be.
  *
  * Parsing only. Nothing here reads the index; `check.ts` does that.
@@ -34,7 +34,7 @@ export type CountPredicate = 'implementations' | 'callers'
  * The predicates ADR 0005 names that no backend produces yet.
  *
  * Kept in the vocabulary rather than treated as unknown, so the message says
- * "not yet" rather than "never" — the difference between a gap in codedocs and
+ * "not yet" rather than "never" — the difference between a gap in tsyn and
  * a typo in the document, which are fixed by different people.
  */
 const UNBACKED: readonly string[] = ['exports', 'dependsOn']

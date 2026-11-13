@@ -46,7 +46,7 @@ type StreamEvent = {
 /** Everything one stream says about the run that produced it. */
 export type ParsedStream = {
   metrics: RunMetrics
-  usedCodedocs: boolean
+  usedTsyn: boolean
   rateLimitedUntil: number | null
 }
 
@@ -102,7 +102,7 @@ export function parseStream(lines: string[]): ParsedStream {
 
   return {
     metrics,
-    usedCodedocs: tally.usedCodedocs,
+    usedTsyn: tally.usedTsyn,
     rateLimitedUntil: tally.rateLimitedUntil,
   }
 }

@@ -1,7 +1,7 @@
 /**
- * Turns one codedocs index into the JSON the art is drawn from.
+ * Turns one tsyn index into the JSON the art is drawn from.
  *
- *     pnpm --filter @codedocs/code-art export <repo-or-index.db> [name] [--no-fallow] [--skip <dir>]...
+ *     pnpm --filter @tsyn/code-art export <repo-or-index.db> [name] [--no-fallow] [--skip <dir>]...
  *
  * With fallow on the PATH, each file also gets its health readings. Each
  * `--skip` leaves out files under a folder of that name, such as `examples`.
@@ -31,14 +31,14 @@ if (given === undefined) {
 const target = fromCaller(given)
 
 const dbPath = statSync(target).isDirectory()
-  ? join(target, '.codedocs', 'index.db')
+  ? join(target, '.tsyn', 'index.db')
   : target
 if (!existsSync(dbPath)) {
-  console.error(`no index at ${dbPath} — run \`codedocs\` in that repo first`)
+  console.error(`no index at ${dbPath} — run \`tsyn\` in that repo first`)
   process.exit(1)
 }
 
-// The repo root is two levels above `.codedocs/index.db`.
+// The repo root is two levels above `.tsyn/index.db`.
 const root = resolve(dirname(dbPath), '..')
 const name = nameArg ?? basename(root)
 const atlas = snapshot(dbPath, { name, fallow: useFallow, skip })

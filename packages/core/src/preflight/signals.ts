@@ -52,7 +52,7 @@ export function declaresInstallScript(root: string, from: string): boolean {
  *
  * The name alone, never its content: ADR 0011 puts the filename in the default
  * [[Report]] because it names the package manager, which is one of the two
- * dependency versions that change what codedocs does.
+ * dependency versions that change what tsyn does.
  */
 export function lockfileName(root: string, from: string = root): string | null {
   return (
@@ -65,7 +65,7 @@ export function lockfileName(root: string, from: string = root): string | null {
 /**
  * The install command for the nearest lockfile, or `null` where there is none.
  *
- * ADR 0010 keeps this out of `codedocs.jsonc` because it is determinable: the
+ * ADR 0010 keeps this out of `tsyn.jsonc` because it is determinable: the
  * lockfile names the package manager, so `unprepared`'s remediation is read
  * rather than declared. A repository with no lockfile gets no command instead of
  * a guessed one — ADR 0001 refuses a remediation that would send a user the

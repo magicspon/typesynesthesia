@@ -1,7 +1,7 @@
 /**
  * `report-bug`, held to the rule that makes it safe rather than to a happy path.
  *
- * ADR 0011's promise is one sentence — a fact about codedocs or the machine is
+ * ADR 0011's promise is one sentence — a fact about tsyn or the machine is
  * in the default report, and a fact that names the user's code is behind
  * `--with-repository` — and it is worth nothing unless something checks it
  * against the bytes that actually land in the file. So the default shape is
@@ -30,7 +30,7 @@ let root: string
 let out: string
 
 beforeAll(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-report-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-report-'))
   cpSync(fixture, root, { recursive: true })
   cpSync(join(here, 'package.fixture.json'), join(root, 'package.json'))
   out = join(root, 'report.json')
@@ -45,7 +45,7 @@ afterAll(() => {
  *
  * `--out` on every call on purpose: the default path is the directory the test
  * process is standing in, which is this repository, and a test that writes into
- * it would be doing the one thing ADR 0011 says codedocs never does elsewhere.
+ * it would be doing the one thing ADR 0011 says tsyn never does elsewhere.
  */
 const reproduce = (...argv: string[]): ReturnType<typeof run> =>
   run(['report-bug', '--no-color', '--out', out, '--', ...argv, '--cwd', root])
@@ -100,19 +100,17 @@ describe('the operation', () => {
     expect(() => JSON.parse(readFileSync(out, 'utf8'))).not.toThrow()
   })
 
-  it('writes to ./codedocs-report.json when told nowhere else', () => {
+  it('writes to ./tsyn-report.json when told nowhere else', () => {
     const standing = process.cwd()
     process.chdir(root)
     try {
       const result = run(['report-bug', '--no-color', '--', 'symbol', '*'])
       expect(result.code).toBe(0)
-      expect(existsSync(join(root, 'codedocs-report.json'))).toBe(true)
-      // Never inside `.codedocs/`, which is invisible to `git status` and
+      expect(existsSync(join(root, 'tsyn-report.json'))).toBe(true)
+      // Never inside `.tsyn/`, which is invisible to `git status` and
       // documented as safe to delete — both fatal for a file meant to be found.
-      expect(existsSync(join(root, '.codedocs', 'codedocs-report.json'))).toBe(
-        false,
-      )
-      expect(result.stdout).toContain('codedocs-report.json')
+      expect(existsSync(join(root, '.tsyn', 'tsyn-report.json'))).toBe(false)
+      expect(result.stdout).toContain('tsyn-report.json')
     } finally {
       process.chdir(standing)
     }
@@ -211,7 +209,7 @@ describe('the default shape', () => {
   })
 
   it('says which config keys are set without saying what they are set to', () => {
-    const config = join(root, 'codedocs.jsonc')
+    const config = join(root, 'tsyn.jsonc')
     try {
       // Wrong on purpose: a config that will not parse is one of the likelier
       // things a bug report is about, and the report has to survive it.
@@ -222,7 +220,7 @@ describe('the default shape', () => {
       }
       expect(report.config.present).toBe(true)
       expect(report.config.keys).toEqual(['name', 'private'])
-      expect(readFileSync(out, 'utf8')).not.toContain('codedocs-cli-fixture')
+      expect(readFileSync(out, 'utf8')).not.toContain('tsyn-cli-fixture')
     } finally {
       rmSync(config, { force: true })
     }
@@ -269,7 +267,7 @@ describe('--with-repository', () => {
     expect(report.repositoryFacts).toBe('included')
     expect(report.reproduction.command).toContain('checkout')
     expect(report.reproduction.resolved).toEqual([
-      'codedocs npm codedocs-cli-fixture . `src/checkout.ts`/checkout().',
+      'tsyn npm tsyn-cli-fixture . `src/checkout.ts`/checkout().',
     ])
     expect(report.reproduction.conditions[0]?.project).toBe('tsconfig.json')
     expect(report.index.environment[0]?.project).toBe('tsconfig.json')
@@ -296,7 +294,7 @@ describe('a repository with specifiers it could not resolve', () => {
   let messyOut: string
 
   beforeAll(() => {
-    messy = mkdtempSync(join(tmpdir(), 'codedocs-report-messy-'))
+    messy = mkdtempSync(join(tmpdir(), 'tsyn-report-messy-'))
     cpSync(fixture, messy, { recursive: true })
     messyOut = join(messy, 'report.json')
     writeFileSync(
@@ -377,7 +375,7 @@ describe('a repository with specifiers it could not resolve', () => {
     expect(included.carries.blindSpotReasons).toBeGreaterThan(0)
 
     const excluded = reportOn() as unknown as Carried
-    // The reasons are codedocs' own words and stay; everything that names the
+    // The reasons are tsyn's own words and stay; everything that names the
     // repository is counted at zero because none of it is there.
     expect(excluded.carries.blindSpotReasons).toBe(
       included.carries.blindSpotReasons,
@@ -390,7 +388,7 @@ describe('a repository with specifiers it could not resolve', () => {
 
 describe('a repository whose manifest cannot be read', () => {
   it('reports no package manager and no dependencies, rather than failing', () => {
-    const bare = mkdtempSync(join(tmpdir(), 'codedocs-report-bare-'))
+    const bare = mkdtempSync(join(tmpdir(), 'tsyn-report-bare-'))
     const bareOut = join(bare, 'report.json')
     try {
       cpSync(fixture, bare, { recursive: true })

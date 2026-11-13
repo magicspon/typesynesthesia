@@ -23,3 +23,15 @@ export {
   type Genre,
   type Suggestion,
 } from './compose/genre.ts'
+export { GENRE_SOUND, type GenreSound } from './sound/genres.ts'
+export {
+  controls,
+  defaults,
+  num,
+  SETTINGS,
+  type Choice,
+  type Knob,
+  type Setting,
+  type Settings,
+  type Sound,
+} from './sound/settings.ts'

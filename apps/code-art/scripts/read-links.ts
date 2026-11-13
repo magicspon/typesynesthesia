@@ -1,5 +1,5 @@
 /**
- * Reads the calls and references between symbols out of a codedocs index,
+ * Reads the calls and references between symbols out of a tsyn index,
  * per file, for the viewer to draw off a focused planet's moons. The atlas
  * only keeps these summed per file pair; here each end keeps its symbol.
  */

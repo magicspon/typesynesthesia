@@ -1,6 +1,6 @@
 # Incremental re-analysis with existing TypeScript tooling
 
-Research for [#5](https://github.com/magicspon/codedocs/issues/5). Investigated 2026-08-30
+Research for [#5](https://github.com/magicspon/typesynesthesia/issues/5). Investigated 2026-08-30
 against TypeScript **7.0.2** (published 2026-08-20) and TypeScript **6.0.3**, both installed
 locally, plus the `microsoft/TypeScript` Go sources on `main`.
 
@@ -86,7 +86,7 @@ The format demonstrably changed between the two versions installed here:
 | Key order                          | `version` last         | `version` first             |
 
 **Verdict: read it for inspiration, never depend on it.** Beyond instability, it is a poor fit
-for codedocs on its own terms: it only exists if you run a `composite`/`incremental` build that
+for Typesynesthesia on its own terms: it only exists if you run a `composite`/`incremental` build that
 _emits_, which a read-only analysis tool otherwise has no reason to do, and `signature` is a hash
 — it tells you _that_ a shape changed, never _what_ it is. Its real value here is as
 **corroboration of the design**, and as a fallback source of the import graph for repos that
@@ -124,17 +124,17 @@ per-project change report for 1 edit in packages/utils:
 
 **Caveat 1: a solution-style root tsconfig is not an entry point.** Opening a root config of the
 form `{ "files": [], "references": [...] }` yields _one project with zero files_. The API does
-**not** expand it into its referenced projects. codedocs must discover and open each leaf
+**not** expand it into its referenced projects. Typesynesthesia must discover and open each leaf
 tsconfig itself.
 
 **Caveat 2: `paths`-to-source defeats the partition.** In the fixture above `app` loads all 903
 files, because `paths` maps package specifiers to sibling _sources_. The boundary only becomes
 real when packages resolve through built `.d.ts` outputs. Since `paths`-to-source is the dominant
-convention in pnpm/Turborepo monorepos, **codedocs cannot assume project references give it
+convention in pnpm/Turborepo monorepos, **Typesynesthesia cannot assume project references give it
 cheap partitioning.** It must handle the case where "one package" pulls in the whole workspace.
 
 The consequence: a file can appear in N projects and legitimately have N different sets of symbol
-facts (different `strict`, different `lib`). codedocs must pick a rule. `getDefaultProjectForFile`
+facts (different `strict`, different `lib`). Typesynesthesia must pick a rule. `getDefaultProjectForFile`
 exists for exactly this and is the natural choice — one canonical project per file, with other
 projects' views treated as secondary.
 
@@ -200,7 +200,7 @@ distinguish two same-named symbols; resolve inferred types (`export const x = co
 follow declaration merging; or compute an export-shape hash, which is the very thing the
 incremental algorithm gates on.
 
-**Correct role for Oxc/ast-grep in codedocs:** the cheap outer loop — file discovery, content
+**Correct role for Oxc/ast-grep in Typesynesthesia:** the cheap outer loop — file discovery, content
 hashing, a first-cut import graph, and syntactic queries that genuinely need no types. Not the
 symbol graph.
 
@@ -242,7 +242,7 @@ binaries. The proof of what this costs in practice is
 [`oxc-project/tsgolint`](https://github.com/oxc-project/tsgolint), the type-aware linter behind
 `oxlint` (installed in this repo as `oxlint-tsgolint@7.0.2001`): to get at the Go checker it
 carries typescript-go as a **git submodule** and builds it in-tree. Forking the compiler is the
-only Go path. It is not one codedocs should take.
+only Go path. It is not one Typesynesthesia should take.
 
 **As a JS library over IPC: yes — this is the real story, and it is new.** TypeScript 7.0.2 ships
 these package exports:
@@ -284,7 +284,7 @@ granularity.
 
 Bazel's action-level model is the closest analogue and the right mental picture: the unit of
 invalidation should be "the symbol facts derived from one file in one project", keyed by
-`(file content hash, project, compiler options, codedocs version, tsgo version)`.
+`(file content hash, project, compiler options, tsyn version, tsgo version)`.
 
 ---
 
@@ -393,7 +393,7 @@ rebuild; with it, essentially nothing.
 4. **The `SnapshotChanges` payload is not exposed in JS.** The server returns per-project
    `changedFiles`/`deletedFiles`, and `SourceFileCache` consumes it internally, but `Snapshot` does
    not re-expose it. Reaching it needs a deep import of `dist/api/sync/client.js` (not in the
-   package `exports` map). Confirmed working, but fragile — and mostly unnecessary, since codedocs
+   package `exports` map). Confirmed working, but fragile — and mostly unnecessary, since Typesynesthesia
    already knows which files it reported as changed.
 5. **`changedFiles` is not the affected set.** Per `computeSnapshotChanges` in
    `tsc/internal/api/session.go`, it is the set of files whose `*ast.SourceFile` identity differs
@@ -402,7 +402,7 @@ rebuild; with it, essentially nothing.
 6. **API roadmap is public and active.** [microsoft/TypeScript#63875](https://github.com/microsoft/TypeScript/issues/63875)
    ("API feature roadmap", milestone _TypeScript 7.1.0 Beta_, owned by Andrew Branch) lists
    `createProgram`, `createSourceFile`, `transpileModule` and `parseCommandLine` as committed for
-   7.1. Worth tracking — several would simplify codedocs' adapter.
+   7.1. Worth tracking — several would simplify Typesynesthesia's adapter.
 
 ---
 
@@ -418,7 +418,7 @@ signature-gated incremental wave.**
    files", never "give me a fact for this symbol".
 3. **Persist per file**: content hash, export-shape hash, resolved import edges, and the extracted
    symbol facts. Key the whole cache on
-   `(codedocs version, typescript version, resolved compilerOptions, project)` — the Nx/Turborepo
+   `(tsyn version, typescript version, resolved compilerOptions, project)` — the Nx/Turborepo
    discipline. Any change to the key invalidates wholesale, as `.tsbuildinfo` does on a version
    change.
 4. **Compute the shape hash from `typeToString`**, expanding `Interface | TypeAlias | Class | Enum`

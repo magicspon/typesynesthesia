@@ -18,7 +18,7 @@
  *
  * **There is no score.** Every signal is boolean, because any signal producing a
  * continuous value forces a threshold and a threshold is a score wearing a
- * different hat. codedocs inherits exactly one threshold — git's own `-M` — and
+ * different hat. tsyn inherits exactly one threshold — git's own `-M` — and
  * names whose it is.
  *
  * **An empty list means "no candidate found", in those words, and never
@@ -59,7 +59,7 @@ export interface Candidate {
   readonly derivations: readonly Derivation[]
   /** The commit the rename happened in, or `null` for a name match. */
   readonly commit: string | null
-  /** Git's own `-M` similarity, or `null`. Never a codedocs score. */
+  /** Git's own `-M` similarity, or `null`. Never a tsyn score. */
   readonly similarity: number | null
 }
 

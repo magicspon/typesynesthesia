@@ -1,10 +1,10 @@
 # effective
 
 <!--
-Drafted by codedocs from `effective` at commit de6cabf595e36451831bd01446b46b68ea87fa14: 1 section.
+Drafted by Typesynesthesia from `effective` at commit de6cabf595e36451831bd01446b46b68ea87fa14: 1 section.
 
-codedocs wrote no prose. Everything below is a fact read from the index, and
-the paragraphs are yours. Each `codedocs?:` comment is a *candidate* claim:
+Typesynesthesia wrote no prose. Everything below is a fact read from the index, and
+the paragraphs are yours. Each `tsyn?:` comment is a *candidate* claim:
 delete the `?` to endorse it, and `docs check` verifies it from then on.
 Until you endorse one, this file is not a document and nothing checks it.
 -->
@@ -79,15 +79,15 @@ A `function` declared at `packages/core/src/labels/effective.ts:64`, analysed at
   - `authorship=authored` on `packages/core/src/labels/effective.ts` (deterministic: git-untracked)
   - `authorship=authored` on `packages/core/src/labels/effective.ts` (inferred: default)
 
-<!-- codedocs: exists(packages/core/src/labels/effective.ts#effective) -->
-<!-- codedocs: calls(packages/core/src/operations/classification.ts#classification, packages/core/src/labels/effective.ts#effective) -->
-<!-- codedocs: calls(packages/core/src/session/open.ts#openSession, packages/core/src/labels/effective.ts#effective) -->
-<!-- codedocs: calls(packages/core/test/labels.test.ts#decide, packages/core/src/labels/effective.ts#effective) -->
-<!-- codedocs: calls(packages/core/src/labels/effective.ts#effective, packages/core/src/labels/effective.ts#rank) -->
-<!-- codedocs: references(packages/core/src/labels/effective.ts#effective, packages/core/src/labels/effective.ts#DEFAULTS) -->
-<!-- codedocs: usesType(packages/core/src/labels/effective.ts#effective, packages/core/src/labels/effective.ts#EffectiveLabels) -->
-<!-- codedocs: usesType(packages/core/src/labels/effective.ts#effective, packages/core/src/model.ts#Authorship) -->
-<!-- codedocs: usesType(packages/core/src/labels/effective.ts#effective, packages/core/src/model.ts#FilePath) -->
-<!-- codedocs: usesType(packages/core/src/labels/effective.ts#effective, packages/core/src/model.ts#Label) -->
-<!-- codedocs: usesType(packages/core/src/labels/effective.ts#effective, packages/core/src/model.ts#LabelAxis) -->
-<!-- codedocs: usesType(packages/core/src/labels/effective.ts#effective, packages/core/src/model.ts#Role) -->
+<!-- tsyn: exists(packages/core/src/labels/effective.ts#effective) -->
+<!-- tsyn: calls(packages/core/src/operations/classification.ts#classification, packages/core/src/labels/effective.ts#effective) -->
+<!-- tsyn: calls(packages/core/src/session/open.ts#openSession, packages/core/src/labels/effective.ts#effective) -->
+<!-- tsyn: calls(packages/core/test/labels.test.ts#decide, packages/core/src/labels/effective.ts#effective) -->
+<!-- tsyn: calls(packages/core/src/labels/effective.ts#effective, packages/core/src/labels/effective.ts#rank) -->
+<!-- tsyn: references(packages/core/src/labels/effective.ts#effective, packages/core/src/labels/effective.ts#DEFAULTS) -->
+<!-- tsyn: usesType(packages/core/src/labels/effective.ts#effective, packages/core/src/labels/effective.ts#EffectiveLabels) -->
+<!-- tsyn: usesType(packages/core/src/labels/effective.ts#effective, packages/core/src/model.ts#Authorship) -->
+<!-- tsyn: usesType(packages/core/src/labels/effective.ts#effective, packages/core/src/model.ts#FilePath) -->
+<!-- tsyn: usesType(packages/core/src/labels/effective.ts#effective, packages/core/src/model.ts#Label) -->
+<!-- tsyn: usesType(packages/core/src/labels/effective.ts#effective, packages/core/src/model.ts#LabelAxis) -->
+<!-- tsyn: usesType(packages/core/src/labels/effective.ts#effective, packages/core/src/model.ts#Role) -->

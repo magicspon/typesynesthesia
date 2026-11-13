@@ -39,7 +39,7 @@ export function readJsonc(
   try {
     return asRecord(JSON.parse(stripJsonc(text)))
   } catch {
-    // A config codedocs cannot parse is not a reason to refuse an answer. It
+    // A config tsyn cannot parse is not a reason to refuse an answer. It
     // fingerprints as an empty config, so an edit that makes it parse again
     // moves the fingerprint and re-analyses the project.
     return undefined

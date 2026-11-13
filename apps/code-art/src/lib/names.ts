@@ -3,13 +3,13 @@ import type { SymbolNames } from './atlas.ts'
 /**
  * A repository's symbol names, loaded the first time a file is picked and
  * never before: they can outweigh the dataset itself. Inline JSON in the page
- * `codedocs art` writes, a lazily imported module in the dev viewer; neither
+ * `tsyn art` writes, a lazily imported module in the dev viewer; neither
  * is a request (ADR 0011).
  */
 
 type Load = () => Promise<SymbolNames>
 
-/** Blocks `codedocs art` wrote, as `<script type="application/json" data-symbols="repo">`. */
+/** Blocks `tsyn art` wrote, as `<script type="application/json" data-symbols="repo">`. */
 function embedded(): Record<string, Load> {
   const blocks = document.querySelectorAll<HTMLScriptElement>(
     'script[type="application/json"][data-symbols]',
@@ -26,7 +26,7 @@ function sources(): Record<string, Load> {
   if (import.meta.env.MODE === 'embed') return embedded()
   // The site's repositories, as in `load.ts`.
   const modules = import.meta.glob<{ default: SymbolNames }>(
-    '../data/{nextjs,nuxt,opencode,payload,router,sentry,sst,typescript,vscode}.symbols.json',
+    '../data/{tsyn,nextjs,nuxt,opencode,payload,router,sentry,sst,typescript,vscode}.symbols.json',
   )
   return Object.fromEntries(
     Object.entries(modules).map(([path, load]) => [

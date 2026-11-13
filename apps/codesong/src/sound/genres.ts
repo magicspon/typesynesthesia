@@ -1,10 +1,11 @@
-import type { GenreName, MusicalRole } from '@codedocs/codesong/browser'
-import type { Sound } from './sound.ts'
+import type { GenreName, MusicalRole } from '../model.ts'
+import type { Sound } from './settings.ts'
 
 /**
- * How each genre sounds in the browser: changes to the roles' synth settings
- * and the room they play in. The composer decides what each genre plays;
- * this decides only what it sounds like, so it stays with the site.
+ * How each genre sounds: changes to the roles' synth settings and the room
+ * they play in. The composer decides what each genre plays; this decides only
+ * what it sounds like. The site's Tone.js player and the offline renderer
+ * behind `tsyn song` both read it, so a downloaded MP3 sounds like the page.
  */
 export interface GenreSound {
   /** Reverb over every track: seconds of tail and how much of it is heard. */

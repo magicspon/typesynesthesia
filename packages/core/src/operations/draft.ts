@@ -4,7 +4,7 @@
  *
  * [ADR 0013](../../../../docs/adr/0013-drafting-a-document.md) reverses ADR
  * 0006's deletion of `docs generate`, and the marker is what lets it: every claim
- * a draft writes is a **candidate**, spelled `<!-- codedocs?: … -->`, which the
+ * a draft writes is a **candidate**, spelled `<!-- tsyn?: … -->`, which the
  * document scan does not match. A drafted file is not a [[Document]] and has no
  * [[Claim coverage]] to overstate until a person deletes a `?`.
  *

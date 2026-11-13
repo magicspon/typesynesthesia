@@ -3,7 +3,7 @@ import type {
   MusicalRole,
   NoteEvent,
   RealisedTrack,
-} from '@codedocs/codesong/browser'
+} from '@tsyn/codesong/browser'
 
 /**
  * Where the piece sits in the scene. Time runs along x, one bar per

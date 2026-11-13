@@ -1,6 +1,7 @@
 /**
- * `codedocs art`: the index drawn as interactive 3D art, written to
- * `.codedocs/art/index.html`.
+ * `tsyn art`: the index drawn as interactive 3D art, written to
+ * `.tsyn/art/index.html`, or to `<scene>.html` for a page that opens on
+ * one scene: `galaxy`, `city` or `landscape`.
  *
  * Not an operation, like `mcp`: it answers no question, so it owes no envelope
  * and takes its own flags without touching ADR 0006's closed global set. It
@@ -15,7 +16,7 @@ import {
   readFileSync,
   writeFileSync,
 } from 'node:fs'
-import { basename, join } from 'node:path'
+import { join } from 'node:path'
 import { parseArgs } from 'node:util'
 
 import {
@@ -26,20 +27,36 @@ import {
   type Atlas,
   type SymbolNames,
   type Timeline,
-} from '@codedocs/code-art/pipeline'
-import { findRepositoryRoot } from '@codedocs/core'
+} from '@tsyn/code-art/pipeline'
 
-import { run } from './main.ts'
+import { analyseAt, indexRepository } from './repository.ts'
 
-/** A resolved `codedocs art` command line. */
+/**
+ * The scenes a page can open on, by the name the command line uses, mapped to
+ * the viewer's own name for each. The viewer still offers all three.
+ */
+const SCENES = {
+  galaxy: 'galaxy',
+  city: 'metro',
+  landscape: 'terrain',
+} as const
+
+/** A scene as the command line names it. */
+export type Scene = keyof typeof SCENES
+
+const isScene = (name: string): name is Scene => Object.hasOwn(SCENES, name)
+
+/** A resolved `tsyn art` command line. */
 export interface ArtOptions {
   readonly cwd: string
+  /** The scene the page opens on, or `null` for the viewer's default page. */
+  readonly scene: Scene | null
   /** Commits in the timeline, or `null` for the snapshot alone. */
   readonly frames: number | null
   readonly fallow: boolean
 }
 
-/** What `codedocs art` reads and writes through, so a test can stand in for both. */
+/** What `tsyn art` reads and writes through, so a test can stand in for both. */
 export interface ArtIo {
   /** The embed build of the viewer; the build copies it beside `bin.js`. */
   readonly viewer: string
@@ -51,11 +68,12 @@ const DEFAULT_IO: ArtIo = {
   log: (line) => process.stderr.write(`${line}\n`),
 }
 
-/** The help for `codedocs art`, which is also what a bad command line prints. */
+/** The help for `tsyn art`, which is also what a bad command line prints. */
 const ART_USAGE: string = [
-  'codedocs art [--frames <n>] [--no-fallow] [--cwd <path>]',
+  'tsyn art [galaxy|city|landscape] [--frames <n>] [--no-fallow] [--cwd <path>]',
   '',
-  'Writes .codedocs/art/index.html: the index drawn as a 3D city and galaxy.',
+  'Writes .tsyn/art/index.html: the index drawn as a 3D galaxy, city and',
+  'landscape. Name a scene to write .tsyn/art/<scene>.html, which opens on it.',
   'Open it in a browser. It makes no network request.',
   '',
   '  --frames <n>   also replay <n> commits of history (2 or more)',
@@ -69,9 +87,11 @@ export function parseArt(
   cwd: string = process.cwd(),
 ): { readonly options: ArtOptions } | { readonly error: string } {
   let values
+  let positionals
   try {
-    ;({ values } = parseArgs({
+    ;({ values, positionals } = parseArgs({
       args: [...argv],
+      allowPositionals: true,
       options: {
         frames: { type: 'string' },
         'no-fallow': { type: 'boolean' },
@@ -84,6 +104,14 @@ export function parseArt(
     return { error: error instanceof Error ? error.message : String(error) }
   }
   if (values.help === true) return { error: '' }
+  const [scene, ...extra] = positionals
+  if (extra.length > 0)
+    return { error: `one scene at most, not ${positionals.join(' ')}` }
+  if (scene !== undefined && !isScene(scene)) {
+    return {
+      error: `unknown scene ${scene}; one of ${Object.keys(SCENES).join(', ')}`,
+    }
+  }
   const frames = values.frames === undefined ? null : Number(values.frames)
   // One commit is the snapshot again; a timeline needs somewhere to move.
   if (frames !== null && (!Number.isInteger(frames) || frames < 2)) {
@@ -94,16 +122,11 @@ export function parseArt(
   return {
     options: {
       cwd: values.cwd ?? cwd,
+      scene: scene ?? null,
       frames,
       fallow: values['no-fallow'] !== true,
     },
   }
-}
-
-/** Analyses `dir` through the CLI binding; throws when it could not. */
-function analyseAt(dir: string): void {
-  const outcome = run(['analyse', '--cwd', dir])
-  if (outcome.code === 2) throw new Error(outcome.stderr || 'analyse failed')
 }
 
 /** Symbol names sit beside the datasets, under this suffix. */
@@ -144,17 +167,14 @@ function symbolSets(dir: string): Record<string, SymbolNames> {
 export function writeArt(options: ArtOptions, io: ArtIo): string {
   if (!existsSync(io.viewer)) {
     throw new Error(
-      `no viewer at ${io.viewer}; this build of codedocs is missing it`,
+      `no viewer at ${io.viewer}; this build of tsyn is missing it`,
     )
   }
-  analyseAt(options.cwd)
-  const root = findRepositoryRoot(options.cwd)
-  const name = basename(root)
-  const out = join(root, '.codedocs', 'art')
+  const { root, name, db } = indexRepository(options.cwd)
+  const out = join(root, '.tsyn', 'art')
   const data = join(out, 'data')
   mkdirSync(data, { recursive: true })
 
-  const db = join(root, '.codedocs', 'index.db')
   const atlas = snapshot(db, {
     name,
     fallow: options.fallow,
@@ -178,14 +198,22 @@ export function writeArt(options: ArtOptions, io: ArtIo): string {
     writeFileSync(join(data, `${name}.timeline.json`), JSON.stringify(timeline))
   }
 
-  const page = join(out, 'index.html')
+  const page = join(out, `${options.scene ?? 'index'}.html`)
   const viewer = readFileSync(io.viewer, 'utf8')
-  writeFileSync(page, artPage(viewer, datasets(data), symbolSets(data)))
+  // The history where one was asked for, so the scene opens playing it.
+  const start =
+    options.scene === null
+      ? undefined
+      : {
+          dataset: options.frames === null ? name : `${name}.timeline`,
+          scene: SCENES[options.scene],
+        }
+  writeFileSync(page, artPage(viewer, datasets(data), symbolSets(data), start))
   return page
 }
 
 /**
- * Runs `codedocs art` and returns its exit code: 0 written, 2 could not be.
+ * Runs `tsyn art` and returns its exit code: 0 written, 2 could not be.
  * Progress goes to stderr and the page's path to stdout, so a script can
  * open what it made.
  */

@@ -1,4 +1,4 @@
-import type { Composition, RealisedTrack } from '@codedocs/codesong/browser'
+import type { Composition, RealisedTrack } from '@tsyn/codesong/browser'
 import { useEffect, useRef, type JSX, type ReactNode } from 'react'
 import { ROLE_COLOUR } from './scene/layout.ts'
 

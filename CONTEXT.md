@@ -1,9 +1,9 @@
-# codedocs
+# Typesynesthesia
 
 A local-first codebase-intelligence tool for TypeScript. It builds deterministic, queryable
 knowledge about a repository and exposes it to developers and to AI coding agents through a CLI.
 
-This glossary is the canonical vocabulary for that knowledge: what codedocs knows, how sure it is,
+This glossary is the canonical vocabulary for that knowledge: what Typesynesthesia knows, how sure it is,
 and what it could not see.
 
 ## Language
@@ -24,7 +24,7 @@ installed, framework codegen run. An unmet precondition lowers fidelity; it is n
 _Avoid_: requirement, prerequisite
 
 **Remediation**:
-The command that would clear an unmet precondition. codedocs reports remediations; it never runs
+The command that would clear an unmet precondition. Typesynesthesia reports remediations; it never runs
 them, and never guesses one — an install command is derived from the lockfile, a codegen command is
 declared in [[Configuration]] or is absent, and two of the four [[Unresolved specifier]] causes have
 none at all.
@@ -79,7 +79,7 @@ _Avoid_: env hash, install hash
 An import whose target the analysis could not find, recorded as a fact with its cause rather than
 dropped, and never as a ratio. Four causes: `unprepared` (declared as a dependency, absent from
 disk), `missing-generated` (its target lies where a codegen step would have written), `unmapped`
-(resolves only under a resolver codedocs does not run — a limit of codedocs, not a defect of the
+(resolves only under a resolver Typesynesthesia does not run — a limit of Typesynesthesia, not a defect of the
 repository), `broken` (imported but declared nowhere — a defect in the repository). The last two have
 no [[Remediation]]: none would help, and none is a command. Stored per site and reported
 deduplicated — one distinct specifier, its count and its files, because one absent generated artefact
@@ -87,9 +87,9 @@ produced 302 of them on cal.com.
 _Avoid_: missing import, broken import, dangling edge, unresolved ratio
 
 **Configuration**:
-`codedocs.jsonc` at the repository root: the facts about a repository codedocs cannot determine and
+`tsyn.jsonc` at the repository root: the facts about a repository Typesynesthesia cannot determine and
 must be told. Optional, because every key has a default; strict, because an unrecognised key is a
-typo; and never a home for preferences, since anything codedocs can determine is not a fact it needs
+typo; and never a home for preferences, since anything Typesynesthesia can determine is not a fact it needs
 telling. A key may change what is in [[Scope]]; none may change what is reported about what was
 analysed.
 _Avoid_: settings, options, preferences, rc file — and bare "config", which in this codebase means a
@@ -113,7 +113,7 @@ One indivisible piece of knowledge in the index — a node attribute, a single e
 _Avoid_: record, datum, item, entry
 
 **SymbolId**:
-A symbol's name in the index: a SCIP symbol string in codedocs' own scheme, with the workspace
+A symbol's name in the index: a SCIP symbol string in Typesynesthesia's own scheme, with the workspace
 package version normalised away and locals named by descriptor path. Deterministic and scoped to one
 snapshot — it says what a symbol is called at this commit and nothing about the past.
 _Avoid_: symbol name, key, fully-qualified name, FQN, handle
@@ -217,14 +217,14 @@ _Avoid_: owner, parent, scope, enclosing symbol
 **Unresolved call**:
 A call site that produced no edge, stored as a fact with its cause rather than dropped. Three
 causes: `external` (resolved, but the target is outside the repository), `unresolvable` (the checker
-returned nothing), `dynamic` (computed at runtime — the one cause where codedocs cannot know what it
+returned nothing), `dynamic` (computed at runtime — the one cause where Typesynesthesia cannot know what it
 missed).
 _Avoid_: missing edge, dangling call, unattributed
 
 ### The index on disk
 
 **Index**:
-The store of everything codedocs knows about one [[Snapshot]] of one working tree — [[Node]]s,
+The store of everything Typesynesthesia knows about one [[Snapshot]] of one working tree — [[Node]]s,
 [[Edge]]s and [[Label]]s, with the [[Index header]] over them. A derived artifact: never committed,
 always safe to delete.
 _Avoid_: database, cache, graph, store
@@ -293,8 +293,8 @@ answer's [[Blind spot]]s, and never combined with it into a score.
 _Avoid_: coverage score, doc quality, verification percentage
 
 **Draft**:
-A Markdown file codedocs writes about one subject: its facts, and for each the [[Claim]] that fact
-would support — as a **candidate**, marked `codedocs?:`, which the document scan does not read. Never
+A Markdown file Typesynesthesia writes about one subject: its facts, and for each the [[Claim]] that fact
+would support — as a **candidate**, marked `tsyn?:`, which the document scan does not read. Never
 prose, never written over a file that already exists, and not a [[Document]] until a person deletes a
 `?`. It lands beside the code it is about, in a `docs/` folder next to the file the subject is
 declared in, unless `--out` says otherwise. What ADR 0006's deleted `docs generate` becomes once the
@@ -304,7 +304,7 @@ _Avoid_: generated doc, skeleton, template, scaffold, stub
 ### The operation surface
 
 **Operation**:
-One question codedocs can answer, and the unit the whole product is built from. The CLI, `--json` and
+One question Typesynesthesia can answer, and the unit the whole product is built from. The CLI, `--json` and
 the MCP server are [[Renderer]]s or bindings of the same operation, one to one — nothing composes
 operations above them.
 _Avoid_: command, query, endpoint, tool
@@ -324,14 +324,14 @@ _Avoid_: response, wrapper, payload, metadata
 
 **Report**:
 What `report-bug` writes: one reproduced failure, in one of two shapes. The default carries facts
-about codedocs and the machine alone, so it is safe to paste in public unread; `--with-repository`
-adds the facts that name the user's code. The only artefact codedocs produces that is meant to leave
-the machine — and codedocs writes it, never moves it.
+about Typesynesthesia and the machine alone, so it is safe to paste in public unread; `--with-repository`
+adds the facts that name the user's code. The only artefact Typesynesthesia produces that is meant to leave
+the machine — and Typesynesthesia writes it, never moves it.
 _Avoid_: diagnostic, dump, bug report, telemetry
 
 **Truncation**:
 Results an answer deliberately withheld to stay inside its budget, reported with how many exist.
-Distinct from a [[Blind spot]]: codedocs knows exactly what it withheld.
+Distinct from a [[Blind spot]]: Typesynesthesia knows exactly what it withheld.
 _Avoid_: limit, cut-off, paging, elision
 
 **Scope**:
@@ -350,7 +350,7 @@ _Avoid_: chain, trace, route, call stack, walkthrough
 **Evidence**:
 Everything the index holds about one subject, assembled for someone else to write prose from — its
 node, [[Label]]s, [[Fidelity]], edges in and out, and the [[Document]]s whose [[Claim]]s name it.
-What PRD §9's `explain` becomes once codedocs never generates text.
+What PRD §9's `explain` becomes once Typesynesthesia never generates text.
 _Avoid_: explanation, summary, context, description
 
 **Impact**:

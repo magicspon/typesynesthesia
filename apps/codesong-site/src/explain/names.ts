@@ -2,7 +2,7 @@ import type {
   Composition,
   Evidence,
   RealisedTrack,
-} from '@codedocs/codesong/browser'
+} from '@tsyn/codesong/browser'
 import { trace } from './explain.ts'
 
 /** The last part of a path: what to show when a file's names are unknown. */

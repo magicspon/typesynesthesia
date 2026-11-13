@@ -1,4 +1,4 @@
-import type { RealisedTrack, Song } from '@codedocs/codesong/browser'
+import type { RealisedTrack, Song } from '@tsyn/codesong/browser'
 import type { JSX } from 'react'
 import type { NotePick } from '../scene/Notes.tsx'
 import { MotifView } from './MotifView.tsx'

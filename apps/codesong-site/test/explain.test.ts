@@ -1,4 +1,4 @@
-import { realise } from '@codedocs/codesong/browser'
+import { realise } from '@tsyn/codesong/browser'
 import { describe, expect, it } from 'vitest'
 import {
   fileOf,

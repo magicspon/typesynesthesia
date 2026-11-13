@@ -30,7 +30,7 @@ const fixture = join(
 let root: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-specifiers-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-specifiers-'))
   cpSync(fixture, root, { recursive: true })
   writeFileSync(
     join(root, 'package.json'),
@@ -148,7 +148,7 @@ describe('a specifier that names no package', () => {
 })
 
 describe('a package whose subpath is on disk', () => {
-  it('is `unmapped`: codedocs did not resolve what is in front of it', () => {
+  it('is `unmapped`: tsyn did not resolve what is in front of it', () => {
     write('node_modules/@scope/pkg/package.json', '{"name":"@scope/pkg"}\n')
     write('node_modules/@scope/pkg/enums.d.ts')
     expect(causeOf('@scope/pkg/enums')).toBe('unmapped')

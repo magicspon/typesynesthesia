@@ -1,9 +1,9 @@
-/** The resolved shape of `codedocs.jsonc`, and its defaults. */
+/** The resolved shape of `tsyn.jsonc`, and its defaults. */
 
 import type { Authorship, Role } from '../model.ts'
 
 /** The one file, read from the repository root and nowhere else. */
-export const CONFIG_FILE = 'codedocs.jsonc'
+export const CONFIG_FILE = 'tsyn.jsonc'
 
 /**
  * One `classify` glob and the labels it forces (ADR 0003).
@@ -21,7 +21,7 @@ export interface ClassifyRule {
 export interface Remediation {
   /** A glob over the specifier as written, e.g. `@calcom/prisma/*`. */
   readonly specifier: string
-  /** The command a user runs. codedocs prints it and never executes it. */
+  /** The command a user runs. tsyn prints it and never executes it. */
   readonly run: string
 }
 
@@ -43,7 +43,7 @@ export interface Config {
 }
 
 /**
- * What codedocs runs on when no file exists, which is the ordinary case.
+ * What tsyn runs on when no file exists, which is the ordinary case.
  *
  * ADR 0010's second test: absence is legal and yields a defensible answer, so a
  * fresh clone never has to be configured before it can be analysed.

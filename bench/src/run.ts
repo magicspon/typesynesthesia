@@ -21,8 +21,8 @@
  * An arm is a toolset and a model. `--arms` names them, `@model` overriding the
  * session's `--model` for that arm alone, and any number may run at once:
  *
- *   --arms baseline,codedocs                              like for like
- *   --arms baseline@claude-opus-5,codedocs@claude-haiku-4-5-20251001
+ *   --arms baseline,tsyn                              like for like
+ *   --arms baseline@claude-opus-5,tsyn@claude-haiku-4-5-20251001
  *                                          a cheap model holding the tool
  *                                          against an expensive one without it
  *
@@ -63,7 +63,7 @@ async function main(): Promise<void> {
   const model = flag('model', 'claude-sonnet-5')
   const replicates = Number(flag('replicates', '3'))
   const cases = loadCases(flag('cases', '').split(',').filter(Boolean))
-  const arms = parseArms(flag('arms', 'baseline,codedocs'), model)
+  const arms = parseArms(flag('arms', 'baseline,tsyn'), model)
   const judging = judgePlan()
 
   if (has('rescore')) {

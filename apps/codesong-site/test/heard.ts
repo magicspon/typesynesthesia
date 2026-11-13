@@ -1,4 +1,4 @@
-import type { GenreName, Song, SongFile } from '@codedocs/codesong/browser'
+import type { GenreName, Song, SongFile } from '@tsyn/codesong/browser'
 
 /**
  * A song file as the page plays it: in `genre`, or the genre the code

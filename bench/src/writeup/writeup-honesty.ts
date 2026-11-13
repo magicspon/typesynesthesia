@@ -1,23 +1,23 @@
 /**
  * The tables that keep the comparison honest about itself.
  *
- * A codedocs run that never called codedocs is thrown out, because counting a
+ * A tsyn run that never called tsyn is thrown out, because counting a
  * run with no tool in it as evidence about the tool measures nothing. That rule
- * is right and it has a bias in it, and the bias runs towards codedocs: on an
+ * is right and it has a bias in it, and the bias runs towards tsyn: on an
  * easy case the correct move is *not* to reach for the tool, so the runs
  * discarded are the ones where the agent judged it unnecessary, and the
- * surviving codedocs runs are the ones where it judged it worth using.
+ * surviving tsyn runs are the ones where it judged it worth using.
  *
  * The decision taken against that (issue #112) is to report it rather than to
  * repair it, in two parts:
  *
- *   take-up   how often each arm reached for codedocs at all, per level. This
+ *   take-up   how often each arm reached for tsyn at all, per level. This
  *             turns the discard from missing data into a measurement, and
  *             answers a question the benchmark otherwise cannot: when does an
  *             agent reach for structural facts?
  *   basis     every pooled figure says which cases each side of it rests on,
  *             wherever those two sets differ. A pooled row over two baseline
- *             cases against one codedocs case is not a like-for-like delta, and
+ *             cases against one tsyn case is not a like-for-like delta, and
  *             the number must not be readable as though it were.
  *
  * Both are additive: no run is dropped, no figure is re-weighted, and the
@@ -50,9 +50,9 @@ function levelIn(
 }
 
 /**
- * How often each arm reached for codedocs, per level and pooled.
+ * How often each arm reached for tsyn, per level and pooled.
  *
- * Both arms appear. On the codedocs arm the figure is take-up, and a rate below
+ * Both arms appear. On the tsyn arm the figure is take-up, and a rate below
  * 1 is the finding — the agent had the tool and did not want it. On the
  * baseline arm the same figure is contamination, and anything above 0 means a
  * run that was never the arm it claimed to be. One table, because they are the
@@ -62,7 +62,7 @@ export function takeUpTable(
   records: RunRecord[],
   cases: Map<string, BenchCase>,
 ): string {
-  const known = records.filter((r) => r.usedCodedocs !== undefined)
+  const known = records.filter((r) => r.usedTsyn !== undefined)
   if (known.length === 0) return ''
   const levels: (number | null)[] = [
     ...LEVELS.map(({ level }) => level as number | null),
@@ -98,7 +98,7 @@ export function takeUpTable(
     // printed twice invites the reader to look for a difference there is none.
     if (spanned.length > 1) rows.push(row(arm, '**all**', mine))
   }
-  return table(['arm', 'level', 'runs', 'called codedocs'], rows)
+  return table(['arm', 'level', 'runs', 'called tsyn'], rows)
 }
 
 /**

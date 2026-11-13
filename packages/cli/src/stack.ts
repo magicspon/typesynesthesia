@@ -1,10 +1,10 @@
 /**
- * The frames of a thrown error that belong to codedocs.
+ * The frames of a thrown error that belong to tsyn.
  *
  * ADR 0011: a stack is separable from a message and safe to keep, but only the
- * part of it that is ours. A frame below codedocs' own packages is in the user's
+ * part of it that is ours. A frame below tsyn's own packages is in the user's
  * code, and the absolute prefix above them names the machine the user is on —
- * `/home/alice/work/their-app/node_modules/@codedocs/core/…` is two repository
+ * `/home/alice/work/their-app/node_modules/@tsyn/core/…` is two repository
  * facts wearing one path. So frames are filtered *and* rewritten at capture,
  * and the unfiltered stack is never put anywhere it could travel from.
  */
@@ -13,7 +13,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join, sep } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
-/** One codedocs package: where it is installed, and what to call it instead. */
+/** One tsyn package: where it is installed, and what to call it instead. */
 interface OwnPackage {
   readonly name: string
   readonly dir: string
@@ -21,7 +21,7 @@ interface OwnPackage {
    * Every spelling of that directory a frame might use, longest first.
    *
    * Node writes an ESM frame as a `file://` URL and a CommonJS one as a path,
-   * and codedocs is run both ways — from `bin.ts` under type stripping, and
+   * and tsyn is run both ways — from `bin.ts` under type stripping, and
    * from a built bundle. Replacing only the path leaves `file://` stranded in
    * front of the package name.
    */
@@ -29,10 +29,10 @@ interface OwnPackage {
 }
 
 /**
- * Where codedocs' own code lives in this installation.
+ * Where tsyn's own code lives in this installation.
  *
  * Resolved rather than assumed, because the layout differs: a published install
- * puts both packages under `node_modules/@codedocs`, and this workspace puts
+ * puts both packages under `node_modules/@tsyn`, and this workspace puts
  * them side by side under `packages/`. Asking the module resolver is the one
  * question that has the same answer in both.
  */
@@ -40,12 +40,12 @@ const OWN: readonly OwnPackage[] = ownPackages()
 
 function ownPackages(): readonly OwnPackage[] {
   const found = new Map<string, OwnPackage>()
-  for (const specifier of ['@codedocs/core', '@codedocs/cli']) {
+  for (const specifier of ['@tsyn/core', '@tsyn/cli']) {
     const url = resolveQuietly(specifier)
     const own = url === null ? null : packageAt(url)
     if (own !== null) found.set(own.dir, own)
   }
-  // This file's own package, in case `@codedocs/cli` is not resolvable from
+  // This file's own package, in case `@tsyn/cli` is not resolvable from
   // itself — which is the ordinary case for a `bin` run from a checkout.
   const self = packageAt(import.meta.url)
   if (self !== null) found.set(self.dir, self)
@@ -97,13 +97,13 @@ function nameIn(manifest: string): string | null {
 }
 
 /**
- * The codedocs frames of `error`, package-relative, or `undefined` for none.
+ * The tsyn frames of `error`, package-relative, or `undefined` for none.
  *
  * `undefined` rather than an empty array so that a failure with nothing to say
  * about itself carries no `stack` key at all, which keeps the envelope of a
  * parse error — where nothing was thrown — identical to what it prints today.
  */
-export function codedocsFrames(error: unknown): readonly string[] | undefined {
+export function tsynFrames(error: unknown): readonly string[] | undefined {
   if (!(error instanceof Error) || error.stack === undefined) return undefined
   const frames: string[] = []
   for (const line of error.stack.split('\n')) {
@@ -116,7 +116,7 @@ export function codedocsFrames(error: unknown): readonly string[] | undefined {
   return frames.length > 0 ? frames : undefined
 }
 
-/** Rewrite a frame to `at open (@codedocs/core/src/store/open.ts:12:3)`, or refuse it. */
+/** Rewrite a frame to `at open (@tsyn/core/src/store/open.ts:12:3)`, or refuse it. */
 function relativise(frame: string): string | null {
   for (const own of OWN) {
     for (const prefix of own.prefixes) {

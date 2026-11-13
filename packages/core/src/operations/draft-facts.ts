@@ -75,8 +75,8 @@ export function cautionFor(report: FileReport | undefined): string | null {
   const because =
     report.cause === null ? '' : ` (\`${report.cause}\`)` /* ADR 0009's cause */
   return (
-    `codedocs analysed \`${report.path}\` syntactically${because}, so the facts ` +
-    'below are what parsing alone could see. `codedocs doctor` names what would ' +
+    `tsyn analysed \`${report.path}\` syntactically${because}, so the facts ` +
+    'below are what parsing alone could see. `tsyn doctor` names what would ' +
     'raise it.'
   )
 }

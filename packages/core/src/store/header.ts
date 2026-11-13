@@ -16,7 +16,7 @@ export interface IndexHeader {
    * A hash of the `classify` block the labels were computed under.
    *
    * ADR 0003 recomputes the label layer rather than invalidating it, and names
-   * the staleness bug it is avoiding: an edited `codedocs.jsonc` that leaves old
+   * the staleness bug it is avoiding: an edited `tsyn.jsonc` that leaves old
    * labels behind. Nothing in the tree changes when that file does, so the
    * config has to say so itself.
    */

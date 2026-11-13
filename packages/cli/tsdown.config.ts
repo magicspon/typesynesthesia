@@ -14,16 +14,17 @@ const config: UserConfig = defineConfig({
   platform: 'node',
   target: 'node24',
   deps: {
-    // `@codedocs/core` is bundled in, not depended on. Publishing the CLI alone
+    // `@tsyn/core` is bundled in, not depended on. Publishing the CLI alone
     // keeps core's exports from becoming a public API with a compatibility
     // promise, and a `workspace:*` dependency would not resolve for a consumer.
-    alwaysBundle: ['@codedocs/core', '@codedocs/code-art'],
+    // CodeSong's MP3 encoder (lamejs, pure JavaScript) comes in with it.
+    alwaysBundle: ['@tsyn/core', '@tsyn/code-art', '@tsyn/codesong'],
     // `typescript` ships two JS shims around a Go binary; bundling the shims
     // separates them from the binary they spawn.
     neverBundle: ['typescript'],
   },
-  // `codedocs art`'s viewer: one self-contained page, built by
-  // `@codedocs/code-art`'s own `build` before this one runs.
+  // `tsyn art`'s viewer: one self-contained page, built by
+  // `@tsyn/code-art`'s own `build` before this one runs.
   copy: [
     {
       from: '../../apps/code-art/dist/index.html',
@@ -34,7 +35,7 @@ const config: UserConfig = defineConfig({
   // `.js`, not tsdown's default `.mjs`: the package is `"type": "module"`, so
   // the extension would only restate what the manifest already says.
   outExtensions: () => ({ js: '.js' }),
-  // ADR 0011 keeps the codedocs frames of a stack. Bundling would collapse them
+  // ADR 0011 keeps the tsyn frames of a stack. Bundling would collapse them
   // all onto one file, so the map is what keeps a bug report diagnosable.
   sourcemap: true,
   // No `.d.ts`: nothing is importable, so there is no type surface to emit.

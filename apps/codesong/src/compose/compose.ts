@@ -6,7 +6,7 @@
  * comes from the code too, unless the caller names one.
  */
 
-import { hash, rng } from '@codedocs/code-art/rng'
+import { hash, rng } from '@tsyn/code-art/rng'
 import {
   COMPOSER_VERSION,
   type ComposeOptions,

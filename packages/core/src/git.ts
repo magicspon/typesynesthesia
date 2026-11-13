@@ -34,7 +34,7 @@ export const resolveRef = (root: string, ref: string): string | null =>
 /**
  * Whether the working tree matches `HEAD` exactly.
  *
- * The gate on capture, and the one place codedocs asks git about the tree: a
+ * The gate on capture, and the one place tsyn asks git about the tree: a
  * snapshot is a commit *plus whatever is uncommitted on top of it*, so an index
  * built over anything but a clean tree is an index for no commit at all.
  * Untracked files count — a file a project globs is in the index whether or not
@@ -136,9 +136,9 @@ export function defaultBranch(root: string): string | null {
 }
 
 /**
- * Git's rename detection limit, as a codedocs constant.
+ * Git's rename detection limit, as a tsyn constant.
  *
- * ADR 0007: every git knob is a codedocs constant and is never read from the
+ * ADR 0007: every git knob is a tsyn constant and is never read from the
  * user's `gitconfig`, or the same question answers differently on two machines
  * and ADR 0006's byte-identical reproducibility is a fiction. The default
  * silently loses 39% of renames — over 2,000 cal.com commits git reports 352
@@ -163,11 +163,11 @@ export const lastCommitTouching = (
   return found === null || found === '' ? null : found
 }
 
-/** One rename git reported, carrying git's own similarity score and never codedocs'. */
+/** One rename git reported, carrying git's own similarity score and never tsyn'. */
 export interface GitRename {
   readonly from: string
   readonly to: string
-  /** Git's `-M` score, 0-100. The one threshold codedocs inherits, named as git's. */
+  /** Git's `-M` score, 0-100. The one threshold tsyn inherits, named as git's. */
   readonly similarity: number
 }
 

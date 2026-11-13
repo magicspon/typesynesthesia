@@ -130,7 +130,7 @@ export interface OperationSpec {
 const IDENTIFIER: SubjectSpec = {
   name: 'subject',
   description:
-    'Anything codedocs prints as an identifier: `src/auth/service.ts#AuthService.login` ' +
+    'Anything tsyn prints as an identifier: `src/auth/service.ts#AuthService.login` ' +
     'names one symbol exactly, and `AuthService.login` may resolve to several — in ' +
     'which case the answer is their union and `request.resolved` names them. Several ' +
     'subjects may be given at once (ADR 0014); `result` is then one entry per subject.',
@@ -427,7 +427,7 @@ export const OPERATIONS: readonly OperationSpec[] = [
       'Reach for this when an answer looks thinner than the repository ' +
       'deserves and `conditions` reports `syntactic`. It names the unmet ' +
       'precondition and the command that clears it; it never runs that command ' +
-      'for you, because codedocs does not execute your repository.',
+      'for you, because tsyn does not execute your repository.',
     subject: null,
     depth: false,
     flags: [
@@ -450,17 +450,17 @@ export const OPERATIONS: readonly OperationSpec[] = [
     name: 'report-bug',
     summary: 'reproduce a failing command and write a report you can paste',
     selection:
-      'Reach for this when codedocs itself is wrong — an answer you can show ' +
+      'Reach for this when tsyn itself is wrong — an answer you can show ' +
       'is incorrect, or a command that fails. It re-runs the command and ' +
       'captures the failure happening now. It is never a way to answer a ' +
       'question about the repository.',
     subject: {
       name: 'command',
       description:
-        'The failing codedocs command, given after `--`: `report-bug -- trace ' +
+        'The failing tsyn command, given after `--`: `report-bug -- trace ' +
         'AuthService.login --depth 3`. It is re-run, and the report carries the ' +
         'envelope of the failure happening now — nothing is read from a log, ' +
-        'because codedocs logs nothing.',
+        'because tsyn logs nothing.',
       variadic: true,
       multiple: false,
     },
@@ -479,10 +479,10 @@ export const OPERATIONS: readonly OperationSpec[] = [
         name: 'out',
         value: 'path',
         summary:
-          'where to write it; `-` is stdout (default ./codedocs-report.json)',
+          'where to write it; `-` is stdout (default ./tsyn-report.json)',
         description:
           'Where to write the report. `-` writes it to stdout, which is what an ' +
-          'agent pipes. Defaults to ./codedocs-report.json, overwritten each run.',
+          'agent pipes. Defaults to ./tsyn-report.json, overwritten each run.',
       },
     ],
     // ADR 0006: a report is one object, so `--limit` has nothing to count and

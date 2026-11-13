@@ -21,8 +21,7 @@ import type { Arm, BenchCase, RunRecord, Toolset } from '../core/types.ts'
  * The model half of the arm is optional because runs made before an arm carried
  * one are named by their toolset alone, and rescoring must still reach them.
  */
-const STREAM_FILE =
-  /^(.+?)-(baseline|codedocs)(?:@(.+))?-r(\d+)\.stream\.jsonl$/
+const STREAM_FILE = /^(.+?)-(baseline|tsyn)(?:@(.+))?-r(\d+)\.stream\.jsonl$/
 
 /** What the original run recorded about itself, which rescoring must not invent. */
 type Provenance = {

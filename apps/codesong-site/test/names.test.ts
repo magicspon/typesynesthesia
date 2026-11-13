@@ -1,4 +1,4 @@
-import { realise, type Song } from '@codedocs/codesong/browser'
+import { realise, type Song } from '@tsyn/codesong/browser'
 import { describe, expect, it } from 'vitest'
 import { noteNames } from '../src/explain/names.ts'
 import nextjs from '../songs/nextjs.song.json' with { type: 'json' }

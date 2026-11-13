@@ -3,7 +3,7 @@
 Every case carries a level from 1 to 4. The level says **how much of the
 repository an agent must understand to answer**, and nothing else.
 
-The benchmark's claim is that the benefit of codedocs grows with structural
+The benchmark's claim is that the benefit of Typesynesthesia grows with structural
 complexity. A table that does not group by difficulty cannot show that: a saving
 on a case where the file is handed over and a saving on a case where the cause
 is three components away are averaged into one number that says neither.

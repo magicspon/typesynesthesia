@@ -1,10 +1,10 @@
 # PRECEDENCE
 
 <!--
-Drafted by codedocs from `PRECEDENCE` at commit de6cabf595e36451831bd01446b46b68ea87fa14: 2 sections.
+Drafted by Typesynesthesia from `PRECEDENCE` at commit de6cabf595e36451831bd01446b46b68ea87fa14: 2 sections.
 
-codedocs wrote no prose. Everything below is a fact read from the index, and
-the paragraphs are yours. Each `codedocs?:` comment is a *candidate* claim:
+Typesynesthesia wrote no prose. Everything below is a fact read from the index, and
+the paragraphs are yours. Each `tsyn?:` comment is a *candidate* claim:
 delete the `?` to endorse it, and `docs check` verifies it from then on.
 Until you endorse one, this file is not a document and nothing checks it.
 -->
@@ -47,9 +47,9 @@ A `variable` declared at `packages/core/src/continuity/index.ts:75`, analysed at
   - `authorship=authored` on `packages/core/src/continuity/index.ts` (deterministic: git-untracked)
   - `authorship=authored` on `packages/core/src/continuity/index.ts` (inferred: default)
 
-<!-- codedocs: exists(packages/core/src/continuity/index.ts#PRECEDENCE) -->
-<!-- codedocs: usesType(packages/core/src/continuity/index.ts#PRECEDENCE, packages/core/src/model.ts#Derivation) -->
-<!-- codedocs: references(packages/core/src/continuity/index.ts#rank, packages/core/src/continuity/index.ts#PRECEDENCE) -->
+<!-- tsyn: exists(packages/core/src/continuity/index.ts#PRECEDENCE) -->
+<!-- tsyn: usesType(packages/core/src/continuity/index.ts#PRECEDENCE, packages/core/src/model.ts#Derivation) -->
+<!-- tsyn: references(packages/core/src/continuity/index.ts#rank, packages/core/src/continuity/index.ts#PRECEDENCE) -->
 
 ## PRECEDENCE
 
@@ -81,6 +81,6 @@ A `variable` declared at `packages/core/src/labels/effective.ts:26`, analysed at
   - `authorship=authored` on `packages/core/src/labels/effective.ts` (deterministic: git-untracked)
   - `authorship=authored` on `packages/core/src/labels/effective.ts` (inferred: default)
 
-<!-- codedocs: exists(packages/core/src/labels/effective.ts#PRECEDENCE) -->
-<!-- codedocs: usesType(packages/core/src/labels/effective.ts#PRECEDENCE, packages/core/src/model.ts#Derivation) -->
-<!-- codedocs: references(packages/core/src/labels/effective.ts#rank, packages/core/src/labels/effective.ts#PRECEDENCE) -->
+<!-- tsyn: exists(packages/core/src/labels/effective.ts#PRECEDENCE) -->
+<!-- tsyn: usesType(packages/core/src/labels/effective.ts#PRECEDENCE, packages/core/src/model.ts#Derivation) -->
+<!-- tsyn: references(packages/core/src/labels/effective.ts#rank, packages/core/src/labels/effective.ts#PRECEDENCE) -->

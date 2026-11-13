@@ -7,7 +7,7 @@ status: proposed
 PRD §18 names round trips and repeated envelope boilerplate as the cost worth cutting — the same
 target [ADR 0014](0014-multi-subject-batching.md) cut for a call over several subjects. This is the
 other half of that cost: even a single-subject answer carries fields an agent that already trusts
-codedocs rarely reads twice — `snapshot.analysedAt`, a `typed` row in `conditions` that says nothing
+Typesynesthesia rarely reads twice — `snapshot.analysedAt`, a `typed` row in `conditions` that says nothing
 went wrong, a `resolved` id that already equals the subject it was asked about. A `--trim` flag is the
 proposal to drop those, on request, from `--json` output alone.
 
@@ -65,7 +65,7 @@ here:
 1. `request` gains a `trimmed: boolean`, so a caller comparing two calls — or a `report-bug`
    reproduction — can always tell which shape it is holding.
 2. Trimming is fully lossless in the sense that every dropped field has a fixed, stated default a
-   caller can substitute back in without asking codedocs again — making the two shapes
+   caller can substitute back in without asking Typesynesthesia again — making the two shapes
    interchangeable by construction rather than by a flag a reader has to notice.
 
 (1) is cheaper and safer; (2) is closer to "the same envelope" ADR 0006 promises. Leaning toward (1)

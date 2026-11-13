@@ -9,7 +9,7 @@
  *
  * When an older ancestor is used instead, that is **substitution**, reported
  * through the scope channel with the commit requested, the commit used and the
- * distance between them. Never a blind spot: codedocs knows exactly which
+ * distance between them. Never a blind spot: tsyn knows exactly which
  * baseline it used.
  */
 
@@ -56,7 +56,7 @@ export function chooseBaseline(
       // comes back at exit 0.
       absent:
         'no baseline is stored for an ancestor of HEAD — one is captured by ' +
-        '`codedocs analyse` over a clean tree',
+        '`tsyn analyse` over a clean tree',
     }
   }
 

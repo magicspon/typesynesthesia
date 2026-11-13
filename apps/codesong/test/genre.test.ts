@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Atlas } from '@codedocs/code-art/atlas'
+import type { Atlas } from '@tsyn/code-art/atlas'
 import { describe, expect, it } from 'vitest'
 import { compose, DEFAULT_OPTIONS } from '../src/compose/compose.ts'
 import { GENRE_NAMES, GENRES, suggest } from '../src/compose/genre.ts'

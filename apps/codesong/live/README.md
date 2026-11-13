@@ -16,7 +16,7 @@ clip per section, a marker per section and a 909 kit from Live's library.
 
 ```sh
 ABLETON_EXTENSIONS_SDK=~/path/to/extensions-sdk-1.0.0-beta.1 \
-  pnpm --filter @codedocs/codesong live:setup
+  pnpm --filter @tsyn/codesong live:setup
 ```
 
 Without `ABLETON_EXTENSIONS_SDK`, setup looks on the Desktop. It also finds a
@@ -27,13 +27,13 @@ Live that can run extensions and writes its path to `.env`.
 1. Compose. This writes `<repo>.live.json` to `apps/codesong/out/`:
 
    ```sh
-   pnpm --filter @codedocs/codesong compose apps/code-art/src/data/vscode.json
+   pnpm --filter @tsyn/codesong compose apps/code-art/src/data/vscode.json
    ```
 
 2. Start the extension with Live open. It reads plans from `apps/codesong/out/`:
 
    ```sh
-   pnpm --filter @codedocs/codesong live
+   pnpm --filter @tsyn/codesong live
    ```
 
 3. In Live, right-click any track and choose **Build CodeSong**. It builds the

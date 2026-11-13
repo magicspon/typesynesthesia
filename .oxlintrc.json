@@ -42,7 +42,7 @@
               "node:dgram",
               "node:dns"
             ],
-            "message": "No codedocs package may reach the network (ADR 0011). scripts/no-network.ts is the same rule over the dependency closure."
+            "message": "No tsyn package may reach the network (ADR 0011). scripts/no-network.ts is the same rule over the dependency closure."
           }
         ]
       }
@@ -51,19 +51,19 @@
       "error",
       {
         "name": "fetch",
-        "message": "No codedocs package may reach the network (ADR 0011). scripts/no-network.ts is the same rule over the dependency closure."
+        "message": "No tsyn package may reach the network (ADR 0011). scripts/no-network.ts is the same rule over the dependency closure."
       },
       {
         "name": "XMLHttpRequest",
-        "message": "No codedocs package may reach the network (ADR 0011). scripts/no-network.ts is the same rule over the dependency closure."
+        "message": "No tsyn package may reach the network (ADR 0011). scripts/no-network.ts is the same rule over the dependency closure."
       },
       {
         "name": "WebSocket",
-        "message": "No codedocs package may reach the network (ADR 0011). scripts/no-network.ts is the same rule over the dependency closure."
+        "message": "No tsyn package may reach the network (ADR 0011). scripts/no-network.ts is the same rule over the dependency closure."
       },
       {
         "name": "EventSource",
-        "message": "No codedocs package may reach the network (ADR 0011). scripts/no-network.ts is the same rule over the dependency closure."
+        "message": "No tsyn package may reach the network (ADR 0011). scripts/no-network.ts is the same rule over the dependency closure."
       }
     ]
   },

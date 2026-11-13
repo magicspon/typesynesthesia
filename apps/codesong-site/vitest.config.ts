@@ -4,7 +4,7 @@ import { defineConfig, type ViteUserConfig } from 'vitest/config'
 // `isolatedDeclarations` requires (TS9037).
 const config: ViteUserConfig = defineConfig({
   test: {
-    name: '@codedocs/codesong-site',
+    name: '@tsyn/codesong-site',
     include: ['test/**/*.test.{ts,tsx}'],
   },
 })

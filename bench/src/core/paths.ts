@@ -20,7 +20,7 @@ export const TARGET: string = resolve(REPO_ROOT, 'repos/vscode')
 /**
  * Where a run's throwaway checkout is materialised.
  *
- * Under `repos/`, which is git-ignored and skipped by codedocs' own project
+ * Under `repos/`, which is git-ignored and skipped by tsyn's own project
  * discovery — a 91-project vscode checkout anywhere else in this repository
  * would be indexed as part of it.
  */
@@ -30,17 +30,17 @@ export const WORKTREES: string = resolve(REPO_ROOT, 'repos/.worktrees')
  * Built indexes, one per base commit, kept between runs.
  *
  * Under `repos/` for the same two reasons the worktrees are: it is git-ignored,
- * and codedocs' own project discovery skips it, so a stored vscode index does
+ * and tsyn's own project discovery skips it, so a stored vscode index does
  * not become part of this repository's.
  */
 export const INDEX_CACHE: string = resolve(REPO_ROOT, 'repos/.index-cache')
 
-/** The CLI the codedocs arm is given. */
-export const CODEDOCS: string = resolve(REPO_ROOT, 'node_modules/.bin/codedocs')
+/** The CLI the tsyn arm is given. */
+export const TSYN: string = resolve(REPO_ROOT, 'node_modules/.bin/tsyn')
 
 /**
  * Every researched case, frozen. Which of them are actually run is `active.ts`:
- * the pool is researched wide and run narrow, because each codedocs run pays
+ * the pool is researched wide and run narrow, because each tsyn run pays
  * for indexing a fresh worktree.
  */
 export const PROSPECTS: string = join(BENCH, 'prospects')

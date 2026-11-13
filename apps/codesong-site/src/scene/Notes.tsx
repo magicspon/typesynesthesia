@@ -1,4 +1,4 @@
-import type { NoteEvent, RealisedTrack } from '@codedocs/codesong/browser'
+import type { NoteEvent, RealisedTrack } from '@tsyn/codesong/browser'
 import { useFrame, type ThreeEvent } from '@react-three/fiber'
 import { useLayoutEffect, useMemo, useRef, type JSX } from 'react'
 import { Color, Matrix4, type InstancedMesh } from 'three'

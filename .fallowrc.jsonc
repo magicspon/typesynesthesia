@@ -31,10 +31,10 @@
   // fixture working rather than a broken path.
   "ignoreUnresolvedImports": ["./not-here"],
 
-  // Declared at the root so pnpm links the `codedocs` binary into
+  // Declared at the root so pnpm links the `tsyn` binary into
   // `node_modules/.bin`, which is a use fallow cannot see: nothing imports it,
   // and nothing should.
-  "ignoreDependencies": ["@codedocs/cli"],
+  "ignoreDependencies": ["@tsyn/cli"],
 
   "ignorePatterns": [
     "**/.next/**",

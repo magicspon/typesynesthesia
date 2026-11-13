@@ -1,5 +1,5 @@
 /**
- * The TypeScript 7 adapter: the only part of codedocs that knows a backend
+ * The TypeScript 7 adapter: the only part of tsyn that knows a backend
  * exists.
  *
  * It sweeps call sites and resolves callees in batches, rather than asking

@@ -104,7 +104,7 @@ export interface Snapshot {
   readonly analysedAt: string | null
 }
 
-/** The request as codedocs resolved it, which is what makes an answer reproducible. */
+/** The request as tsyn resolved it, which is what makes an answer reproducible. */
 export interface ResolvedRequest {
   /** The subject as typed, or `null` for an operation that takes none. */
   readonly subject: string | null
@@ -127,7 +127,7 @@ export interface ResolvedRequest {
    *
    * Echoed on every answer, including when nothing was excluded: a caller must
    * be able to tell "no test callers" from "test callers, hidden by the default
-   * scope". The count is never a blind spot and never truncation — codedocs
+   * scope". The count is never a blind spot and never truncation — tsyn
    * knows exactly what it withheld, and a blind spot is what it could not see.
    */
   readonly scope: Scope
@@ -163,7 +163,7 @@ export interface ResolvedSubject {
  */
 export type ScopeFilter = Omit<Scope, 'excluded'>
 
-/** The request as codedocs resolved it, for one of ADR 0014's six batched operations. */
+/** The request as tsyn resolved it, for one of ADR 0014's six batched operations. */
 export interface BatchedRequest {
   readonly subjects: readonly string[]
   readonly resolved: readonly ResolvedSubject[]
@@ -216,7 +216,7 @@ export interface BatchedEnvelope<TResult> {
 }
 
 /**
- * Every reason codedocs cannot answer, and the parameters each one carries.
+ * Every reason tsyn cannot answer, and the parameters each one carries.
  *
  * ADR 0011: an error message is free text and no field rule can classify it —
  * `--limit lots` interpolates whatever was typed, and a resolver error
@@ -263,7 +263,7 @@ export interface ErrorParams {
    * leave a caller believing an answer held claim expressions it never had.
    */
   readonly 'claims-requires-json': Record<string, never>
-  /** A `--label` or `--exclude-label` that is not an `axis=value` codedocs knows. */
+  /** A `--label` or `--exclude-label` that is not an `axis=value` tsyn knows. */
   readonly 'label-invalid': {
     /** The flag as spelled, without its `--`. */
     readonly flag: string
@@ -276,12 +276,12 @@ export interface ErrorParams {
     readonly value: string
     readonly expectation: string
   }
-  /** `codedocs.jsonc` exists and cannot be used. `key` is `''` for the file. */
+  /** `tsyn.jsonc` exists and cannot be used. `key` is `''` for the file. */
   readonly 'config-invalid': {
     readonly key: string
     readonly expectation: string
   }
-  /** A second `codedocs.jsonc` below the repository root. */
+  /** A second `tsyn.jsonc` below the repository root. */
   readonly 'config-misplaced': {
     readonly found: string
     readonly expected: string
@@ -325,10 +325,10 @@ export type ErrorCode = keyof ErrorParams
  * An operation that could not answer. Carried instead of `result`, never beside
  * it.
  *
- * `stack` holds only the frames that resolve inside codedocs' own packages, each
+ * `stack` holds only the frames that resolve inside tsyn's own packages, each
  * one already rewritten to a package-relative path. Both halves of that matter:
  * a frame below ours is in the user's code, and the absolute prefix above ours
- * names the machine the user is on. Neither is a codedocs fact, so neither is
+ * names the machine the user is on. Neither is a tsyn fact, so neither is
  * ever captured — the unfiltered stack does not travel far enough to be leaked.
  */
 export type EnvelopeError = {

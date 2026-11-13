@@ -33,7 +33,7 @@ const fixture = join(
 
 /** A copy of the fixture, prepared or not, which is what decides its fidelity. */
 function plant(prepared: boolean): string {
-  const root = mkdtempSync(join(tmpdir(), 'codedocs-evidence-'))
+  const root = mkdtempSync(join(tmpdir(), 'tsyn-evidence-'))
   cpSync(fixture, root, { recursive: true })
   writeFileSync(
     join(root, 'package.json'),

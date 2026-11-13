@@ -32,7 +32,7 @@ The signal also does not discriminate. Redwood's own codegen moved unresolved sp
 (−63%) and symbols **303 → 434**, while semantic errors moved **320 → 298** (−7%); a cal.com in its
 own tooling's best available state carries **17,464** of them. A number that reads in the thousands
 on a repository in working order cannot tell preparation from its absence, and the PRD never asked
-codedocs to report type errors — that is `tsc`'s question, and it already answers it.
+Typesynesthesia to report type errors — that is `tsc`'s question, and it already answers it.
 
 ## Preflight's two halves
 
@@ -67,16 +67,16 @@ once.
 
 The cause set gains a fourth value:
 
-| Cause               | Means                                                      | Remediation |
-| ------------------- | ---------------------------------------------------------- | ----------- |
-| `unprepared`        | declared as a dependency, absent from disk                 | yes         |
-| `missing-generated` | its target lies where a codegen step would have written    | yes         |
-| `unmapped`          | resolves only under a resolver codedocs does not run       | **no**      |
-| `broken`            | imported but declared nowhere — a defect in the repository | **no**      |
+| Cause               | Means                                                       | Remediation |
+| ------------------- | ----------------------------------------------------------- | ----------- |
+| `unprepared`        | declared as a dependency, absent from disk                  | yes         |
+| `missing-generated` | its target lies where a codegen step would have written     | yes         |
+| `unmapped`          | resolves only under a resolver Typesynesthesia does not run | **no**      |
+| `broken`            | imported but declared nowhere — a defect in the repository  | **no**      |
 
 `unmapped` exists because the spike found **222 bare `app/…` specifiers** in `apps/web` that resolve
 under the framework's own resolution and not under the declared `tsconfig`. Under three causes they
-would be filed as `broken`, and codedocs would accuse a working repository of 222 defects because it
+would be filed as `broken`, and Typesynesthesia would accuse a working repository of 222 defects because it
 declines to run Next's resolver. It carries no remediation because a remediation is a _command_ and
 there is none, which keeps `broken`'s narrow meaning intact.
 
@@ -104,7 +104,7 @@ is the escape hatch.
 
 The first and the last of those five are refinements this section originally lacked — it named three
 inputs, and implementing them found that the three both miss the case the fingerprint exists for and
-cost more than the design intends ([#49](https://github.com/magicspon/codedocs/issues/49)).
+cost more than the design intends ([#49](https://github.com/magicspon/typesynesthesia/issues/49)).
 
 **Signals 1 and 2 have to be inputs, or the fingerprint misses its own founding case.** ADR 0001
 asked for a fingerprint over exactly one scenario: analysing a fresh clone and then installing
@@ -201,14 +201,14 @@ cal.com.
   caller chose.
 - **A new envelope field naming what preflight covered.** Rejected: preflight covers every project it
   ran on, so the field would be a constant. `conditions` and blind spots already carry the facts.
-- **A fourth cause with a remediation (an alias map in `codedocs.jsonc`).** Not decided here. An
+- **A fourth cause with a remediation (an alias map in `tsyn.jsonc`).** Not decided here. An
   alias map would clear `unmapped`, which makes it a candidate third knob for
-  [#19](https://github.com/magicspon/codedocs/issues/19) — recorded as evidence for that ticket, not
+  [#19](https://github.com/magicspon/typesynesthesia/issues/19) — recorded as evidence for that ticket, not
   adopted by this one, since ADR 0006 deliberately added nothing to that file.
 
 ## Consequences
 
-- **`getSemanticDiagnostics` is not called anywhere in codedocs**, and preflight's marginal cost over
+- **`getSemanticDiagnostics` is not called anywhere in Typesynesthesia**, and preflight's marginal cost over
   an analysis falls from 36.4 s to the 0.7–4.9 ms per project of the specifier scan. The 36 s
   constraint the spike raised against ADR 0001 is discharged rather than mitigated.
 - **The environment fingerprint is now a defect, not a missing feature.** The shipped code has none —
@@ -218,7 +218,7 @@ cal.com.
 - **`analyse --strict` gets harder to pass, and stays that way.** With bare specifiers in the index,
   a repository whose imports resolve only under a framework's private resolution — prepared Redwood
   still carries 9, cal.com 222 — cannot pass `--strict`. That is the gate reporting a real limit in
-  codedocs, not a false alarm about the repository, and the honest answer remains available at exit 0
+  Typesynesthesia, not a false alarm about the repository, and the honest answer remains available at exit 0
   with named blind spots. No tolerance is added.
 - **`doctor` owes cause deduplication across signals**, and its exit code is defined by remediability
   rather than by which signal fired.
@@ -229,4 +229,4 @@ cal.com.
   globbed, no unresolved specifiers, and a materially wrong edge set. That is the only case the
   surviving signals cannot catch by construction, and the only evidence that would indict them.
   Phase 5's `impact` work is where a wrong edge set would first surface. Nothing softer reopens this:
-  a repository's semantic errors say nothing about whether codedocs saw it correctly.
+  a repository's semantic errors say nothing about whether Typesynesthesia saw it correctly.

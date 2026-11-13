@@ -47,9 +47,9 @@ import type {
   SpecifierEvidence,
   SymbolNode,
   TracePath,
-} from '@codedocs/core'
+} from '@tsyn/core'
 
-import { operationSpec, shorthandOf } from '@codedocs/core'
+import { operationSpec, shorthandOf } from '@tsyn/core'
 
 import { formatError } from './messages.ts'
 
@@ -221,7 +221,7 @@ function changesNote(changes: readonly Change[], style: Style): Note {
  * Which baseline answered, and how far it is from the one asked for.
  *
  * Substitution is part of the request rather than a limitation of the answer, so
- * it is stated plainly here and never filed as a blind spot: codedocs knows
+ * it is stated plainly here and never filed as a blind spot: tsyn knows
  * exactly which index it compared against.
  */
 function baselineChoiceNote(choice: BaselineUsed, style: Style): Note {
@@ -318,14 +318,14 @@ function specifier(seen: SpecifierEvidence): string {
  *
  * `unmapped` and `broken` are rendered with no remediation at all, and a
  * `missing-generated` the config says nothing about is told it can be declared —
- * codedocs ships knowing nothing about any framework, deliberately.
+ * tsyn ships knowing nothing about any framework, deliberately.
  */
 function remediationLines(found: Precondition, style: Style): string[] {
   if (found.remediations.length > 0) {
     return found.remediations.map((command) => `      run \`${command}\``)
   }
   if (found.cause !== 'missing-generated') return []
-  return [style.dim('      no command known — declare one in codedocs.jsonc')]
+  return [style.dim('      no command known — declare one in tsyn.jsonc')]
 }
 
 /** Signal 2, which only sharpens `unprepared`: the install generates types too. */
@@ -361,7 +361,7 @@ const DISAGREEMENT_LIMIT = 5
  * What the label layer decided, and where it is least sure.
  *
  * The disagreements are the point of the section: `classify` in
- * `codedocs.jsonc` is the escape hatch, and this list is how a user discovers
+ * `tsyn.jsonc` is the escape hatch, and this list is how a user discovers
  * both that it exists and which file needs it.
  */
 function classificationNote(found: Classification, style: Style): Note {
@@ -390,7 +390,7 @@ function classificationNote(found: Classification, style: Style): Note {
       : [
           style.warn(
             `    ${count(found.disagreements.length, 'file')} where two ` +
-              'signals disagree — set `classify` in codedocs.jsonc:',
+              'signals disagree — set `classify` in tsyn.jsonc:',
           ),
           ...found.disagreements
             .slice(0, DISAGREEMENT_LIMIT)
@@ -451,7 +451,7 @@ function headerNote(envelope: DoctorEnvelope, style: Style): Note {
     '',
     style.dim(
       `  ${count(header.projects, 'project')}, ${count(header.files, 'file')}, ` +
-        `built by codedocs ${header.toolVersion} against TypeScript ${header.typescriptVersion}`,
+        `built by tsyn ${header.toolVersion} against TypeScript ${header.typescriptVersion}`,
     ),
   ]
 }
@@ -823,8 +823,8 @@ function claimLines(claim: ClaimReport, style: Style): string[] {
 /**
  * Where a vanished subject appears to have gone.
  *
- * A fixed template over the candidate's fields rather than a sentence codedocs
- * composed: ADR 0006 deleted `docs generate` on the principle that codedocs
+ * A fixed template over the candidate's fields rather than a sentence tsyn
+ * composed: ADR 0006 deleted `docs generate` on the principle that tsyn
  * writes no prose, and an agent repairing a claim wants the fields anyway,
  * since it has to rewrite a shorthand rather than read English.
  *
@@ -888,7 +888,7 @@ function faultText(entry: DocumentFault): string {
     case 'local-subject':
       return `\`${fault.subject}\` is a local symbol, and nothing durable may anchor to one`
     case 'label-invalid':
-      return `\`${fault.axis}=${fault.value}\` is not a label codedocs knows`
+      return `\`${fault.axis}=${fault.value}\` is not a label tsyn knows`
   }
 }
 
@@ -1077,7 +1077,7 @@ export function renderReport(
         `${count(carries.moduleSpecifiers, 'module specifier')}`,
     ),
     style.dim(
-      `  reproduced \`${reproduction.operation ?? 'nothing codedocs knows'}\`: ` +
+      `  reproduced \`${reproduction.operation ?? 'nothing tsyn knows'}\`: ` +
         `exit ${reproduction.exitCode} in ${reproduction.durationMs} ms` +
         (reproduction.error === null ? '' : ` — ${reproduction.error.code}`),
     ),
@@ -1253,7 +1253,7 @@ function emptyFor(
  * renderer omit. `--json` carries the scope on every answer regardless, because
  * a machine reader cannot infer a default it was never told about.
  *
- * Never phrased as a blind spot: codedocs knows exactly what it withheld here.
+ * Never phrased as a blind spot: tsyn knows exactly what it withheld here.
  */
 function scopeNote(envelope: Envelope<unknown>, style: Style): Note {
   const { scope } = envelope.request

@@ -3,7 +3,7 @@
  * sure.
  *
  * ADR 0003 asks for this list by name, and for one reason: `classify` in
- * `codedocs.jsonc` is the escape hatch, and a user who cannot see what the
+ * `tsyn.jsonc` is the escape hatch, and a user who cannot see what the
  * signals decided has no way to discover that the escape hatch exists — or which
  * file needs it.
  */
@@ -36,7 +36,7 @@ export interface Classification {
    * Files whose effective classification rests on a convention rather than on
    * evidence.
    *
-   * A guess codedocs actually made, not a file it had nothing to say about: the
+   * A guess tsyn actually made, not a file it had nothing to say about: the
    * default is excluded, because "no signal fired" is not a classification a
    * user needs to correct. `role` is mostly inferred and `authorship` mostly
    * deterministic, and that asymmetry is the honest report rather than a defect.

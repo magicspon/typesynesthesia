@@ -19,7 +19,7 @@ const DEFAULT_EXCLUDES: readonly string[] = [
 /**
  * The files a project's config globs, taken from the tree walk.
  *
- * This is codedocs' own reading of `include`/`exclude`/`files`, not the
+ * This is tsyn's own reading of `include`/`exclude`/`files`, not the
  * TypeScript server's file list, and it does not have to agree with it. Its job
  * is to be a **deterministic function of the working tree**, computed the same
  * way when the index is built and when a query checks whether the environment

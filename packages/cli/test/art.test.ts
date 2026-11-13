@@ -1,5 +1,5 @@
 /**
- * `codedocs art`, end to end over the core fixture, with a stand-in viewer: the
+ * `tsyn art`, end to end over the core fixture, with a stand-in viewer: the
  * real one is a build output, and what matters here is what goes into it.
  */
 
@@ -52,10 +52,10 @@ function install(): void {
 /** Three commits: one that will not analyse, the fixture, and one more file. */
 function commitHistory(): void {
   git('init', '--quiet')
-  writeFileSync(join(root, 'codedocs.jsonc'), 'not json')
+  writeFileSync(join(root, 'tsyn.jsonc'), 'not json')
   git('add', '.')
   git('commit', '--quiet', '-m', 'broken')
-  rmSync(join(root, 'codedocs.jsonc'))
+  rmSync(join(root, 'tsyn.jsonc'))
   cpSync(fixture, root, { recursive: true })
   cpSync(join(here, 'package.fixture.json'), join(root, 'package.json'))
   writeFileSync(join(root, '.gitignore'), 'node_modules\n')
@@ -71,12 +71,12 @@ function commitHistory(): void {
 beforeAll(() => {
   // Real, because a workspace link is told apart by where it really points,
   // and macOS's temporary directory sits behind a symlink.
-  root = realpathSync(mkdtempSync(join(tmpdir(), 'codedocs-art-')))
+  root = realpathSync(mkdtempSync(join(tmpdir(), 'tsyn-art-')))
   commitHistory()
   install()
 
   const viewer = join(root, 'viewer.html')
-  writeFileSync(viewer, '<body>\n<!-- codedocs-art:data -->\n</body>')
+  writeFileSync(viewer, '<body>\n<!-- tsyn-art:data -->\n</body>')
   const lines: string[] = []
   io = { viewer, log: (line) => lines.push(line), lines }
 })
@@ -92,14 +92,31 @@ const datasetsIn = (page: string): string[] =>
 describe('parseArt', () => {
   it('defaults to the snapshot alone, with fallow', () => {
     expect(parseArt([], '/r')).toEqual({
-      options: { cwd: '/r', frames: null, fallow: true },
+      options: { cwd: '/r', scene: null, frames: null, fallow: true },
     })
   })
 
   it('reads every flag', () => {
     expect(parseArt(['--frames', '4', '--no-fallow', '--cwd', '/x'])).toEqual({
-      options: { cwd: '/x', frames: 4, fallow: false },
+      options: { cwd: '/x', scene: null, frames: 4, fallow: false },
     })
+  })
+
+  it.each([
+    ['galaxy', 'galaxy'],
+    ['city', 'city'],
+    ['landscape', 'landscape'],
+  ] as const)('reads the scene %s', (given, scene) => {
+    expect(parseArt([given], '/r')).toEqual({
+      options: { cwd: '/r', scene, frames: null, fallow: true },
+    })
+  })
+
+  it('refuses an unknown scene, and more than one', () => {
+    expect(parseArt(['metro'])).toEqual({
+      error: 'unknown scene metro; one of galaxy, city, landscape',
+    })
+    expect(parseArt(['city', 'galaxy'])).toHaveProperty('error')
   })
 
   it.each(['1', '0', 'lots', '2.5'])('refuses --frames %s', (frames) => {
@@ -116,15 +133,29 @@ describe('parseArt', () => {
 })
 
 describe('writeArt', () => {
-  it('writes the snapshot into .codedocs/art/index.html', () => {
-    const page = writeArt({ cwd: root, frames: null, fallow: false }, io)
-    expect(page).toBe(join(root, '.codedocs', 'art', 'index.html'))
+  it('writes the snapshot into .tsyn/art/index.html', () => {
+    const page = writeArt(
+      { cwd: root, scene: null, frames: null, fallow: false },
+      io,
+    )
+    expect(page).toBe(join(root, '.tsyn', 'art', 'index.html'))
     expect(datasetsIn(readFileSync(page, 'utf8'))).toEqual([basename(root)])
+  })
+
+  it('writes a scene to a page of its own, which opens on it', () => {
+    const page = writeArt(
+      { cwd: root, scene: 'city', frames: null, fallow: false },
+      io,
+    )
+    expect(page).toBe(join(root, '.tsyn', 'art', 'city.html'))
+    expect(readFileSync(page, 'utf8')).toContain(
+      `location.hash="#/${encodeURIComponent(basename(root))}?scene=metro"`,
+    )
   })
 
   it('writes the symbol names in a block of their own, not as a dataset', () => {
     const page = readFileSync(
-      writeArt({ cwd: root, frames: null, fallow: false }, io),
+      writeArt({ cwd: root, scene: null, frames: null, fallow: false }, io),
       'utf8',
     )
     const block = new RegExp(
@@ -144,15 +175,18 @@ describe('writeArt', () => {
 
   it('adds a timeline with --frames, and keeps it on a later run without', () => {
     const name = basename(root)
-    writeArt({ cwd: root, frames: 3, fallow: false }, io)
-    const page = writeArt({ cwd: root, frames: null, fallow: false }, io)
+    writeArt({ cwd: root, scene: null, frames: 3, fallow: false }, io)
+    const page = writeArt(
+      { cwd: root, scene: null, frames: null, fallow: false },
+      io,
+    )
     expect(datasetsIn(readFileSync(page, 'utf8'))).toEqual([
       name,
       `${name}.timeline`,
     ])
     const timeline = JSON.parse(
       readFileSync(
-        join(root, '.codedocs', 'art', 'data', `${name}.timeline.json`),
+        join(root, '.tsyn', 'art', 'data', `${name}.timeline.json`),
         'utf8',
       ),
     )
@@ -170,14 +204,17 @@ describe('writeArt', () => {
 
   it('reads a frame it has built before from the cache', () => {
     io.lines.length = 0
-    writeArt({ cwd: root, frames: 3, fallow: false }, io)
+    writeArt({ cwd: root, scene: null, frames: 3, fallow: false }, io)
     expect(io.lines.filter((line) => line.endsWith('; cached'))).toHaveLength(3)
   })
 
   // Deterministic either way: fallow is optional, so a machine without it
   // still gets the art, only without health readings.
   it('writes the art when fallow is asked for, installed or not', () => {
-    const page = writeArt({ cwd: root, frames: 3, fallow: true }, io)
+    const page = writeArt(
+      { cwd: root, scene: null, frames: 3, fallow: true },
+      io,
+    )
     expect(datasetsIn(readFileSync(page, 'utf8'))).toHaveLength(2)
   })
 
@@ -191,7 +228,7 @@ describe('art', () => {
     const write = vi.spyOn(process.stdout, 'write').mockReturnValue(true)
     try {
       expect(art(['--help'], io)).toBe(0)
-      expect(String(write.mock.calls[0]?.[0])).toContain('codedocs art')
+      expect(String(write.mock.calls[0]?.[0])).toContain('tsyn art')
     } finally {
       write.mockRestore()
     }
@@ -211,6 +248,8 @@ describe('art', () => {
   it('cannot answer a bad command line, and prints the usage', () => {
     const lines: string[] = []
     expect(art(['--frames', '1'], { ...io, log: (l) => lines.push(l) })).toBe(2)
-    expect(lines.join('\n')).toContain('codedocs art [--frames <n>]')
+    expect(lines.join('\n')).toContain(
+      'tsyn art [galaxy|city|landscape] [--frames <n>]',
+    )
   })
 })

@@ -56,7 +56,7 @@ presumes it. **A path is a root plus its steps, and a step is a _callee_, not a 
 between the same pair are one step carrying two sites, so a hot root does not fork a path per call
 instance. **A root that calls nothing answers with a path of no steps**, which is what makes an empty
 `trace` result mean "nothing resolved" and nothing else
-([#33](https://github.com/magicspon/codedocs/issues/33)).
+([#33](https://github.com/magicspon/typesynesthesia/issues/33)).
 
 ## The envelope
 
@@ -115,7 +115,7 @@ is gone.
 **The same commit rebuilt gives byte-identical output**, conditioned on the same [[Environment
 fingerprint]] and the same tool version. It has to be conditioned: ADR 0001 already established that
 install state changes what the checker can see, so a difference across two fingerprints is the
-environment changing rather than the code — the same confusion [#14](https://github.com/magicspon/codedocs/issues/14)
+environment changing rather than the code — the same confusion [#14](https://github.com/magicspon/typesynesthesia/issues/14)
 must handle for baselines. This is a fixtures test, and it is cheap to promise only because ordering
 is already sorted on data.
 
@@ -147,22 +147,22 @@ boundary long before it meets combinatorics. A default would therefore have boug
 would have cost more than the `--limit` default it resembles — a limit withholds results the answer
 still counts, while a depth bound changes which results **exist**, and an agent handed a shape it did
 not ask for cannot tell from the answer that the shape is wrong. `microsoft/vscode`, ADR 0004's
-ceiling test, is the revisit trigger ([#33](https://github.com/magicspon/codedocs/issues/33)).
+ceiling test, is the revisit trigger ([#33](https://github.com/magicspon/typesynesthesia/issues/33)).
 
 The default belongs to the **renderer**, not the operation. The human renderer caps and says
 `showing 20 of 176`; **`--json` is unbounded by default**. An agent that never passes `--limit` must
 not be handed a capped answer it may read as the whole truth, and the sizes do not justify the risk —
 the backend spike's hot symbol had **176 callers** and cal.com's _entire_ edge set is 26,091. PRD §18's
-context efficiency is better served by the caller choosing its bound than by codedocs guessing on its
+context efficiency is better served by the caller choosing its bound than by Typesynesthesia guessing on its
 behalf.
 
 ## Three channels of honesty, which must not blur
 
-| Channel        | Means                                   | codedocs knows what it missed |
-| -------------- | --------------------------------------- | ----------------------------- |
-| **Blind spot** | could not see it                        | no — that is the point        |
-| **Truncation** | chose not to send it, and says how many | yes, exactly                  |
-| **Scope**      | the question excluded it                | yes, exactly                  |
+| Channel        | Means                                   | Typesynesthesia knows what it missed |
+| -------------- | --------------------------------------- | ------------------------------------ |
+| **Blind spot** | could not see it                        | no — that is the point               |
+| **Truncation** | chose not to send it, and says how many | yes, exactly                         |
+| **Scope**      | the question excluded it                | yes, exactly                         |
 
 Scope is set by `--label <axis>=<value>` and `--exclude-label`, one generic pair over ADR 0003's
 labels rather than bespoke per-operation flags like `--no-tests` — the label store is keyed by node
@@ -171,7 +171,7 @@ id precisely so the same filter works on a symbol and a file.
 **This refines ADR 0003.** Its consequence "labels never filter silently" said an answer names what
 its scope excluded "as a blind spot in ADR 0001's sense", and explicitly left the deviation to this
 ticket. The rule survives; the channel changes. A scope exclusion is reported as an **excluded count
-beside the echoed scope**, not as a blind spot, because codedocs knows precisely what it withheld and
+beside the echoed scope**, not as a blind spot, because Typesynesthesia knows precisely what it withheld and
 a blind spot is by definition what it could not see. Filing a known exclusion as a blind spot teaches
 readers that blind spots are routine, which is the one thing that would destroy the signal ADR 0001
 exists to protect. ADR 0003's default scope is unchanged: `authorship: authored`, `role: all`, always
@@ -213,8 +213,8 @@ so `doctor` deduplicates causes across signals
   primitives and every agent re-implements `impact`, or exposes the compositions and there are two
   operation sets to keep honest. "Thin wrapper" stops being checkable, which is the whole point of
   constraint 3.
-- **Keeping `init`.** Rejected: ADR 0004 makes `.codedocs/` self-creating and self-ignoring, ADR 0005
-  makes document discovery a **9 ms** scan needing no configuration, and ADR 0003's `codedocs.jsonc`
+- **Keeping `init`.** Rejected: ADR 0004 makes `.tsyn/` self-creating and self-ignoring, ADR 0005
+  makes document discovery a **9 ms** scan needing no configuration, and ADR 0003's `tsyn.jsonc`
   is optional. `init` would create an empty file and print a welcome.
 - **Keeping `search` as a ranked operation.** Rejected: ranking is a judgement, so PRD §27 makes it
   inferred, and an inferred ordering cannot also be the determinism guarantee. What remains after
@@ -223,7 +223,7 @@ so `doctor` deduplicates causes across signals
   same traversal plus documents and labels is a second traversal implementation to keep in step with
   `trace`, and Q1's rule forbids composing above an operation.
 - **`docs generate` emitting a skeleton** — headings from a trace, claims populated, prose blank.
-  Rejected twice over: it is codedocs writing a document, which ADR 0005 refused because an unattended
+  Rejected twice over: it is Typesynesthesia writing a document, which ADR 0005 refused because an unattended
   write puts an unreviewed fact into a committed file; and it inverts the coverage measure, which
   exists to say "this prose is unchecked", not "these claims have no prose". **Superseded by
   [ADR 0013](0013-drafting-a-document.md)**, which answers the first with a write that is asked for by
@@ -263,7 +263,7 @@ so `doctor` deduplicates causes across signals
   `docs generate` and gains `evidence` in place of `explain` and nothing in place of `walkthrough`.
   Phase 3's remaining shape is `evidence`, `docs check`, `docs affected`.
 - **`--json` is unbounded, so callers own their context budget.** PRD §18 is satisfied by giving the
-  caller `--limit`, `--depth` and `--label`, not by codedocs choosing for it.
+  caller `--limit`, `--depth` and `--label`, not by Typesynesthesia choosing for it.
 - **The global flag set is closed** — `--json`, `--no-update`, `--limit`, `--claims`, `--label`,
   `--exclude-label`, `--cwd`, `--color` / `--no-color` — and **no operation may redefine a global
   flag's meaning**. Per-operation flags are additive only (`--to`, `--depth`, `--base`, `--fail-on`).
@@ -280,7 +280,7 @@ so `doctor` deduplicates causes across signals
   the human-facing half of this contract, but it is writing that depends on the finished surface and
   is better done once, after this lands.
 - **Phase 5 is now one operation, not three.** `review` and `plan` are deleted by [ADR
-  0012](0012-audience-and-the-fallow-boundary.md), which takes the position that codedocs implements
+  0012](0012-audience-and-the-fallow-boundary.md), which takes the position that Typesynesthesia implements
   no analysis `fallow` already ships: `review`'s architecture and dependency halves are `fallow`'s,
   and what remains of it is `impact` and `docs affected` printed together, which the rule above
   forbids an operation from doing. `plan` falls to this ADR's own reasoning about `search` — it is a

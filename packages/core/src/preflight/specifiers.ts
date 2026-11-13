@@ -93,7 +93,7 @@ function causeOf(
 /**
  * A relative import's cause, which turns on one question.
  *
- * A target that is on disk and still did not resolve is a file type codedocs
+ * A target that is on disk and still did not resolve is a file type tsyn
  * does not read — a component importing its own `./index.css` — and only a
  * target that is not there at all is `broken`. The wave keeps its own row for it
  * either way, because the file that would fix it may appear later.
@@ -112,7 +112,7 @@ function relativeCause(
  *
  * On disk with nothing asked of it: installed and carrying no types, and the
  * command that would fix that is a guess rather than a remediation. On disk with
- * a subpath that is there too: codedocs did not resolve what is in front of it.
+ * a subpath that is there too: tsyn did not resolve what is in front of it.
  * On disk with a subpath that is not: one codegen away, which is
  * `@calcom/prisma/enums` × 306 on cal.com. Not on disk but declared: an install
  * has not run.
@@ -141,7 +141,7 @@ function packageCause(
  * A mapped specifier whose every target directory is absent is the codegen case
  * ADR 0001's third signal names at the level of a whole config: Redwood maps
  * `types/*` at `./types/*`, and nothing has written that directory yet. Where
- * the directory does exist, codedocs simply did not resolve what the config
+ * the directory does exist, tsyn simply did not resolve what the config
  * describes, which is `unmapped` rather than an accusation.
  */
 function mappedTarget(

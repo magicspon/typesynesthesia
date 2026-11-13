@@ -117,7 +117,7 @@ export function writeMembershipPaths(
  *
  * Wholesale rather than per file, because ADR 0003 recomputes the layer on every
  * analysis rather than invalidating it: incremental invalidation buys under a
- * second on cal.com and costs a staleness bug, where an edited `codedocs.jsonc`
+ * second on cal.com and costs a staleness bug, where an edited `tsyn.jsonc`
  * leaves old labels behind.
  */
 export function writeLabels(store: Store, labels: readonly Label[]): void {

@@ -31,7 +31,7 @@ const SKIP_DIRS: ReadonlySet<string> = new Set([
   '.next',
   '.turbo',
   '.cache',
-  '.codedocs',
+  '.tsyn',
 ])
 
 /** Convert an absolute path to the repository-relative, `/`-separated form ids use. */
@@ -43,7 +43,7 @@ export function toRepoPath(root: string, absolute: string): FilePath {
  * Walk upward for the nearest enclosing `.git`.
  *
  * The nearest `package.json` is a fallback, taken only where no `.git` exists
- * anywhere on the way up, so codedocs still works in a checkout that is not a
+ * anywhere on the way up, so tsyn still works in a checkout that is not a
  * repository — ADR 0004 requires the index to, and git is not on the drift path.
  * It cannot outrank `.git`: in a monorepo a package is not a working tree, and
  * rooting there would index part of the tree and store it under the package.
@@ -77,7 +77,7 @@ export function findRepositoryRoot(from: string): string {
  * this list through `discover.projects`, which is added to the walk's result and
  * never replaces it — neither key decides membership, only which projects exist.
  *
- * Throws where a second `codedocs.jsonc` sits below the root. The walk visits
+ * Throws where a second `tsyn.jsonc` sits below the root. The walk visits
  * every directory already, so noticing one costs nothing, and the alternative is
  * a file in a package silently governing an index that spans the whole tree.
  */

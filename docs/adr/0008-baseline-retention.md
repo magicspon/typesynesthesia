@@ -4,19 +4,19 @@ status: accepted
 
 # A baseline is recorded by normal use, never constructed, and never leaves the machine
 
-ADR 0004 put a [[Baseline]] in `.codedocs/base/<commit>.db` and left retention open. This decision
+ADR 0004 put a [[Baseline]] in `.tsyn/base/<commit>.db` and left retention open. This decision
 closes it, and the framing in the ticket — "22.9 s is unacceptable interactively and fine in a
 scheduled job" — turned out to be the wrong axis. **Rebuilding a baseline is not slow, it is
 impossible at usable fidelity.** A `git worktree add --detach` of cal.com at `HEAD~60` takes **1.71 s**
 for 7,696 files and 216 MB, and the tree it produces has **no `node_modules`**. ADR 0001 forbids
-codedocs running the install, so every file in that worktree is `syntactic` — no types, no call graph,
+Typesynesthesia running the install, so every file in that worktree is `syntactic` — no types, no call graph,
 which is precisely what a comparison wants.
 
-So a baseline exists only because codedocs analysed that commit **while it was the working tree**. It
+So a baseline exists only because Typesynesthesia analysed that commit **while it was the working tree**. It
 is copied out of `index.db` as a side effect of `analyse` over a clean tree, capped at three, evicted
 oldest-first after non-ancestors, and never transferred between machines.
 
-The other reason to keep this small: [#11](https://github.com/magicspon/codedocs/issues/11) placed the
+The other reason to keep this small: [#11](https://github.com/magicspon/typesynesthesia/issues/11) placed the
 baseline's value narrowly. Subject matching — the matcher shipping first — needs no baseline; a
 baseline buys `shape-hash` matching, which catches a symbol renamed inside a file that never moved and
 covers the **8% of cal.com renames below 70% similarity** where git's own detection gives up. **A
@@ -25,7 +25,7 @@ mechanism an optimisation rather than infrastructure, and it is specified at tha
 
 ## Capture, and why there is no command
 
-Capture is a side effect of `codedocs analyse`, exactly as the live index is. When the working tree is
+Capture is a side effect of `tsyn analyse`, exactly as the live index is. When the working tree is
 clean, the finished `index.db` is copied to `base/<commit>.db` — 20 MB and 9 ms on cal.com. The
 clean-tree gate is not new machinery: it is the [[Drift]] detection ADR 0004 already runs before every
 answer, and it is forced by the vocabulary, since a [[Snapshot]] is a commit _plus whatever is
@@ -75,7 +75,7 @@ change in one of them must not silence the other 33.
 | Eviction order | anything not an ancestor of `HEAD`, then oldest by commit date |
 | When           | at capture                                                     |
 | Mutability     | written once; thereafter read or deleted, never updated        |
-| Configuration  | `codedocs.jsonc`, one integer; `0` disables capture entirely   |
+| Configuration  | `tsyn.jsonc`, one integer; `0` disables capture entirely       |
 
 The unit is a count because **capture is per clean-tree `analyse`, not per commit**, so the cap is
 denominated in the user's own work sessions. cal.com's own velocity has swung from **28 commits a day**
@@ -96,7 +96,7 @@ newest, and every substitution already names its distance. The revisit trigger i
 
 - **Rebuilding a baseline from git on demand.** Rejected on measurement, and not for the reason the
   ticket assumed. The checkout is cheap — 1.71 s — but it produces a tree with no `node_modules`, and
-  ADR 0001 forbids codedocs running the install to fix that. The rebuild does not cost 22.9 s of the
+  ADR 0001 forbids Typesynesthesia running the install to fix that. The rebuild does not cost 22.9 s of the
   right answer; it costs 22.9 s of a syntactic one, diffed against a typed working tree, which is the
   fidelity failure above wearing a different hat.
 - **Rebuilding into a worktree that borrows the main tree's `node_modules`.** Rejected on measurement:
@@ -110,7 +110,7 @@ newest, and every substitution already names its distance. The revisit trigger i
   CI argument that supported the previous point. Paths would survive — ADR 0002 stores `File`
   repository-relative — but the environment fingerprint would not, and a fingerprint mismatch excludes
   the file from the comparison, so an imported baseline is 20 MB fetched to answer nothing.
-  [#6](https://github.com/magicspon/codedocs/issues/6) also found `NodeHandle.path` is case-normalised,
+  [#6](https://github.com/magicspon/typesynesthesia/issues/6) also found `NodeHandle.path` is case-normalised,
   so a macOS-built and a Linux-built index disagree about paths in a way that reads as a move. ADR
   0004's "never leaves the machine that built it" extends to baselines verbatim. The CI recipe is real
   and serves **CI's own comparison** — the pull-request check — not the developer's machine.
@@ -120,7 +120,7 @@ newest, and every substitution already names its distance. The revisit trigger i
   cal.com alone spans a 24× swing in velocity inside its own history.
 - **Pinning a commit's baseline against eviction.** Rejected for now: a pin needs an operation or a flag
   on `analyse`, and ADR 0006 makes both expensive, for a feature whose only consumer is unbuilt. The
-  `codedocs.jsonc` integer covers the objection people actually have, which is 60 MB appearing in their
+  `tsyn.jsonc` integer covers the objection people actually have, which is 60 MB appearing in their
   repository.
 - **Migrating a baseline across a schema version.** Rejected, as ADR 0004 rejected it for the live
   index: a migration's failure mode is a subtly wrong comparison. The cost is stated in Consequences
@@ -135,13 +135,13 @@ newest, and every substitution already names its distance. The revisit trigger i
 
 ## Consequences
 
-- **codedocs never creates a git worktree, under any flag.** This is ADR 0001's rule reaching one step
-  further than that decision stated it: not only does codedocs not execute the repository's code, it
+- **Typesynesthesia never creates a git worktree, under any flag.** This is ADR 0001's rule reaching one step
+  further than that decision stated it: not only does Typesynesthesia not execute the repository's code, it
   does not manufacture a tree in which that code would have to be installed for the analysis to mean
   anything.
 - **The CI story is narrower than it first looks.** A scheduled job may check out a commit, install and
   analyse, and it gets a baseline for **its own** comparisons. Nothing carries that to a developer.
-- **Upgrading codedocs costs every baseline.** A schema or tool version bump discards them exactly as it
+- **Upgrading Typesynesthesia costs every baseline.** A schema or tool version bump discards them exactly as it
   discards the live index, and — unlike the live index — they cannot be rebuilt. Normal use is the only
   thing that brings them back, and the first comparison after an upgrade substitutes or reports the
   absence.
@@ -154,7 +154,7 @@ newest, and every substitution already names its distance. The revisit trigger i
   additional rule.
 - **At capture, `base/<commit>.db` duplicates `index.db`.** Accepted: 20 MB for the most valuable
   baseline there is, since it is the commit the developer is about to start working on top of.
-- **`codedocs.jsonc` gains its second block**, after ADR 0003's `classify`. Two decisions have now each
+- **`tsyn.jsonc` gains its second block**, after ADR 0003's `classify`. Two decisions have now each
   added one narrow knob, which is evidence that the file is accreting rather than needing a design of
   its own — a data point for the map's open question about it, not an answer to it.
 - **`doctor` gains a line**: how many baselines are held, and the distance from `HEAD` to the newest.

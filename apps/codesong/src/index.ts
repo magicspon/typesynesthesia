@@ -21,6 +21,9 @@ export {
   type SongFile,
 } from './evidence.ts'
 export { toMidi } from './render/midi.ts'
+export { toMp3, toWav } from './render/audio/encode.ts'
+export { renderAudio, type Stereo } from './render/audio/render.ts'
+export { GENRE_SOUND } from './sound/genres.ts'
 export {
   realise,
   type NoteEvent,

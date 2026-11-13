@@ -8,7 +8,7 @@ The core idea is:
 
 > **Software architecture becomes musical structure.**
 
-Given a TypeScript repository analysed by `codedocs`, CodeSong should be able to produce a playable musical composition for Ableton Live.
+Given a TypeScript repository analysed by `tsyn`, CodeSong should be able to produce a playable musical composition for Ableton Live.
 
 The system should eventually support two related modes:
 
@@ -75,7 +75,7 @@ Ideally, different repositories should produce perceptibly different music.
                     TypeScript repository
                             │
                             ▼
-                       codedocs
+                       tsyn
                             │
                      structural graph
                             │
@@ -128,7 +128,7 @@ The system should be divided into four major layers.
 
 ## 1. Code graph
 
-Provided by `codedocs`.
+Provided by `tsyn`.
 
 This layer knows about software.
 
@@ -147,7 +147,7 @@ It contains things such as:
 - hierarchy
 - graph topology
 
-The CodeSong project should not need to understand TypeScript source code directly wherever `codedocs` can provide the required structural information.
+The CodeSong project should not need to understand TypeScript source code directly wherever `tsyn` can provide the required structural information.
 
 ---
 
@@ -673,7 +673,7 @@ codesong .
 The command should:
 
 1. Locate the repository.
-2. Run or consume `codedocs` analysis.
+2. Run or consume `tsyn` analysis.
 3. Build the structural graph.
 4. Analyse the graph.
 5. Generate a musical composition.
@@ -734,7 +734,7 @@ Musical analysis
        │
        ▲
        │
- codedocs graph
+ tsyn graph
        │
        ▼
 Structural transformation
@@ -928,7 +928,7 @@ visualisation
 while generated musical data flows:
 
 ```text
-codedocs
+tsyn
    ↓
 composer
    ↓
@@ -1020,7 +1020,7 @@ The default path should require no configuration.
 
 # Repository compatibility
 
-The goal is to support any TypeScript repository that `codedocs` can analyse.
+The goal is to support any TypeScript repository that `tsyn` can analyse.
 
 The composer must therefore tolerate:
 
@@ -1094,9 +1094,16 @@ subsystem, weighted by size (busy from 2.5). Tangle is the share of files in a d
 calm and tangled lo-fi, busy and orderly techno, busy and tangled drum and bass. The code never
 suggests math rock; a listener picks it. `compose --genre
 name` overrides it. The site's `<name>.song.json` holds the piece in every genre, so a listener can
-switch while it plays; the switch keeps the same place in the same section. The browser sound for
-each genre is in `apps/codesong-site/src/audio/genres.ts`. The Live palette is still one for every
-genre.
+switch while it plays; the switch keeps the same place in the same section. The sound of each
+genre is in `apps/codesong/src/sound/genres.ts`. The site's Tone.js player and the offline renderer
+behind `tsyn song` both read it. The Live palette is still one for every genre.
+
+`tsyn song [--genre name] [--format mp3|wav|mid] [--midi]` writes the piece as a file, for example
+`tsyn song --genre jazz` writes `.tsyn/song/<name>.jazz.mp3`. The offline renderer in
+`apps/codesong/src/render/audio/` plays each note with a synth that follows the site's Tone.js one
+for that role, then adds a Freeverb in place of the site's convolution reverb. The kick and snare are
+turned down, because the file is normalised to its loudest peak. lamejs encodes the MP3 in pure
+JavaScript, so nothing reaches the network.
 
 ---
 
@@ -1209,7 +1216,7 @@ The final experience becomes:
 ```text
                 Repository
                     │
-                 codedocs
+                 tsyn
                     │
                  Composer
                     │
@@ -1286,4 +1293,4 @@ How should this composition be realised?
 
 The fundamental idea is:
 
-> **`codedocs` describes the software. CodeSong interprets that structure as music. Ableton performs it.**
+> **`tsyn` describes the software. CodeSong interprets that structure as music. Ableton performs it.**

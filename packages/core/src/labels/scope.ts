@@ -6,7 +6,7 @@
  * so the same filter works on a symbol and on a file.
  *
  * A scope exclusion is reported as a count beside the echoed scope and **never
- * as a blind spot**. codedocs knows exactly what it withheld; a blind spot is by
+ * as a blind spot**. tsyn knows exactly what it withheld; a blind spot is by
  * definition what it could not see, and filing a known exclusion as one teaches
  * readers that blind spots are routine — which is the one thing that would
  * destroy the signal ADR 0001 exists to protect.

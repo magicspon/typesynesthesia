@@ -1,5 +1,5 @@
 /**
- * Reads every symbol's name out of a codedocs index, for the viewer to show
+ * Reads every symbol's name out of a tsyn index, for the viewer to show
  * on a picked file's planets. Written beside the atlas rather than in it, so
  * the names cost nothing until someone asks for them.
  */

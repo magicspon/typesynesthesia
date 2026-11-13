@@ -28,7 +28,7 @@ export const level1: Seed[] = [
       why: "Level 1. One file, one project, and the report names it on eight of the stack's frames. The cause is `getVisibleRange`, which appears on no frame, but it sits in the same file one data-flow hop from `probeDynamicHeights`: it produces the inverted range the thrower consumes. Nothing has to be crossed, and no lifetime has to be understood.",
     },
     notes:
-      'The control. A stack trace names listView.ts on eight frames, so both arms should find the file cheaply. The fix is in getVisibleRange, which appears on no frame — it produces the inverted range that probeDynamicHeights later throws on. Tests whether codedocs buys anything when the file is already given.',
+      'The control. A stack trace names listView.ts on eight frames, so both arms should find the file cheaply. The fix is in getVisibleRange, which appears on no frame — it produces the inverted range that probeDynamicHeights later throws on. Tests whether tsyn buys anything when the file is already given.',
   },
   {
     id: '329610',
@@ -53,7 +53,7 @@ export const level1: Seed[] = [
       why: 'Level 1. Four frames, three of them in one file, and the changed line is inside the function the deepest frame names. The reader has to know that a `ServicesAccessor` is only valid inside the call it was handed to — a rule of one abstraction, not a relationship between several — and then wrap the call. Nothing is crossed and nothing is followed.',
     },
     notes:
-      'A second level 1 in a different subsystem, so the control is not one file in `base/`. The stack lands inside the guilty function itself, which makes this the cheapest search in the pool: if codedocs cannot pay here, that is the expected result, not a failure.',
+      'A second level 1 in a different subsystem, so the control is not one file in `base/`. The stack lands inside the guilty function itself, which makes this the cheapest search in the pool: if tsyn cannot pay here, that is the expected result, not a failure.',
   },
   {
     id: '331914',

@@ -51,12 +51,12 @@ function readUserVersion(db: DatabaseSync): number {
 /**
  * Open (and create, if absent) the index for a working tree.
  *
- * `.codedocs/.gitignore` containing `*` makes the whole directory invisible to
+ * `.tsyn/.gitignore` containing `*` makes the whole directory invisible to
  * `git status` without the user editing anything. The directory is safe to
  * delete: that is the supported way to force a cold build.
  */
 export function openStore(root: string): Store {
-  const directory = join(root, '.codedocs')
+  const directory = join(root, '.tsyn')
   mkdirSync(directory, { recursive: true })
   writeFileSync(join(directory, '.gitignore'), '*\n')
 

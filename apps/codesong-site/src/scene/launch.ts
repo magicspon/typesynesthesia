@@ -1,4 +1,4 @@
-import type { RealisedTrack } from '@codedocs/codesong/browser'
+import type { RealisedTrack } from '@tsyn/codesong/browser'
 
 /**
  * Which symbol names to launch as the music moves on. Pure bookkeeping, kept

@@ -22,7 +22,7 @@
  *
  * **Substitution is part of the request, not a limitation of the answer.** Which
  * baseline was used, which was asked for, and how far apart they are ride in the
- * envelope beside the scope — never as a blind spot, because codedocs knows
+ * envelope beside the scope — never as a blind spot, because tsyn knows
  * exactly which index it compared against.
  */
 
@@ -251,7 +251,7 @@ function reaching(
  * What this answer could not see, which is never the substitution.
  *
  * Two kinds only: a baseline that is absent, and a file whose fidelity moved
- * between the two snapshots. Both are things codedocs could not compare; which
+ * between the two snapshots. Both are things tsyn could not compare; which
  * baseline it used is a fact about the request.
  */
 function spotsFor(

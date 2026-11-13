@@ -8,7 +8,7 @@ import { inject } from '@vercel/analytics'
 
 import './styles.css'
 
-// Only the public site counts visits. The embed page ships inside codedocs,
+// Only the public site counts visits. The embed page ships inside tsyn,
 // which must never reach the network (ADR 0011), and its CSP would block it.
 if (import.meta.env.MODE === 'web') inject()
 

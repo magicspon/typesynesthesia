@@ -114,7 +114,7 @@ describe('an answer over a collided id', () => {
   let root: string
 
   beforeEach(() => {
-    root = mkdtempSync(join(tmpdir(), 'codedocs-descriptors-'))
+    root = mkdtempSync(join(tmpdir(), 'tsyn-descriptors-'))
     cpSync(fixtureRoot, root, { recursive: true })
     writeFileSync(
       join(root, 'package.json'),

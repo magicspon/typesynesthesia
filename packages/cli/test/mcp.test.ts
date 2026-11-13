@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url'
 import { PassThrough } from 'node:stream'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-import { OPERATIONS, toolName } from '@codedocs/core'
+import { OPERATIONS, toolName } from '@tsyn/core'
 
 import { run } from '../src/main.ts'
 import { handle, serve, tools } from '../src/mcp.ts'
@@ -23,7 +23,7 @@ const fixture = join(here, '..', '..', 'core', 'test', 'fixtures', 'basic')
 let root: string
 
 beforeAll(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-mcp-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-mcp-'))
   cpSync(fixture, root, { recursive: true })
   cpSync(join(here, 'package.fixture.json'), join(root, 'package.json'))
 })
@@ -167,7 +167,7 @@ const argumentsByTool = (): Map<string, string[]> =>
   )
 
 describe('the handshake', () => {
-  it('answers with a version and the one capability codedocs has', () => {
+  it('answers with a version and the one capability tsyn has', () => {
     const result = resultOf(
       ask({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} }),
     )

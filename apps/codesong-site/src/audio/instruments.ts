@@ -1,7 +1,7 @@
-import type { GenreName, MusicalRole } from '@codedocs/codesong/browser'
-import { DRUM_NOTES } from '@codedocs/codesong/browser'
+import type { GenreName, MusicalRole } from '@tsyn/codesong/browser'
+import { DRUM_NOTES } from '@tsyn/codesong/browser'
 import * as Tone from 'tone'
-import { defaults, num, type Sound } from './sound.ts'
+import { defaults, num, type Sound } from '@tsyn/codesong/browser'
 
 /**
  * A sound for each role, built from Tone.js synths. The Live build uses

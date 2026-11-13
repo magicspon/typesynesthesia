@@ -1,10 +1,11 @@
-import type { GenreName, MusicalRole } from '@codedocs/codesong/browser'
+import type { GenreName, MusicalRole } from '../model.ts'
 import { GENRE_SOUND } from './genres.ts'
 
 /**
  * The settings a listener can change on each role's synth, with their
- * starting values. The instruments build their synths from these defaults and
- * the sound panel draws a control for each, so the two cannot drift apart.
+ * starting values. The site's instruments and the offline renderer build their
+ * synths from these defaults, and the site's sound panel draws a control for
+ * each, so none of them can drift apart.
  */
 
 /** A number setting: a slider from `min` to `max`. */

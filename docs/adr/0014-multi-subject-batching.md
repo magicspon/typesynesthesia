@@ -5,11 +5,11 @@ status: accepted
 # A subject list, keyed the same way whether there is one or many
 
 `symbol`, `evidence`, `callers`, `callees`, `references` and `file` each take **one subject**.
-[#118](https://github.com/magicspon/codedocs/issues/118) asks them to take several, so that an agent
+[#118](https://github.com/magicspon/typesynesthesia/issues/118) asks them to take several, so that an agent
 holding a list of symbols — six matches from `symbol '*Repository'`, or the set `impact` just named
 as reached — pays one round trip and one [[Envelope]] instead of N of each. PRD §18 and §33 both name
 this exact shape of cost — round trips and repeated envelope boilerplate, not just the size of one
-answer — as the thing codedocs exists to cut.
+answer — as the thing Typesynesthesia exists to cut.
 
 The decision is that `request.subject` becomes `request.subjects`, and the **`result` of a batched
 operation is always an array keyed by subject, whether one subject was passed or many.** Each keyed

@@ -6,7 +6,7 @@
   "changelog": [
     "@changesets/changelog-github",
     {
-      "repo": "magicspon/codedocs"
+      "repo": "magicspon/typesynesthesia"
     }
   ],
   "commit": false,
