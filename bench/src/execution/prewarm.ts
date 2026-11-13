@@ -1,7 +1,7 @@
 /**
  * Builds the index for every commit the running set needs, before any run.
  *
- * The build is the expensive part of a codedocs run and it is the same work for
+ * The build is the expensive part of a tsyn run and it is the same work for
  * every replicate and every arm at one commit. Doing it here means it happens
  * once, deliberately, at a moment nothing is being measured — rather than N
  * times inside runs that then have to explain why their wall clock includes an

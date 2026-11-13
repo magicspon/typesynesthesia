@@ -6,7 +6,7 @@ status: accepted
 
 The internal representation is **five node types** (`Package`, `Project`, `File`, `Symbol`,
 `Document`), **nine edge kinds**, and a `SymbolId` that is a [SCIP](https://github.com/scip-code/scip)
-symbol string in codedocs' own scheme with two normalisations. Identity is **deterministic and
+symbol string in Typesynesthesia's own scheme with two normalisations. Identity is **deterministic and
 snapshot-scoped**: it says what a symbol is called in this working tree at this commit, and nothing
 about the past. Recognising the same symbol across commits is a separate **inferred** layer that
 matches two snapshots and never touches the id. **Provenance is carried per edge instance**, with the
@@ -26,7 +26,7 @@ costume.
 | `Project`  | `tsconfig` path          | **Not** in PRD §25, and not a `Package`: cal.com has 34 `tsconfig`s and no root config.                   |
 | `File`     | repository-relative path | A first-class participant in edges, not only a container — see consequences.                              |
 | `Symbol`   | `SymbolId`               | One per declaration name in its scope; overloads collapse into one node.                                  |
-| `Document` | path                     | What it points at is [#8](https://github.com/magicspon/codedocs/issues/8)'s decision, not this one.       |
+| `Document` | path                     | What it points at is [#8](https://github.com/magicspon/typesynesthesia/issues/8)'s decision, not this one.       |
 
 ## The edge kinds
 
@@ -91,7 +91,7 @@ useTranslations()` and then `t(...)`), and the per-symbol method structurally ca
   crossing into `node_modules` against **26,091** resolved in-repo, and the first-party index is
   already 48 MB. External _packages_ are nodes; external _symbols_ are named on the edge and never
   materialised. (Both figures were re-measured by
-  [#27](https://github.com/magicspon/codedocs/issues/27), which widened the ratio from 3.1:1 to
+  [#27](https://github.com/magicspon/typesynesthesia/issues/27), which widened the ratio from 3.1:1 to
   3.6:1; the argument is unchanged.)
 - **Storing `contains` edges.** Rejected: `Package → File → Symbol` containment is already encoded in
   the `SymbolId`'s descriptors, so storing it creates a second source of truth that can disagree with
@@ -107,12 +107,12 @@ useTranslations()` and then `t(...)`), and the per-symbol method structurally ca
 
 ## Consequences
 
-- **The `SymbolId` is a SCIP symbol string** in a `codedocs` scheme, with two normalisations: the
+- **The `SymbolId` is a SCIP symbol string** in a `tsyn` scheme, with two normalisations: the
   `<version>` field is a fixed placeholder for workspace packages (a routine `version` bump would
   otherwise invalidate every symbol in a package and every cross-package reference to it), and locals
   are named by descriptor path rather than by ordinal. Third-party symbols keep their real version,
   where it carries information. In full:
-  ``codedocs npm @fixture/pages . `src/page.ts`/renderPage().t.`` — scheme, manager, package,
+  ``Typesynesthesia npm @fixture/pages . `src/page.ts`/renderPage().t.`` — scheme, manager, package,
   placeholder version, then the descriptors. The placeholder is `.`, SCIP's own convention for a
   field carrying no information, and it is also the `<package>` of a file no manifest above it names.
 - **The file is one backtick-escaped namespace descriptor**, rather than one per path segment. The
@@ -135,7 +135,7 @@ useTranslations()` and then `t(...)`), and the per-symbol method structurally ca
   characters: cal.com's longest id is 540 rather than 827, and the shortening costs 31 colliding
   declarations out of 48,517. Naming only the declarations, as the skeleton first did, collapsed
   **6,746 of cal.com's declarations onto 1,571 ids** — one per test case in the worst file — because
-  an anonymous callback contributed no segment ([#34](https://github.com/magicspon/codedocs/issues/34)).
+  an anonymous callback contributed no segment ([#34](https://github.com/magicspon/typesynesthesia/issues/34)).
 - **An id several unrelated declarations claim is reported, never merged silently.** Two declarations
   claiming one id from the _same_ declaration space are one symbol, and the overload and
   declaration-merging collapse above is deliberate. From _different_ spaces they are unrelated
@@ -158,11 +158,11 @@ useTranslations()` and then `t(...)`), and the per-symbol method structurally ca
   `clientI18n` instead of to the hook — so `callees` on any hook returns nothing and the call graph
   fragments into single-edge islands. The spike's own helper had exactly this defect, which is why
   the ordering is stated here rather than left to be inferred
-  ([#26](https://github.com/magicspon/codedocs/issues/26)).
+  ([#26](https://github.com/magicspon/typesynesthesia/issues/26)).
 - **A call site that yields no edge is a stored fact with a cause**, following ADR 0001's precedent
   for unresolved specifiers. Three causes: `external` (resolved, target outside the repository),
   `unresolvable` (the checker returned nothing), and `dynamic` (`gateway[method](n)` — no target at
-  all, and **the one case where codedocs cannot know it under-reported**, so it must be recorded even
+  all, and **the one case where Typesynesthesia cannot know it under-reported**, so it must be recorded even
   though there is nothing to point at).
 - **Every edge instance carries `provenance` and `derivation`** — the latter a closed enum naming the
   rule that produced it: `checker-signature`, `checker-base-types`, `heritage-clause`,
@@ -175,7 +175,7 @@ useTranslations()` and then `t(...)`), and the per-symbol method structurally ca
 - **Ranges are data, never identity.** Every `Symbol` carries its definition ranges — plural, per the
   overload collapse — and every edge instance carries the range of the site that produced it, because
   an edge without its call site cannot be shown to anyone (PRD §3.5). Making that affordable is
-  [#9](https://github.com/magicspon/codedocs/issues/9)'s problem.
+  [#9](https://github.com/magicspon/typesynesthesia/issues/9)'s problem.
 - **Three hashes are persisted, and one of them has a measured trap.** Per `File`: a content hash and
   an **export-shape hash** (distinct facts — the second gates incremental propagation). Per `Symbol`:
   a **shape hash**, computed from `typeToString` and expanding `Interface | TypeAlias | Class | Enum`
@@ -203,16 +203,16 @@ useTranslations()` and then `t(...)`), and the per-symbol method structurally ca
   for this symbol". Batching is a 17x effect that cannot be retrofitted without changing every call
   site, and this is also the seam that makes the bet on an explicitly unstable API reversible.
 - **Cross-commit continuity is a separate inferred layer**
-  ([#11](https://github.com/magicspon/codedocs/issues/11)) and may never touch the `SymbolId`. What
+  ([#11](https://github.com/magicspon/typesynesthesia/issues/11)) and may never touch the `SymbolId`. What
   this model makes possible: **move** is detectable (shape hash and descriptor suffix both survive
   it, and git's rename detection corroborates — cal.com offers 4,908 renames to test against);
   **rename** is detectable with a confidence (shape survives, name does not); **extract** is
-  indistinguishable from delete-plus-create and codedocs should say so rather than guess; **delete**
+  indistinguishable from delete-plus-create and Typesynesthesia should say so rather than guess; **delete**
   is only ever an absence. All four are `inferred`.
 - **A `Document` may anchor only to a durable `SymbolId`, a `File`, a `Package` or a `Project`** —
   never to a range, never to a local symbol, never to an offset. Everything else about what a document
-  points at is [#8](https://github.com/magicspon/codedocs/issues/8)'s.
+  points at is [#8](https://github.com/magicspon/typesynesthesia/issues/8)'s.
 - **"Which implementations could run at this call site" is not an edge kind.** It is per-call-site
   rather than per-symbol-pair, so materialising it costs O(call sites x implementations), and it is
   `inferred` where the call edge's declared target is not. It becomes a derived query over
-  `implements` — [#10](https://github.com/magicspon/codedocs/issues/10)'s operation.
+  `implements` — [#10](https://github.com/magicspon/typesynesthesia/issues/10)'s operation.

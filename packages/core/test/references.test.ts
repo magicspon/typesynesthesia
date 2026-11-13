@@ -31,7 +31,7 @@ const fixture = join(
 let root: string
 
 beforeAll(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-references-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-references-'))
   cpSync(fixture, root, { recursive: true })
   writeFileSync(
     join(root, 'package.json'),

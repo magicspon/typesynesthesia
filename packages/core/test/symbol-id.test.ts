@@ -62,7 +62,7 @@ export namespace formats {
 `
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-symbol-id-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-symbol-id-'))
   mkdirSync(join(root, 'src'), { recursive: true })
   write(
     'tsconfig.json',
@@ -97,7 +97,7 @@ const idOf = (shorthand: string): string | undefined =>
 describe('the scheme', () => {
   it('names a symbol in a workspace package', () => {
     expect(idOf('src/page.ts#Calendar.read')).toBe(
-      'codedocs npm @fixture/pages . `src/page.ts`/Calendar#read().',
+      'tsyn npm @fixture/pages . `src/page.ts`/Calendar#read().',
     )
   })
 
@@ -105,7 +105,7 @@ describe('the scheme', () => {
     // ADR 0002's own example. Nothing above `t` can disturb this name, which is
     // the whole reason `local 3` was refused.
     expect(idOf('src/page.ts#renderPage.t')).toBe(
-      'codedocs npm @fixture/pages . `src/page.ts`/renderPage().t.',
+      'tsyn npm @fixture/pages . `src/page.ts`/renderPage().t.',
     )
     expect(sweep().get('src/page.ts#renderPage.t')?.durable).toBe(false)
   })
@@ -120,13 +120,13 @@ describe('the scheme', () => {
         'lib/types.d.ts',
         'ZodString#parse().',
       ),
-    ).toBe('codedocs npm zod 3.22.4 `lib/types.d.ts`/ZodString#parse().')
+    ).toBe('tsyn npm zod 3.22.4 `lib/types.d.ts`/ZodString#parse().')
   })
 
   it('gives a file with no manifest above it the absent-value placeholder', () => {
     rmSync(join(root, 'package.json'))
     expect(idOf('src/page.ts#Calendar')).toBe(
-      'codedocs npm . . `src/page.ts`/Calendar#',
+      'tsyn npm . . `src/page.ts`/Calendar#',
     )
   })
 })
@@ -158,7 +158,7 @@ describe('the package a file is in', () => {
     )
     write('src/nested/package.json', '{"private":true}')
     expect(idOf('src/nested/thing.ts#nested')).toContain(
-      `codedocs ${NPM} ${ABSENT_PACKAGE} `,
+      `tsyn ${NPM} ${ABSENT_PACKAGE} `,
     )
   })
 })
@@ -285,7 +285,7 @@ describe('reading an id back', () => {
   })
 
   it('reads a space inside a field, which SCIP writes doubled', () => {
-    const id = `codedocs ${NPM} a  name 1.0.0 \`src/pay.ts\`/charge().`
+    const id = `tsyn ${NPM} a  name 1.0.0 \`src/pay.ts\`/charge().`
     expect(parseSymbolId(id)?.package.name).toBe('a name')
   })
 
@@ -293,12 +293,12 @@ describe('reading an id back', () => {
     expect(isSymbolId('src/pay.ts#charge')).toBe(false)
     expect(parseSymbolId('src/pay.ts#charge')).toBeUndefined()
     // Too few fields to be one.
-    expect(parseSymbolId('codedocs npm @app/web')).toBeUndefined()
+    expect(parseSymbolId('tsyn npm @app/web')).toBeUndefined()
     // The first descriptor must be the file, and a file is a namespace.
-    expect(parseSymbolId('codedocs npm . . charge().')).toBeUndefined()
-    expect(parseSymbolId('codedocs npm . . 9')).toBeUndefined()
+    expect(parseSymbolId('tsyn npm . . charge().')).toBeUndefined()
+    expect(parseSymbolId('tsyn npm . . 9')).toBeUndefined()
     // An unterminated escaped name is not a descriptor at all.
-    expect(parseSymbolId('codedocs npm . . `src/pay.ts')).toBeUndefined()
+    expect(parseSymbolId('tsyn npm . . `src/pay.ts')).toBeUndefined()
   })
 
   it('answers for a file and for a symbol alike, which `CallSource` needs', () => {
@@ -326,7 +326,7 @@ describe('reading an id back', () => {
   it('has no coarse class for a file, or for a string that is not an id', () => {
     expect(coarseClassOf(symbolId(workspace, 'src/pay.ts', ''))).toBeUndefined()
     expect(coarseClassOf('src/pay.ts')).toBeUndefined()
-    expect(coarseClassOf('codedocs npm . . `src/pay.ts`/nope')).toBeUndefined()
+    expect(coarseClassOf('tsyn npm . . `src/pay.ts`/nope')).toBeUndefined()
   })
 
   it('escapes a name the grammar calls anything but simple, doubling a backtick', () => {

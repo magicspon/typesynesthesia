@@ -23,7 +23,7 @@ const fixture = join(
 let root: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-'))
   cpSync(fixture, root, { recursive: true })
   // With no `.git` above it, `findRepositoryRoot` falls back to the nearest
   // `package.json`, so the temp tree needs one or the walk escapes into the

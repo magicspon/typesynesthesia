@@ -9,7 +9,7 @@
  * Two things make that checkable rather than aspirational. The tool list is
  * derived from the same manifest the CLI parser reads, so an operation cannot
  * reach one binding and miss the other. And a call is answered by handing an
- * argv to `run`, the same function `codedocs` itself calls, so the bytes are the
+ * argv to `run`, the same function `tsyn` itself calls, so the bytes are the
  * bytes `--json` produces by construction rather than by inspection.
  *
  * `mcp` is **not an operation**. It owes no envelope, it appears in no tool list,
@@ -18,7 +18,7 @@
 
 import type { Readable, Writable } from 'node:stream'
 
-import { OPERATIONS, toolName, type OperationSpec } from '@codedocs/core'
+import { OPERATIONS, toolName, type OperationSpec } from '@tsyn/core'
 
 import { run } from './main.ts'
 
@@ -31,7 +31,7 @@ import { run } from './main.ts'
  */
 const PROTOCOL_VERSION = '2025-06-18'
 
-const SERVER_INFO = { name: 'codedocs', version: '0.0.0' } as const
+const SERVER_INFO = { name: 'tsyn', version: '0.0.0' } as const
 
 /** JSON-RPC 2.0, the subset an MCP stdio server needs. */
 interface Request {
@@ -51,7 +51,7 @@ interface Failure {
 interface ArgumentSchema {
   readonly type: 'string' | 'integer' | 'boolean' | 'array'
   readonly minimum?: number
-  /** Present for `array` alone, which codedocs only ever uses for strings. */
+  /** Present for `array` alone, which tsyn only ever uses for strings. */
   readonly items?: { readonly type: 'string' }
   readonly description: string
 }
@@ -100,7 +100,7 @@ const GLOBAL_ARGUMENTS: Readonly<Record<string, ArgumentSchema>> = {
     description:
       'Drop results whose file carries this label, in the same `axis=value` ' +
       'form. An exclusion is a count in `request.scope`, never a blind spot: ' +
-      'codedocs knows exactly what it withheld.',
+      'tsyn knows exactly what it withheld.',
   },
 }
 
@@ -127,10 +127,10 @@ const DEPTH_ARGUMENT: ArgumentSchema = {
  * contract.
  */
 function describe(spec: OperationSpec): string {
-  const call = `\`codedocs ${spec.name}${invocationSuffix(spec)} --json\``
+  const call = `\`tsyn ${spec.name}${invocationSuffix(spec)} --json\``
   const opening = [
     `${spec.summary}.`,
-    `Returns the codedocs answer envelope as JSON — the same bytes ${call}`,
+    `Returns the tsyn answer envelope as JSON — the same bytes ${call}`,
   ].join(' ')
   return [shaped(spec, opening), spec.selection].join(' ')
 }
@@ -184,7 +184,7 @@ function shaped(spec: OperationSpec, opening: string): string {
       'prints. `result.markdown` is the draft and `result.sections` names what',
       `each ${spec.unit} offers to assert, sorted by ${spec.sortedBy}. \`limit\``,
       `counts ${spec.unit}s and nothing inside one. Every claim it writes is a`,
-      'candidate under a `codedocs?:` marker that `docs_check` does not read, so',
+      'candidate under a `tsyn?:` marker that `docs_check` does not read, so',
       'nothing here is checked until a person deletes the `?`. It also writes',
       'the draft to a file — `docs/<file>.<symbol>.md` beside the code, unless',
       '`out` names a path or is `-` for no file — and never over an existing',
@@ -424,7 +424,7 @@ function callTool(params: Record<string, unknown>): Answer {
   if (spec === undefined) {
     return failed({
       code: -32602,
-      message: `unknown tool \`${typeof name === 'string' ? name : ''}\`. codedocs exposes one tool per operation: ${OPERATIONS.map((entry) => entry.name).join(', ')}.`,
+      message: `unknown tool \`${typeof name === 'string' ? name : ''}\`. tsyn exposes one tool per operation: ${OPERATIONS.map((entry) => entry.name).join(', ')}.`,
     })
   }
   const args = params['arguments']
@@ -451,7 +451,7 @@ function dispatch(request: Request): Answer {
     case 'initialize':
       return answered({
         protocolVersion: PROTOCOL_VERSION,
-        // Tools and nothing else: codedocs has no prompts, no resources, and
+        // Tools and nothing else: tsyn has no prompts, no resources, and
         // nothing to sample. A capability we do not implement is a promise.
         capabilities: { tools: {} },
         serverInfo: SERVER_INFO,

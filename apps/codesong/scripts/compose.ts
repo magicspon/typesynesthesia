@@ -1,7 +1,7 @@
 /**
  * Composes one repository.
  *
- *     pnpm --filter @codedocs/codesong compose <repo | index.db | atlas.json>
+ *     pnpm --filter @tsyn/codesong compose <repo | index.db | atlas.json>
  *       [--genre name] [--seed n] [--bars n] [--tempo n] [--scale name]
  *       [--tracks n] [--out dir]
  *
@@ -22,8 +22,8 @@ import {
 } from 'node:fs'
 import { basename, dirname, join, resolve } from 'node:path'
 import { parseArgs } from 'node:util'
-import type { Atlas, SymbolNames } from '@codedocs/code-art/atlas'
-import { snapshot } from '@codedocs/code-art/pipeline'
+import type { Atlas, SymbolNames } from '@tsyn/code-art/atlas'
+import { snapshot } from '@tsyn/code-art/pipeline'
 import { SCALES, NOTE_NAMES } from '../src/theory.ts'
 import {
   analyse,
@@ -74,13 +74,13 @@ function readAtlas(target: string): Atlas {
   if (target.endsWith('.json'))
     return JSON.parse(readFileSync(target, 'utf8')) as Atlas
   const dbPath = statSync(target).isDirectory()
-    ? join(target, '.codedocs', 'index.db')
+    ? join(target, '.tsyn', 'index.db')
     : target
   if (!existsSync(dbPath)) {
-    console.error(`no index at ${dbPath} — run \`codedocs\` in that repo first`)
+    console.error(`no index at ${dbPath} — run \`tsyn\` in that repo first`)
     process.exit(1)
   }
-  // The repo root is two levels above `.codedocs/index.db`.
+  // The repo root is two levels above `.tsyn/index.db`.
   return snapshot(dbPath, {
     name: basename(resolve(dirname(dbPath), '..')),
     fallow: false,

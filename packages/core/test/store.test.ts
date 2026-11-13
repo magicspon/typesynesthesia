@@ -97,7 +97,7 @@ describe('interned ids', () => {
   let store: Store
 
   beforeEach(() => {
-    root = mkdtempSync(join(tmpdir(), 'codedocs-store-'))
+    root = mkdtempSync(join(tmpdir(), 'tsyn-store-'))
     writeFileSync(join(root, 'package.json'), '{"name":"fixture"}\n')
     store = openStore(root)
     beginAnalysis(store, {
@@ -126,10 +126,10 @@ describe('interned ids', () => {
 
   it('rebuild the SymbolId every symbol was written with', () => {
     expect(readSymbols(store).map((node) => node.id)).toEqual([
-      'codedocs npm fixture . `src/a.ts`/alpha().',
-      'codedocs npm fixture . `src/a.ts`/alpha().inner().',
-      'codedocs npm fixture . `src/b.ts`/`describe("a#b`` c")`().gamma().',
-      'codedocs npm fixture . `src/b.ts`/beta().',
+      'tsyn npm fixture . `src/a.ts`/alpha().',
+      'tsyn npm fixture . `src/a.ts`/alpha().inner().',
+      'tsyn npm fixture . `src/b.ts`/`describe("a#b`` c")`().gamma().',
+      'tsyn npm fixture . `src/b.ts`/beta().',
     ])
   })
 
@@ -155,11 +155,11 @@ describe('interned ids', () => {
     // A module-level call is credited to the file, which is the node whose
     // descriptor path is empty — so its id is the path with no `#`.
     const edges = readCallersOf(store, ID('src/a.ts', 'alpha().'))
-    // Sorted by the source id, and a `SymbolId` begins with the scheme, so a
-    // symbol source now sorts ahead of the file that is only ever a path.
+    // Sorted by the source id, and a `SymbolId` begins with the scheme
+    // (`tsyn`), so the file, which is only ever a path, sorts ahead of it.
     expect(edges.map((edge) => [edge.from, edge.attribution])).toEqual([
-      [ID('src/b.ts', 'beta().'), 'symbol'],
       ['src/b.ts', 'file'],
+      [ID('src/b.ts', 'beta().'), 'symbol'],
     ])
   })
 

@@ -61,7 +61,7 @@ function modeConfig(mode: string): UserConfig {
 
 /**
  * Local-only dev server: the art is made from a private index, never served
- * beyond this machine. `vite build --mode embed` makes the page `codedocs art`
+ * beyond this machine. `vite build --mode embed` makes the page `tsyn art`
  * ships, with no dev export inside it. `vite build --mode web` makes the
  * public site: the datasets named in `src/lib/load.ts`, as static files.
  */

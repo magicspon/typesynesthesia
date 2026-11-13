@@ -1,4 +1,4 @@
-import type { RealisedTrack } from '@codedocs/codesong/browser'
+import type { RealisedTrack } from '@tsyn/codesong/browser'
 import { describe, expect, it } from 'vitest'
 import { due, fly, jumped, readerAt } from '../src/scene/launch.ts'
 

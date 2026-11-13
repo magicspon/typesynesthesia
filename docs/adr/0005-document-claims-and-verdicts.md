@@ -65,7 +65,7 @@ Two forms matter more here than they do elsewhere:
   implementation being added, which no pointer and no per-instance claim ever will.
 
 `analysedIn` is deliberately not exposed: a document asserting which project globbed a file is
-asserting something about codedocs, not about the repository.
+asserting something about Typesynesthesia, not about the repository.
 
 **Things the model does not hold cannot be claimed.** The ticket's example, "`POST /checkout` reaches
 `ChargeCard`", is expressible only because the route has a handler symbol —
@@ -81,7 +81,7 @@ subject by the **durable part** of that id — the path and descriptor path ADR 
 ```markdown
 Checkout charges through the payment service before it writes the order.
 
-<!-- codedocs: calls(src/checkout/service.ts#CheckoutService.charge,
+<!-- tsyn: calls(src/checkout/service.ts#CheckoutService.charge,
                      src/payments/service.ts#PaymentService.capture) -->
 ```
 
@@ -133,7 +133,7 @@ prose in them is right.
 
 ## Discovery, and `docs affected`
 
-A document is **any Markdown file containing a codedocs marker**, found by a repository-wide scan —
+A document is **any Markdown file containing a Typesynesthesia marker**, found by a repository-wide scan —
 9 ms over cal.com's 381 Markdown files, so it needs no configuration and no caching. Not `docs/**`:
 cal.com has **zero** Markdown under `docs/` and 55 READMEs beside the code they describe, alongside
 changelogs and licences that must never be checked. Writing a claim is how a file opts in.
@@ -142,7 +142,7 @@ changelogs and licences that must never be checked. Writing a claim is how a fil
 computes before every answer — intersects it with the derived scopes, and re-checks those documents'
 claims against the current index. **It needs no baseline.** The only thing a second index would buy is
 the sentence "this was verified before your change", at 22.9 s to build on cal.com; that upgrade is
-[#14](https://github.com/magicspon/codedocs/issues/14)'s to grant, behind an explicit flag.
+[#14](https://github.com/magicspon/typesynesthesia/issues/14)'s to grant, behind an explicit flag.
 
 ## Considered Options
 
@@ -170,18 +170,18 @@ the sentence "this was verified before your change", at 22.9 s to build on cal.c
 - **A fifth verdict for inferred evidence.** Rejected: PRD §11 specifies four, provenance already rides
   on every fact per ADR 0002, and eight states would be a switch nobody acts on differently.
 - **`docs/**` as the document convention.** Rejected on measurement: cal.com would find nothing there.
-- **A configured glob in `codedocs.jsonc`.** Rejected: it makes every user write configuration before
+- **A configured glob in `tsyn.jsonc`.** Rejected: it makes every user write configuration before
   they can write their first document, to replace a 9 ms scan.
-- **codedocs writing to documents** — stamping a verification timestamp, or repairing a claim after a
+- **Typesynesthesia writing to documents** — stamping a verification timestamp, or repairing a claim after a
   rename. Rejected: a stamp is a committed lie the moment anyone edits the code, and churns every
   document on every run; an unattended repair writes an `inferred` fact into a committed file, which is
   the silent-wrong-answer failure the honesty layer exists to prevent. ADR 0001's rule is unchanged —
-  codedocs reports what would fix it and never does the fixing.
+  Typesynesthesia reports what would fix it and never does the fixing.
   [ADR 0013](0013-drafting-a-document.md) narrows this to what it was aimed at — an **unattended write
   into a file someone else owns**. `docs draft` writes one **new** file, asked for by name, refusing to
   overwrite, and what it writes are candidate claims under a marker `docs check` does not read. No
   document is edited, and no unreviewed fact becomes a claim.
-- **codedocs inferring claims from prose.** Ruled out by settled constraint 2 before this ticket
+- **Typesynesthesia inferring claims from prose.** Ruled out by settled constraint 2 before this ticket
   started: it would require an LLM. What it can do is hand back the facts an answer already rests on,
   as candidate claims, which is what makes agent-written claims practical.
 
@@ -190,10 +190,10 @@ the sentence "this was verified before your change", at 22.9 s to build on cal.c
 - **`docs check` reports a verdict per section and per document.** The per-section verdict is the whole
   reason claims live inline; a document-level verdict alone would send a reader to re-read a file whose
   contradiction is in one paragraph.
-- **codedocs hands back candidate claims alongside evidence.** Every `trace`, `callers` or `references`
+- **Typesynesthesia hands back candidate claims alongside evidence.** Every `trace`, `callers` or `references`
   answer already _is_ a set of facts; rendering them as claim expressions costs nothing and means an
   agent never invents syntax. This is what ticket #10's renderer contract has to carry.
-- **The agent writes claims; codedocs validates them.** An unparseable claim, or one whose shorthand is
+- **The agent writes claims; Typesynesthesia validates them.** An unparseable claim, or one whose shorthand is
   ambiguous, is an error at check time. Humans can write claims by hand, so the syntax stays typeable.
 - **A document's scope is derived**, from its claims' files plus the source files its prose links to.
   A Markdown link to a file that no longer exists is a contradiction with no inference in it.

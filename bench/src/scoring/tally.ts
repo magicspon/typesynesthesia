@@ -3,7 +3,7 @@
  *
  * A tally answers four questions about a run: which tools it called, which
  * repository files it opened, how much of the repository those looks returned,
- * and whether it reached for codedocs. The first three are what the benchmark
+ * and whether it reached for tsyn. The first three are what the benchmark
  * compares; the last decides whether the run counts as the arm it claims to be.
  */
 
@@ -40,7 +40,7 @@ export type Tally = {
    * to be remembered from the `tool_use` that opened it.
    */
   pending: Set<string>
-  usedCodedocs: boolean
+  usedTsyn: boolean
   /** Epoch seconds the quota frees up, set when the API refused the run outright. */
   rateLimitedUntil: number | null
 }
@@ -55,7 +55,7 @@ export function emptyTally(): Tally {
     sourceLines: 0,
     steps: 0,
     pending: new Set<string>(),
-    usedCodedocs: false,
+    usedTsyn: false,
     rateLimitedUntil: null,
   }
 }
@@ -106,31 +106,29 @@ function filesFromToolUse(
 }
 
 /**
- * An actual invocation of the codedocs CLI.
+ * An actual invocation of the tsyn CLI.
  *
  * The binary name alone is not enough: the checkout under test lives inside a
- * directory called `codedocs`, so every absolute path in the run contains the
+ * directory called `tsyn`, so every absolute path in the run contains the
  * word and a bare substring test marks all of them as tool use. Requiring one
  * of the CLI's operations after the name separates running it from merely
  * naming a path that passes through it.
  */
-const INVOKES_CODEDOCS =
-  /(?:^|[\s'"/])codedocs\s+(?:analyse|symbol|callers|callees|trace|mcp)\b/
+const INVOKES_TSYN =
+  /(?:^|[\s'"/])tsyn\s+(?:analyse|symbol|callers|callees|trace|mcp)\b/
 
-/** True when a tool call shelled out to codedocs, which decides an arm's validity. */
-function callsCodedocs(name: string, args: Record<string, unknown>): boolean {
+/** True when a tool call shelled out to tsyn, which decides an arm's validity. */
+function callsTsyn(name: string, args: Record<string, unknown>): boolean {
   const command = args['command']
   return (
-    name === 'Bash' &&
-    typeof command === 'string' &&
-    INVOKES_CODEDOCS.test(command)
+    name === 'Bash' && typeof command === 'string' && INVOKES_TSYN.test(command)
   )
 }
 
 /**
  * True when a call asked the repository something.
  *
- * A read, a search and a codedocs query are all one thing here — a look at the
+ * A read, a search and a tsyn query are all one thing here — a look at the
  * repository — because the benchmark is comparing the cost of looking, and
  * charging a look differently depending on which tool performed it would decide
  * the answer in advance. `git log`, `wc` and the rest are bookkeeping about the
@@ -144,7 +142,7 @@ function inspectsRepo(name: string, args: Record<string, unknown>): boolean {
   return (
     READS_A_FILE.test(command) ||
     SEARCHES_THE_REPO.test(command) ||
-    INVOKES_CODEDOCS.test(command)
+    INVOKES_TSYN.test(command)
   )
 }
 
@@ -157,7 +155,7 @@ export function recordToolUse(
   const args = block.input ?? {}
   tally.toolCalls += 1
   tally.byName[block.name] = (tally.byName[block.name] ?? 0) + 1
-  if (callsCodedocs(block.name, args)) tally.usedCodedocs = true
+  if (callsTsyn(block.name, args)) tally.usedTsyn = true
   for (const path of filesFromToolUse(block.name, args)) tally.files.add(path)
   if (inspectsRepo(block.name, args)) {
     tally.steps += 1

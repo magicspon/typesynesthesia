@@ -51,7 +51,7 @@ export function readEnum<T extends string>(
 /**
  * Refuse a key the schema does not know, naming its nearest valid neighbour.
  *
- * ADR 0010 accepts the cost — a config written for a later codedocs fails on an
+ * ADR 0010 accepts the cost — a config written for a later tsyn fails on an
  * earlier one — because the alternative is `exlucde`, which under lenient
  * parsing parses, excludes nothing, and says nothing about either.
  */
@@ -65,8 +65,8 @@ export function rejectUnknownKeys(
     const near = nearest(key, allowed)
     throw invalid(
       near === null
-        ? `is not a key codedocs knows. Valid keys here: ${allowed.map((one) => `\`${one}\``).join(', ')}`
-        : `is not a key codedocs knows — did you mean \`${near}\`?`,
+        ? `is not a key tsyn knows. Valid keys here: ${allowed.map((one) => `\`${one}\``).join(', ')}`
+        : `is not a key tsyn knows — did you mean \`${near}\`?`,
       prefix === '' ? key : `${prefix}.${key}`,
     )
   }

@@ -24,7 +24,7 @@ import type { FilePath } from '../model.ts'
 import { parseClaim, type ParsedClaim } from './claim.ts'
 
 /** The marker a file opts in with. Writing one is how a file becomes a document. */
-export const MARKER = '<!-- codedocs:'
+export const MARKER = '<!-- tsyn:'
 
 /** One claim as it appears in a document. */
 export interface ClaimSite {
@@ -155,7 +155,7 @@ function readProse(
  * Whether a line opens a real marker, as opposed to prose *about* the marker.
  *
  * Both `docs/USAGE.md` and `packages/cli/README.md` explain the syntax with
- * `` `<!-- codedocs:` `` — an inline code span, not a comment. A plain
+ * `` `<!-- tsyn:` `` — an inline code span, not a comment. A plain
  * substring search cannot tell those apart, so a document describing its own
  * marker became a document, and the paragraph after the mention was consumed
  * as a claim's expression all the way to the next stray `-->`. A marker
@@ -276,7 +276,7 @@ const bare = (target: string): string =>
 export function isRepositoryLink(target: string): boolean {
   if (target === '') return false
   // A scheme, a protocol-relative URL or a bare `mailto:` is somebody else's to
-  // keep working; codedocs reports on this repository alone.
+  // keep working; tsyn reports on this repository alone.
   return !/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(target)
 }
 

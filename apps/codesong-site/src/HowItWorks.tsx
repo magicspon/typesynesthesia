@@ -21,7 +21,7 @@ const LEGEND: readonly (readonly [string, string])[] = [
 
 /**
  * `/how-it-works`: how a repository becomes a song, in plain words, for a
- * listener who has never used codedocs.
+ * listener who has never used tsyn.
  */
 export function HowItWorks(): JSX.Element {
   return (
@@ -34,7 +34,7 @@ export function HowItWorks(): JSX.Element {
 
       <h2>1. Read the code</h2>
       <p>
-        <a href="https://github.com/magicspon/codedocs">codedocs</a> reads the
+        <a href="https://github.com/magicspon/typesynesthesia">tsyn</a> reads the
         project and records which files call or import each other. Tests and
         generated code are left out, so only code that people wrote shapes the
         song.

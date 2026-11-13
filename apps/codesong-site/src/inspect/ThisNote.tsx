@@ -3,7 +3,7 @@ import type {
   Evidence,
   Motif,
   RealisedTrack,
-} from '@codedocs/codesong/browser'
+} from '@tsyn/codesong/browser'
 import type { JSX } from 'react'
 import {
   noteReason,

@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-/** The `codedocs` entry point. Node 24 runs this TypeScript directly. */
+/** The `tsyn` entry point. Node 24 runs this TypeScript directly. */
 
 import { art } from './art.ts'
 import { run } from './main.ts'
 import { serve } from './mcp.ts'
+import { song } from './song.ts'
 
 // The published CLI is one bundled file, so without the map every ADR 0011
-// stack frame reads `@codedocs/cli/dist/bin.js` and names nothing. Node does
+// stack frame reads `@tsyn/cli/dist/bin.js` and names nothing. Node does
 // not consult a source map unless asked.
 process.setSourceMapsEnabled(true)
 
@@ -17,6 +18,9 @@ if (process.argv[2] === 'mcp') {
 } else if (process.argv[2] === 'art') {
   // Nor is `art`: it writes a page rather than answering a question.
   process.exitCode = art(process.argv.slice(3))
+} else if (process.argv[2] === 'song') {
+  // Nor is `song`: it writes an audio file.
+  process.exitCode = song(process.argv.slice(3))
 } else {
   const { stdout, stderr, code } = run(process.argv.slice(2))
   if (stdout !== '') process.stdout.write(`${stdout}\n`)

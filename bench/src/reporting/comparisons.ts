@@ -4,7 +4,7 @@
  * A delta is only meaningful against a named other arm, and there are two
  * different pairings worth reading:
  *
- *   like-for-like  one model, with the tool and without — does codedocs reduce
+ *   like-for-like  one model, with the tool and without — does tsyn reduce
  *                  what it costs to reach the fix?
  *   cross-model    two models, the cheaper one holding the tool — do structural
  *                  facts let a cheaper model do work that otherwise needs a
@@ -30,9 +30,9 @@ export type Comparison = {
   kind: ComparisonKind
   /** The arm every delta in this block is read against. Always a baseline. */
   reference: Arm
-  /** The arm under test. Always a codedocs arm. */
+  /** The arm under test. Always a tsyn arm. */
   contender: Arm
-  /** `codedocs@haiku-4-5 vs baseline@opus-5`. Names the block. */
+  /** `tsyn@haiku-4-5 vs baseline@opus-5`. Names the block. */
   id: string
 }
 
@@ -49,7 +49,7 @@ function pair(reference: Arm, contender: Arm): Comparison {
 /**
  * Every pairing the runs on disk support, like-for-like first.
  *
- * Every baseline is paired with every codedocs arm rather than only the obvious
+ * Every baseline is paired with every tsyn arm rather than only the obvious
  * ones: which cross-model pairing is interesting is a question about the models,
  * and the report has no business deciding it. A session that ran one arm
  * produces no pairings at all, which is the honest answer — there is nothing to
@@ -58,7 +58,7 @@ function pair(reference: Arm, contender: Arm): Comparison {
 export function comparisonsIn(records: RunRecord[]): Comparison[] {
   const arms = armsIn(records)
   const baselines = arms.filter((arm) => arm.toolset === 'baseline')
-  const contenders = arms.filter((arm) => arm.toolset === 'codedocs')
+  const contenders = arms.filter((arm) => arm.toolset === 'tsyn')
   const pairs = baselines.flatMap((reference) =>
     contenders.map((contender) => pair(reference, contender)),
   )

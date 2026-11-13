@@ -1,11 +1,11 @@
 # Capability matrix: which tool produces which required fact?
 
-Research for [issue #2](https://github.com/magicspon/codedocs/issues/2). Resolves the question of
+Research for [issue #2](https://github.com/magicspon/typesynesthesia/issues/2). Resolves the question of
 whether PRD §24 ("no custom static-analysis engine") can be honoured, and by which combination of
 existing tools.
 
 **Date:** 2026-08-30
-**Constraints applied** (from [issue #1](https://github.com/magicspon/codedocs/issues/1)): no LLM on
+**Constraints applied** (from [issue #1](https://github.com/magicspon/typesynesthesia/issues/1)): no LLM on
 the deterministic path; the CLI is the product; language scope is TS + TSX with JS best-effort.
 
 ---
@@ -164,7 +164,7 @@ The same binary, reached over LSP rather than the API pipe.
   second, heavier object model and a full second copy of the compiler in `node_modules`.
 - Licence: MIT.
 - Verdict: an ergonomics layer over A, not an independent producer. It cannot reach TS 7 performance
-  and it ties codedocs to a third party's compiler-upgrade cadence.
+  and it ties Typesynesthesia to a third party's compiler-upgrade cadence.
 
 ### E. oxc-parser (Oxc)
 
@@ -225,7 +225,7 @@ The same binary, reached over LSP rather than the API pipe.
   design goal for indexers. scip-typescript itself indexes a whole project per invocation; per-file
   incrementality is a property of the format, not of this indexer.
 - Consumable as: **CLI only**, emitting a protobuf file. Node-native.
-- Strategic value: SCIP symbol IDs are **stable, structured, cross-repo identifiers**. If codedocs
+- Strategic value: SCIP symbol IDs are **stable, structured, cross-repo identifiers**. If Typesynesthesia
   adopts SCIP-shaped symbol IDs for its internal model, it gets a durable identity scheme and an
   interchange format for free, whether or not it ever runs scip-typescript.
 
@@ -246,7 +246,7 @@ The same binary, reached over LSP rather than the API pipe.
   `EXTRACTED` 202, `INFERRED` 33, `AMBIGUOUS` 3. This is a **concept graph over a corpus**, not a
   symbol graph over a program.
 - It is a Python tool requiring a separate runtime, and its highest-value edges require an LLM.
-- **Verdict against settled constraint 2: Graphify cannot sit on codedocs' deterministic path.** Its
+- **Verdict against settled constraint 2: Graphify cannot sit on Typesynesthesia's deterministic path.** Its
   type-blind, name-heuristic TS resolution is also strictly weaker than any checker-backed candidate.
   It remains a perfectly good _sibling_ tool for documents and rationale — the role it already plays
   in this repo — and `graphify/scip_ingest.py` shows the two could interoperate later.
@@ -280,7 +280,7 @@ Fidelity legend:
 
 - **T** — type-resolved. Correct through interfaces, aliases, generics, and dynamic dispatch.
 - **S** — syntactic / name-based. Correct for the easy cases; silently wrong on indirection.
-- **D** — the primitive exists but the fact must be _derived_ by codedocs (traversal, enclosing-range
+- **D** — the primitive exists but the fact must be _derived_ by Typesynesthesia (traversal, enclosing-range
   attribution, or an AST walk).
 - **—** — not produced.
 - **?** — plausible but not verified in this session.
@@ -368,7 +368,7 @@ This is the single largest engineering item and it deserves to be stated plainly
 that can resolve a call correctly does so **one symbol at a time**: TS 6 answers "incoming calls for
 _this_ position", TS 7's `getSignatureUsage` answers "usages of _this_ signature", SCIP does not model
 calls at all and requires deriving them from occurrence-inside-enclosing-range. To get PRD §7's "Who
-calls X?" over a repository, codedocs must **drive** a per-symbol API across every symbol and
+calls X?" over a repository, Typesynesthesia must **drive** a per-symbol API across every symbol and
 assemble the result. That is adapter-and-model work — exactly the shape §24's own preferred diagram
 prescribes (`Existing tool → Adapter → CodeGuide internal model`) — but it is real work, it is where
 the performance risk lives, and it must not be mistaken for "an existing tool already does this".
@@ -386,14 +386,14 @@ tsconfig `include`/`exclude`, and test-runner config — not parsing and not ana
 generation, not at graph nodes. There is no deterministic producer of "this symbol is a React hook".
 Settled constraint 7 already defers this to a labelling layer over plain symbols, so this gap is
 **pre-accepted** — but it should be recorded as a real absence rather than a scoping convenience,
-because it means the eventual labelling layer will be codedocs-authored, most plausibly as ast-grep
+because it means the eventual labelling layer will be tsyn-authored, most plausibly as ast-grep
 rules over already-extracted symbols.
 
 **4. Nothing answers reachability. (Q6)**
 "What code is reachable from X?" is graph traversal, not extraction. It has no producer because it
 needs no producer — it needs the assembled graph. PRD §7 nominates Graphify for this; Graphify's TS
 edges are tree-sitter-plus-heuristics with LLM-generated call edges, which fails settled constraint 2
-on the deterministic path. Traversal over codedocs' own normalised model (§25) is the answer, and
+on the deterministic path. Traversal over Typesynesthesia's own normalised model (§25) is the answer, and
 writing a BFS is not "a custom static-analysis engine".
 
 One more thing that is _not_ a gap but is a trap: **symbol identity is not free**. **RUN** showed the
@@ -410,7 +410,7 @@ prior art) is a §25 design decision that should be made before implementation, 
 
 **Yes — with one honest amendment.**
 
-No required fact obliges codedocs to write a TypeScript parser or a type checker. Every symbol fact
+No required fact obliges Typesynesthesia to write a TypeScript parser or a type checker. Every symbol fact
 and every relationship fact has at least one existing producer, and for the hard ones — cross-file
 calls resolved through an interface — a producer was **verified by execution**, not merely by
 documentation. The `implements`/`extends` asymmetry, the alias-following requirement, and the missing
@@ -418,7 +418,7 @@ navigation helpers are all _inconveniences of the API surface_, not missing capa
 
 The amendment: §24 forbids reproducing capabilities that mature tooling provides. It does **not**
 supply the assembly. No tool in this survey emits a whole-repository symbol-and-relationship graph
-for TypeScript; every one of them answers point queries or per-file questions. Codedocs' irreducible
+for TypeScript; every one of them answers point queries or per-file questions. Typesynesthesia's irreducible
 job is the driver, the normalised model (§25), and the store — which is precisely the
 `Existing tool → Adapter → CodeGuide internal model` pipeline §24 asks for. §24 should be read as
 constraining the _analysis_, not the _aggregation_, and the SOLUTION doc should say so in as many
@@ -435,7 +435,7 @@ writing one, that is the strongest external validation of §24 available.
               ┌─ type layer (one of A / B, chosen by spike) ─┐
               │   symbols · calls · inheritance · implements  │
               │   type refs · symbol refs                     │
-tsconfig ─────┤                                               ├──> adapter ──> codedocs model ──> store
+tsconfig ─────┤                                               ├──> adapter ──> tsyn model ──> store
               │                                               │
               ├─ syntactic sweep: oxc-parser + oxc-resolver ──┤
               │   imports · exports · file-level dep graph     │
@@ -463,7 +463,7 @@ Both are TypeScript's own checker. The choice is which era of it, and the whole 
 tradeoffs that cannot be settled from documentation.
 
 **Candidate 1 — TypeScript 6.0 language service (`typescript@6` / `@typescript/typescript6`).**
-Everything codedocs needs already exists as a function call: `findReferences`,
+Everything Typesynesthesia needs already exists as a function call: `findReferences`,
 `provideCallHierarchyIncomingCalls` / `OutgoingCalls`, `getImplementationAtPosition`,
 `getNavigationTree`. In-process, stable, documented, and the API that `scip-typescript` and every
 editor tool already targets. The cost is speed — it is the pre-native compiler — and a sunset
@@ -474,7 +474,7 @@ trajectory: it exists today largely as a compatibility bridge.
 primitives (`updateSnapshot({fileChanges})`, `openProjects`) that map cleanly onto PRD §26. Verified
 here to resolve `user.save()` to `UserRepository.save` across files through an interface. The costs
 are real and must be measured, not assumed: no navigation/call-hierarchy/implementations helpers, so
-codedocs writes the AST walkers; find-references was **not demonstrated working**; and Microsoft says
+Typesynesthesia writes the AST walkers; find-references was **not demonstrated working**; and Microsoft says
 in writing that 7.0 "does not ship with an API" and that 7.1 will bring "a new (and different) API".
 
 **Recommendation.** Spike both behind a single adapter interface — the §25 model makes this natural,
@@ -484,7 +484,7 @@ questions in this order:
 1. **Does the tsgo LSP actually handle `callHierarchy/*`, `textDocument/references` and
    `textDocument/implementation`?** (Candidate C.) If yes, it collapses candidate 2's biggest weakness
    and the decision is close to made. This is a half-day task and it should be done first.
-2. **What is the real cost of driving a per-symbol call API across a real repository** — codedocs
+2. **What is the real cost of driving a per-symbol call API across a real repository** — Typesynesthesia
    itself, then a maintainer-supplied repo — for each backend? This is the §26 question and the one
    the synthetic fixture cannot answer.
 3. **Can `getReferencedSymbolsForNode` be made to work on candidate 2**, or must whole-program
@@ -503,7 +503,7 @@ optimisation.
 All candidates carry permissive licences: TypeScript **Apache-2.0**; scip-typescript **Apache-2.0**;
 oxc-parser, ast-grep, tree-sitter, ts-morph, `@manypkg/get-packages`, `find-workspaces`,
 dependency-cruiser, madge, skott, react-docgen all **MIT**; knip and linguist-js **ISC**. Nothing here
-constrains codedocs' own licensing. Graphify's licence was **not** checked, because it is not
+constrains Typesynesthesia's own licensing. Graphify's licence was **not** checked, because it is not
 proposed as a dependency.
 
 ---
@@ -516,4 +516,4 @@ proposed as a dependency.
 - **Symbol identity scheme** — SCIP-shaped IDs are recommended but this is a §25 decision, not a
   research finding.
 - **Real-repo performance** — every number in §5 is synthetic and should be replaced by measurements
-  against codedocs itself plus a maintainer-supplied repo, per settled constraint 8.
+  against Typesynesthesia itself plus a maintainer-supplied repo, per settled constraint 8.

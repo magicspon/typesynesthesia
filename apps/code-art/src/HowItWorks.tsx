@@ -17,16 +17,13 @@ const LEGEND: readonly (readonly [string, string])[] = [
     'Dust lanes',
     'Calls between files. The most-called files sit near the core',
   ],
-  [
-    'Faint coloured haze',
-    'Calls that codedocs could not follow to their target',
-  ],
+  ['Faint coloured haze', 'Calls that tsyn could not follow to their target'],
   ['A black hole', 'A test file'],
 ]
 
 /**
  * `/how-it-works`: how a repository becomes a galaxy, in plain words, for a
- * visitor who has never used codedocs.
+ * visitor who has never used tsyn.
  */
 export function HowItWorks(): JSX.Element {
   return (

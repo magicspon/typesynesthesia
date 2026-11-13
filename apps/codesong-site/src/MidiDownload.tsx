@@ -2,7 +2,7 @@ import {
   toMidi,
   type Composition,
   type RealisedTrack,
-} from '@codedocs/codesong/browser'
+} from '@tsyn/codesong/browser'
 import type { JSX } from 'react'
 import { DownloadIcon } from './icons.tsx'
 

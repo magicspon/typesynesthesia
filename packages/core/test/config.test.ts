@@ -1,5 +1,5 @@
 /**
- * `codedocs.jsonc`: what it accepts, and what it refuses to guess at.
+ * `tsyn.jsonc`: what it accepts, and what it refuses to guess at.
  *
  * ADR 0010's whole bet is that strict beats lenient — a config that parses,
  * does nothing, and says nothing about either is the failure worth an error —
@@ -93,7 +93,7 @@ describe('parseConfig', () => {
 
   it('names the file, the key and what was expected', () => {
     expect(refusal('{"baselines": "three"}')).toBe(
-      'codedocs.jsonc: `baselines` must be a non-negative integer, got `"three"`',
+      'tsyn.jsonc: `baselines` must be a non-negative integer, got `"three"`',
     )
   })
 
@@ -107,14 +107,14 @@ describe('parseConfig', () => {
     // suggestion can reach — so guessing would send the user somewhere wrong.
     const message = refusal('{"exlucde": ["node_modules"]}')
 
-    expect(message).toContain('`exlucde` is not a key codedocs knows')
+    expect(message).toContain('`exlucde` is not a key tsyn knows')
     expect(message).not.toContain('did you mean')
     expect(message).toContain('`discover`')
   })
 
   it('refuses an unknown key nested inside a known block', () => {
     expect(refusal('{"discover": {"projekts": []}}')).toContain(
-      'discover.projekts` is not a key codedocs knows — did you mean `projects`?',
+      'discover.projekts` is not a key tsyn knows — did you mean `projects`?',
     )
   })
 
@@ -143,9 +143,7 @@ describe('parseConfig', () => {
   })
 
   it('refuses text that is not JSONC at all', () => {
-    expect(refusal('{ nope }')).toContain(
-      'codedocs.jsonc: the file is not valid',
-    )
+    expect(refusal('{ nope }')).toContain('tsyn.jsonc: the file is not valid')
   })
 
   it('names what it got, in the shape the user wrote it', () => {

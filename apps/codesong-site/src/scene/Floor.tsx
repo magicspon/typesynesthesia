@@ -1,4 +1,4 @@
-import type { Composition, RealisedTrack } from '@codedocs/codesong/browser'
+import type { Composition, RealisedTrack } from '@tsyn/codesong/browser'
 import { Html } from '@react-three/drei'
 import { useMemo, type JSX } from 'react'
 import { BufferGeometry, Float32BufferAttribute } from 'three'

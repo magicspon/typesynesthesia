@@ -1,7 +1,7 @@
 /**
  * Shared shapes for the fix benchmark.
  *
- * The benchmark asks one question: does codedocs let an agent reach the same
+ * The benchmark asks one question: does tsyn let an agent reach the same
  * fix while reading less of the repository? Every type here exists to make that
  * comparison auditable — what was asked, what was allowed, what it cost.
  */
@@ -66,7 +66,7 @@ export type BenchCase = {
 }
 
 /** Which tools the agent under test may use, and what it is told about them. */
-export type Toolset = 'baseline' | 'codedocs'
+export type Toolset = 'baseline' | 'tsyn'
 
 /**
  * One side of a comparison: a toolset paired with the model that holds it.
@@ -78,7 +78,7 @@ export type Toolset = 'baseline' | 'codedocs'
  * fixed across the session.
  */
 export type Arm = {
-  /** `codedocs@haiku-4-5`. Names the arm on disk and in the report. */
+  /** `tsyn@haiku-4-5`. Names the arm on disk and in the report. */
   id: string
   toolset: Toolset
   /** The full model id, as passed to the agent. */
@@ -100,7 +100,7 @@ export type RunMetrics = {
   filesOpened: string[]
   /**
    * Lines of repository content every inspecting call pulled into context —
-   * file reads, searches and codedocs answers alike. See the README.
+   * file reads, searches and tsyn answers alike. See the README.
    */
   sourceLinesRead: number
   /** Tool calls that inspected the repository, under the README's definition. */
@@ -196,7 +196,7 @@ export type RunJudgement = {
   costUsd: number
   tokensTotal: number
   /**
-   * True when the patch names codedocs in its own text — the one way a diff can
+   * True when the patch names tsyn in its own text — the one way a diff can
    * tell the judge which arm wrote it. Recorded rather than scrubbed: a scrubbed
    * diff is no longer the run's answer.
    */
@@ -225,16 +225,16 @@ export type RunRecord = {
   /** What the run's patch touched, or null when it left no patch at all. */
   diff: RunDiff | null
   /**
-   * Whether the run called codedocs at all.
+   * Whether the run called tsyn at all.
    *
-   * Recorded for both arms, not only the one it invalidates. On the codedocs
+   * Recorded for both arms, not only the one it invalidates. On the tsyn
    * arm it is the take-up figure the report prints, and take-up is a result in
    * its own right: on an easy case declining to reach for the tool is the
    * correct move, and a discard on its own throws that finding away. Absent on
    * records written before it was recorded — `run.ts --rescore` fills those in
    * from the stream saved beside them, for nothing.
    */
-  usedCodedocs?: boolean
+  usedTsyn?: boolean
   /** Set when the run cannot be counted, with the reason. */
   invalid: string | null
   /**

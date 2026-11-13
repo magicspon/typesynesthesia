@@ -10,11 +10,11 @@ is the question asked _before_ an edit rather than after one: what reaches this,
 cover it, if I change it.
 
 `callers` answers one hop of it. ADR 0006 already ruled that one hop is what an editor gives you and
-an aggregate is what codedocs adds, so the gap is the aggregate. `docs/agent-guide.md` currently sends
+an aggregate is what Typesynesthesia adds, so the gap is the aggregate. `docs/agent-guide.md` currently sends
 a caller with this question to "`callers` or `trace`", and half that sentence is wrong: `trace` walks
 the other way.
 
-[#121](https://github.com/magicspon/codedocs/issues/121) asks for the missing quadrant. The decision
+[#121](https://github.com/magicspon/typesynesthesia/issues/121) asks for the missing quadrant. The decision
 is that **`trace` gains a direction**, defaulting to outward, rather than a `reaches` operation being
 added beside it.
 
@@ -48,7 +48,7 @@ The test-scoping consequence follows ADR 0012's own precedent rather than breaki
 reach a symbol is:
 
 ```sh
-codedocs trace 'CheckoutService.charge' --inbound --label role=test
+tsyn trace 'CheckoutService.charge' --inbound --label role=test
 ```
 
 — a [[Scope]] filter over an existing walk, exactly as `impact --label role=test` is, and still not an

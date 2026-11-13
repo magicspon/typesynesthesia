@@ -1,6 +1,6 @@
 /**
  * Leaving whole folders out of the art, such as a repo's `examples/`. A
- * tsconfig higher up can still include those files after codedocs'
+ * tsconfig higher up can still include those files after tsyn'
  * `discover.skip` has stopped it finding projects inside them.
  */
 

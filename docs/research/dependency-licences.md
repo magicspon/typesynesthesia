@@ -1,6 +1,6 @@
 # Licence and redistribution audit of candidate analysis dependencies
 
-**Issue:** [#3](https://github.com/magicspon/codedocs/issues/3) — wayfinder research
+**Issue:** [#3](https://github.com/magicspon/typesynesthesia/issues/3) — wayfinder research
 **Requirement:** PRD §30 (Licensing and dependencies)
 **Verification date:** 2026-08-30
 **Method:** every licence below was read from a **primary source** on the date above — the `LICENSE`
@@ -10,17 +10,17 @@ from recollection. Licences change; see [Re-verification](#re-verification) at t
 
 ## Distribution assumption
 
-codedocs is a **proprietary, closed-source commercial CLI** sold as a one-time purchase. codedocs'
+Typesynesthesia is a **proprietary, closed-source commercial CLI** sold as a one-time purchase. Typesynesthesia'
 own source stays closed. The question for every dependency is therefore:
 
 > may this be redistributed, in binary or bundled form, inside a closed-source product sold for
-> money, without any obligation to open codedocs' own source?
+> money, without any obligation to open Typesynesthesia's own source?
 
 Two consumption modes are distinguished throughout, because they have different obligations:
 
-- **Library** — linked into or bundled with the codedocs artefact (npm dependency, static Rust
+- **Library** — linked into or bundled with the Typesynesthesia artefact (npm dependency, static Rust
   crate, vendored binary shipped in our installer).
-- **Subprocess** — a separate executable that codedocs shells out to, installed by the _user_
+- **Subprocess** — a separate executable that Typesynesthesia shells out to, installed by the _user_
   (`npm i -g`, `uv tool install`, Homebrew) rather than shipped by us.
 
 ---
@@ -67,8 +67,8 @@ reason is licence _volatility_, not the current licence.
   `NOTICE.txt` file**. The npm tarball ships `package/LICENSE` and `package/NOTICE.txt` — both must
   be reproduced. TypeScript 7 additionally vendors `vscode-jsonrpc` (`package/vendor/vscode-jsonrpc/License.txt`,
   MIT), which also needs reproducing.
-  Where: a `THIRD-PARTY-NOTICES` file shipped alongside the codedocs binary, plus a
-  `codedocs licences` command.
+  Where: a `THIRD-PARTY-NOTICES` file shipped alongside the Typesynesthesia binary, plus a
+  `tsyn licences` command.
 - **Transitive copyleft:** none. `NOTICE.txt` lists only DefinitelyTyped (MIT), Unicode (Unicode
   licence) and WebGL. A word-boundary scan of `NOTICE.txt` for GNU/GPL/LGPL/AGPL/MPL/SSPL returned
   no matches.
@@ -221,7 +221,7 @@ requires re-verification rather than recollection.
 
 - **Closed-source commercial redistribution:** permitted under **both** the old MIT and the current
   Apache-2.0. Neither is copyleft. There is no source-available or non-commercial clause in either
-  file. On today's terms Graphify is redistributable inside codedocs.
+  file. On today's terms Graphify is redistributable inside tsyn.
 - **Attribution obligations:** now heavier than before. Apache-2.0 §4(d) means that if we
   redistribute Graphify we must reproduce the `NOTICE` text above — the copyright line and the
   relicensing paragraph — in our notices, in addition to the Apache-2.0 licence text. Under the old
@@ -240,7 +240,7 @@ requires re-verification rather than recollection.
 - **Subprocess vs library — this materially changes the answer.** Graphify is a Python CLI. Two
   options:
   - **Subprocess, user-installed** (`uv tool install graphifyy`), which is how it is used today:
-    codedocs distributes no Graphify code, no Apache-2.0 §4 obligation is triggered, and the LGPL
+    Typesynesthesia distributes no Graphify code, no Apache-2.0 §4 obligation is triggered, and the LGPL
     extra is the user's business and not in our artefact. This is the clean path.
   - **Bundled** (vendored Python runtime + wheels in our installer): we take on the Apache-2.0
     licence + `NOTICE` reproduction duty, we take on the notice duty for ~30 transitive packages,
@@ -249,10 +249,10 @@ requires re-verification rather than recollection.
   governance. This is a single-maintainer project that has already **relicensed once mid-life and
   moved to a new GitHub org** within its 0.x series. A project that has relicensed once can
   relicense again, and the direction of travel in this tool category (MIT → Apache-2.0 → BSL/SSPL
-  under a "Labs" entity) is a recognised pattern. codedocs is a paid product with a one-time
+  under a "Labs" entity) is a recognised pattern. Typesynesthesia is a paid product with a one-time
   purchase model, so a future upstream relicence would strand shipped copies.
   **A human should decide** which of these to adopt:
-  1. Subprocess-only, user-installed, never bundled — lowest exposure, and codedocs degrades
+  1. Subprocess-only, user-installed, never bundled — lowest exposure, and Typesynesthesia degrades
      gracefully if Graphify is absent. _(Recommended.)_
   2. Bundle a **hard-pinned** version, archive the exact wheel plus its `LICENSE`/`LICENSE-MIT`/
      `NOTICE` as they read on the pinned date. Apache-2.0 grants are irrevocable for the version
@@ -278,18 +278,18 @@ requires re-verification rather than recollection.
 Checked opportunistically because they are plausible substitutes or neighbours for the named
 candidates. All from npm registry `license` fields on 2026-08-30.
 
-| Package              | Licence                       | Notes                                                                                                                     |
-| -------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `@biomejs/biome`     | `MIT OR Apache-2.0`           | Dual — we **elect one** (MIT is simplest) and say so in our notices.                                                      |
-| `@swc/core`          | Apache-2.0                    | Check for a `NOTICE` file before bundling.                                                                                |
-| `oxlint`             | MIT                           | Same notice set as Oxc.                                                                                                   |
-| `oxc-resolver`       | MIT                           |                                                                                                                           |
-| `dependency-cruiser` | MIT                           |                                                                                                                           |
-| `madge`              | MIT                           |                                                                                                                           |
-| `jscpd`              | MIT                           |                                                                                                                           |
-| `knip`               | ISC                           | ISC is functionally MIT; permissive, notice required.                                                                     |
-| `@napi-rs/cli`       | MIT                           | Build-time only; not redistributed.                                                                                       |
-| `google-protobuf`    | `BSD-3-Clause AND Apache-2.0` | Via scip-typescript. BSD-3 adds a no-endorsement clause — do not use "Google" in codedocs marketing to imply endorsement. |
+| Package              | Licence                       | Notes                                                                                                                            |
+| -------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `@biomejs/biome`     | `MIT OR Apache-2.0`           | Dual — we **elect one** (MIT is simplest) and say so in our notices.                                                             |
+| `@swc/core`          | Apache-2.0                    | Check for a `NOTICE` file before bundling.                                                                                       |
+| `oxlint`             | MIT                           | Same notice set as Oxc.                                                                                                          |
+| `oxc-resolver`       | MIT                           |                                                                                                                                  |
+| `dependency-cruiser` | MIT                           |                                                                                                                                  |
+| `madge`              | MIT                           |                                                                                                                                  |
+| `jscpd`              | MIT                           |                                                                                                                                  |
+| `knip`               | ISC                           | ISC is functionally MIT; permissive, notice required.                                                                            |
+| `@napi-rs/cli`       | MIT                           | Build-time only; not redistributed.                                                                                              |
+| `google-protobuf`    | `BSD-3-Clause AND Apache-2.0` | Via scip-typescript. BSD-3 adds a no-endorsement clause — do not use "Google" in Typesynesthesia marketing to imply endorsement. |
 
 ---
 
@@ -304,8 +304,8 @@ Eclipse were run over the two aggregated third-party notice files that exist in 
 `microsoft/TypeScript` `NOTICE.txt` and `oxc-project/oxc` `THIRD-PARTY-LICENSE` — and both returned
 zero matches.
 
-**Nothing reaches codedocs' own source.** MIT, Apache-2.0, BSD-3-Clause, ISC, 0BSD, Zlib, Unlicense,
-CC0 and the PSF-style licences found here are all non-reciprocal. codedocs' implementation stays
+**Nothing reaches Typesynesthesia's own source.** MIT, Apache-2.0, BSD-3-Clause, ISC, 0BSD, Zlib, Unlicense,
+CC0 and the PSF-style licences found here are all non-reciprocal. Typesynesthesia's implementation stays
 proprietary, satisfying PRD §30.
 
 ---
@@ -318,7 +318,7 @@ question actually bites).
 
 For **obligations**, yes, substantially:
 
-- **User-installed subprocess:** codedocs distributes no third-party code. Apache-2.0 §4 and the
+- **User-installed subprocess:** Typesynesthesia distributes no third-party code. Apache-2.0 §4 and the
   MIT notice clause are both conditioned on _distribution_, so neither triggers. We owe nothing
   beyond not misrepresenting the tools. This is the cheapest posture and is how Graphify,
   `scip-typescript`, `ast-grep` CLI and `tsgo` would naturally be used.
@@ -327,7 +327,7 @@ For **obligations**, yes, substantially:
   process" exemption for notices.
 - **Linked library:** obligations as bundled.
 
-The practical rule for codedocs: **prefer user-installed subprocesses for the heavy analysis tools**
+The practical rule for Typesynesthesia: **prefer user-installed subprocesses for the heavy analysis tools**
 (Graphify, scip-typescript, tsgo, ast-grep CLI), **bundle only the npm/native libraries we genuinely
 need in-process** (`typescript`, `ts-morph`, `oxc-parser`, `@ast-grep/napi`, tree-sitter runtime +
 grammars). That keeps the notice file short and keeps the LGPL extra permanently out of our
@@ -335,10 +335,10 @@ artefact. It also gives the graceful-degradation behaviour the PRD wants when a 
 
 ---
 
-## Attribution: what codedocs must actually ship
+## Attribution: what Typesynesthesia must actually ship
 
-If codedocs bundles any of the cleared dependencies, ship a `THIRD-PARTY-NOTICES.txt` alongside the
-binary and surface it from the CLI (e.g. `codedocs licences`). It must contain:
+If Typesynesthesia bundles any of the cleared dependencies, ship a `THIRD-PARTY-NOTICES.txt` alongside the
+binary and surface it from the CLI (e.g. `tsyn licences`). It must contain:
 
 1. **Full licence text** for each distinct licence in use (Apache-2.0 once; MIT once is not
    sufficient — MIT carries a per-copyright-holder notice, so list each holder).

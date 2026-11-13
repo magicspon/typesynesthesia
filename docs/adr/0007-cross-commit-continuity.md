@@ -87,12 +87,12 @@ the order is total rather than merely mostly-total, per ADR 0006.
   a score wearing a different hat** — which is what ruled out signature similarity, edit distance on
   names, and fuzzy body comparison. Every signal here is boolean.
 - **Claiming zero thresholds.** Rejected as dishonest: git's `-M` is itself a similarity heuristic with
-  a 50% default. codedocs inherits **exactly one** threshold and names whose it is — the derivation is
+  a 50% default. Typesynesthesia inherits **exactly one** threshold and names whose it is — the derivation is
   `git-rename` and the score reported is git's.
 - **Inheriting git's rename configuration.** Rejected on measurement: over 2,000 cal.com commits, git
   reports 352 renames and prints `exhaustive rename detection was skipped due to too many files`.
   Raising `diff.renameLimit` finds **574**. The default silently loses 39% of renames, at 0.16 s
-  against 1.9 s. Every git knob is a codedocs constant, never read from the user's `gitconfig`, or the
+  against 1.9 s. Every git knob is a Typesynesthesia constant, never read from the user's `gitconfig`, or the
   same question answers differently on two machines and ADR 0006's byte-identical reproducibility is
   a fiction.
 - **Matching each renamed file independently.** Rejected on measurement: across cal.com's last 300
@@ -125,7 +125,7 @@ packages/features`. Only 140 of 300 commits carried a lone rename. Per-file matc
   when a document's subject is a common name, producing the bare `unable to verify` this layer exists
   to avoid.
 - **Emitting the repair sentence.** Rejected: ADR 0006 deleted `docs generate` on the principle that
-  codedocs writes no prose. The candidate carries fields; the human renderer formats a fixed template
+  Typesynesthesia writes no prose. The candidate carries fields; the human renderer formats a fixed template
   over them, which is what "pure function of the [[Envelope]]" means. An agent repairing a claim wants
   the fields anyway, since it has to rewrite a shorthand rather than read English.
 - **Matching non-durable symbols.** Rejected as a rule rather than left to fall out. `impact` will meet

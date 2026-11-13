@@ -1,8 +1,8 @@
-import type { Composition, RealisedTrack } from '@codedocs/codesong/browser'
+import type { Composition, RealisedTrack } from '@tsyn/codesong/browser'
 import * as Tone from 'tone'
-import { GENRE_SOUND } from './genres.ts'
+import { GENRE_SOUND } from '@tsyn/codesong/browser'
 import { voice, type Voice } from './instruments.ts'
-import { defaults, num, type Sound } from './sound.ts'
+import { defaults, num, type Sound } from '@tsyn/codesong/browser'
 
 /**
  * Plays one realised composition through Tone.js. Every note is scheduled on

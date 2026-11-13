@@ -1,4 +1,4 @@
-import type { Composition, RealisedTrack } from '@codedocs/codesong/browser'
+import type { Composition, RealisedTrack } from '@tsyn/codesong/browser'
 import { useEffect, useState } from 'react'
 import type { NotePick } from '../scene/Notes.tsx'
 import type { Selection } from './Inspector.tsx'

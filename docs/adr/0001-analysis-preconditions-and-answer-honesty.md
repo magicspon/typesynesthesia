@@ -8,7 +8,7 @@ Real TypeScript repositories are usually unanalysable as checked out: dependenci
 and framework codegen (Prisma, Redwood, Next) writes type directories that a `tsconfig` already
 references. A type-aware backend pointed at such a repo does not fail — it returns `any` and
 missing edges, silently. We decided that an unmet **precondition** lowers a file's **fidelity**
-rather than aborting the analysis, that codedocs never runs a repository's own install or codegen,
+rather than aborting the analysis, that Typesynesthesia never runs a repository's own install or codegen,
 and that the resulting uncertainty is reported as named **blind spots** on each answer rather than
 as a confidence score.
 
@@ -19,9 +19,9 @@ as a confidence score.
   monorepo it is the honest, useful answer. Refusal also implies a repo-wide verdict, which is
   wrong — one unprepared package in a 34-project monorepo must not downgrade the other 33.
 - **Run install and codegen automatically.** Rejected: `postinstall` is arbitrary code from a
-  possibly unfamiliar repository. The capability gains nothing, because codedocs' primary consumer
+  possibly unfamiliar repository. The capability gains nothing, because Typesynesthesia's primary consumer
   is an agent (or a human in a terminal) that can already run commands with the user's consent.
-  codedocs reads; it never executes. A separate `codedocs prepare` command is deferred, not
+  Typesynesthesia reads; it never executes. A separate `tsyn prepare` command is deferred, not
   precluded.
 - **A repo-wide confidence percentage on every answer.** Rejected: "40% of imports unresolved"
   cannot tell the caller whether _this_ answer is affected, and any threshold built on it is
@@ -42,7 +42,7 @@ as a confidence score.
   match no files** — the config read against the _working tree_, never against the files the analysis
   credited to that project, since a file two configs both glob is credited to one of them and that is
   a fact about ownership rather than about types
-  ([#49](https://github.com/magicspon/codedocs/issues/49)); and unresolved specifiers. Measured
+  ([#49](https://github.com/magicspon/typesynesthesia/issues/49)); and unresolved specifiers. Measured
   against the fixtures, the
   third is the load-bearing one: a full, successful install cleared every `unprepared` cause and
   (via `postinstall`) both Prisma codegens, yet left `redwood` with no `.redwood/` and `next` with
@@ -61,7 +61,7 @@ as a confidence score.
   answer forever — confidently wrong by caching. Signals 1 and 2 are inputs _because_ of that
   sentence: an install over a fresh clone moves none of the other three, so the first list ADR 0009
   wrote would have left this bullet's own case undetected
-  ([#49](https://github.com/magicspon/codedocs/issues/49)). A fingerprint change is a
+  ([#49](https://github.com/magicspon/typesynesthesia/issues/49)). A fingerprint change is a
   legitimate full re-analysis of that project, and is reported as one.
 - **The model must carry provenance per fact and store unresolved specifiers as facts** (with their
   cause), not drop them. Answering "which callers might be missing" requires the gaps to be in the
@@ -77,4 +77,4 @@ as a confidence score.
 - **The `broken` cause has no remediation** and must never be rendered as one — it is a finding
   about the repository, and telling that user to run an install would send them the wrong way. ADR
   0009 adds `unmapped` on the same footing for the opposite reason: a specifier only the framework's
-  own resolver can find is a limit of codedocs, so there is no command to offer.
+  own resolver can find is a limit of Typesynesthesia, so there is no command to offer.

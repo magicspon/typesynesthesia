@@ -95,13 +95,11 @@ export function invalidReason(
   toolset: Toolset,
   metrics: RunMetrics,
   patched: boolean,
-  usedCodedocs: boolean,
+  usedTsyn: boolean,
 ): string | null {
   if (!patched) return 'the agent left no patch'
-  if (toolset === 'baseline' && usedCodedocs)
-    return 'baseline reached for codedocs'
-  if (toolset === 'codedocs' && !usedCodedocs)
-    return 'codedocs arm never called codedocs'
+  if (toolset === 'baseline' && usedTsyn) return 'baseline reached for tsyn'
+  if (toolset === 'tsyn' && !usedTsyn) return 'tsyn arm never called tsyn'
   if (metrics.turns === 0) return 'agent produced no turns'
   return null
 }

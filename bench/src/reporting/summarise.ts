@@ -14,16 +14,16 @@ export type Cell = {
   invalid: number
   /**
    * How many runs each reason threw out. Counting them is not enough on its
-   * own: "the agent left no patch" and "baseline reached for codedocs" say very
+   * own: "the agent left no patch" and "baseline reached for tsyn" say very
    * different things about a set, and a single total hides which happened.
    */
   invalidReasons: Record<string, number>
   /**
-   * Runs of this arm that called codedocs at all, over the runs where that was
+   * Runs of this arm that called tsyn at all, over the runs where that was
    * recorded.
    *
    * Counted over every run rather than only the counted ones, because the runs
-   * it describes are exactly the ones thrown out. A codedocs run that never
+   * it describes are exactly the ones thrown out. A tsyn run that never
    * reached for the tool is discarded — counting it would put a run with no
    * tool in it on the tool's side — and the discard alone loses the finding
    * that on an easy case the agent did not need the tool. Take-up keeps it.
@@ -136,12 +136,12 @@ export function summarise(records: RunRecord[]): Cell {
   const judged = valid.flatMap((r) => (r.judgement ? [r.judgement] : []))
   // Only runs that recorded the flag: a record written before take-up was
   // measured is silent about it, and guessing would invent a rate.
-  const takeUp = records.filter((r) => r.usedCodedocs !== undefined)
+  const takeUp = records.filter((r) => r.usedTsyn !== undefined)
   return {
     runs: records.length,
     invalid: records.length - valid.length,
     invalidReasons: reasonsIn(records),
-    tookUp: takeUp.filter((r) => r.usedCodedocs).length,
+    tookUp: takeUp.filter((r) => r.usedTsyn).length,
     takeUpKnown: takeUp.length,
     hits: valid.filter((r) => r.diff?.correct).length,
     symbolHits: valid.filter((r) => (r.diff?.symbolsHit.length ?? 0) > 0)

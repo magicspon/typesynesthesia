@@ -1,5 +1,5 @@
 /**
- * One codedocs index as the atlas the art is drawn from, with fallow's
+ * One tsyn index as the atlas the art is drawn from, with fallow's
  * health readings when fallow is on the PATH.
  */
 
@@ -22,7 +22,7 @@ export function snapshot(
     readonly skip?: readonly string[]
   },
 ): Atlas {
-  // The repo root is two levels above `.codedocs/index.db`.
+  // The repo root is two levels above `.tsyn/index.db`.
   const root = resolve(dirname(dbPath), '..')
   const indexed = readAtlas(dbPath, options.name, {}, options.skip)
   const reading = options.fallow ? readFallow(root) : null

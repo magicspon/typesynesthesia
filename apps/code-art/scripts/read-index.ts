@@ -1,8 +1,8 @@
 /**
- * Reads one codedocs index into an `Atlas`.
+ * Reads one tsyn index into an `Atlas`.
  *
  * Reads the SQLite file directly and read-only rather than through
- * `@codedocs/core`: the art wants aggregates the operations never answer, and a
+ * `@tsyn/core`: the art wants aggregates the operations never answer, and a
  * direct read also works on indexes from older schema versions, which the
  * store would discard and rebuild.
  */

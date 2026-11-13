@@ -1,4 +1,4 @@
-import type { RealisedTrack } from '@codedocs/codesong/browser'
+import type { RealisedTrack } from '@tsyn/codesong/browser'
 import { Html } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef, useState, type JSX } from 'react'

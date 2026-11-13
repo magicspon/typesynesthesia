@@ -47,7 +47,7 @@ const write = (path: string, content: string): void =>
   writeFileSync(join(root, path), content)
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-impact-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-impact-'))
   mkdirSync(join(root, 'src'), { recursive: true })
   mkdirSync(join(root, 'node_modules'), { recursive: true })
   write(
@@ -207,8 +207,8 @@ describe('the listing', () => {
     // ordering has to survive.
     const stranger = 'f'.repeat(40)
     copyFileSync(
-      join(root, '.codedocs', BASELINE_DIR, `${head()}.db`),
-      join(root, '.codedocs', BASELINE_DIR, `${stranger}.db`),
+      join(root, '.tsyn', BASELINE_DIR, `${head()}.db`),
+      join(root, '.tsyn', BASELINE_DIR, `${stranger}.db`),
     )
 
     const held = listBaselines(root)
@@ -242,7 +242,7 @@ describe('the listing', () => {
 
   it('refuses a baseline written by another schema version, rather than migrating', () => {
     runAnalyse()
-    const path = join(root, '.codedocs', BASELINE_DIR, `${head()}.db`)
+    const path = join(root, '.tsyn', BASELINE_DIR, `${head()}.db`)
     const db = new DatabaseSync(path)
     db.exec('pragma user_version = 1')
     db.close()
@@ -257,8 +257,8 @@ describe('the listing', () => {
     // case fails on the first read rather than on the open.
     expect(openBaseline(root, join(root, 'nowhere.db'))).toBeNull()
 
-    mkdirSync(join(root, '.codedocs', BASELINE_DIR), { recursive: true })
-    const broken = join(root, '.codedocs', BASELINE_DIR, `${'a'.repeat(40)}.db`)
+    mkdirSync(join(root, '.tsyn', BASELINE_DIR), { recursive: true })
+    const broken = join(root, '.tsyn', BASELINE_DIR, `${'a'.repeat(40)}.db`)
     writeFileSync(broken, 'not a database\n')
     expect(openBaseline(root, broken)).toBeNull()
   })
@@ -268,7 +268,7 @@ describe('the listing', () => {
     // and a baseline that cannot be opened is a missing one.
     runAnalyse()
     writeFileSync(
-      join(root, '.codedocs', BASELINE_DIR, `${head()}.db`),
+      join(root, '.tsyn', BASELINE_DIR, `${head()}.db`),
       'not a database\n',
     )
     write('src/core.ts', 'export const core = (): number => 99\n')
@@ -330,7 +330,7 @@ describe('impact', () => {
 
     // The first commit has a baseline, so ask for one that does not: `HEAD`
     // itself is stored, and its parent is too, so drop a baseline instead.
-    rmSync(join(root, '.codedocs', 'base', `${first}.db`), { force: true })
+    rmSync(join(root, '.tsyn', 'base', `${first}.db`), { force: true })
     const envelope = runImpact(first)
 
     expect(envelope.baseline.requested).toBe(first)
@@ -449,8 +449,8 @@ describe('affected tests', () => {
 describe('the index directory', () => {
   it('keeps baselines beside the index, inside the ignored directory', () => {
     runAnalyse()
-    expect(existsSync(join(root, '.codedocs', 'base'))).toBe(true)
-    // `.codedocs/.gitignore` is `*`, so nothing here reaches `git status` —
+    expect(existsSync(join(root, '.tsyn', 'base'))).toBe(true)
+    // `.tsyn/.gitignore` is `*`, so nothing here reaches `git status` —
     // which is what keeps capture from making the tree dirty for the next run.
     expect(
       execFileSync('git', ['status', '--porcelain'], {

@@ -72,7 +72,7 @@ const datasetRoute = createRoute({
 })
 
 /**
- * The single file `codedocs art` writes is opened from disk, where only the
+ * The single file `tsyn art` writes is opened from disk, where only the
  * hash can carry a route; everywhere else it is the path.
  */
 const router = createRouter({

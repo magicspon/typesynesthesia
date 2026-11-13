@@ -1,4 +1,4 @@
-# codedocs
+# Typesynesthesia
 
 Always respond to the user in plain language using ISO 24495-1:2023
 
@@ -28,7 +28,7 @@ FILE:EXPORT`. Fallow is syntactic; an export can be imported-but-unreferenced an
 
 ## No network
 
-No codedocs package may reach the network — [ADR 0011](docs/adr/0011-report-bug-payload.md).
+No Typesynesthesia package may reach the network — [ADR 0011](docs/adr/0011-report-bug-payload.md).
 Two gates hold it: oxlint's `no-restricted-imports` and `no-restricted-globals` cover
 first-party source, and `pnpm check:network` covers the production dependency closure.
 
@@ -40,7 +40,7 @@ first-party source, and `pnpm check:network` covers the production dependency cl
 
 ### Issue tracker
 
-Issues and PRDs live as GitHub issues on `magicspon/codedocs`, managed via the `gh` CLI. See
+Issues and PRDs live as GitHub issues on `magicspon/typesynesthesia`, managed via the `gh` CLI. See
 `docs/agents/issue-tracker.md`.
 
 ### Triage labels

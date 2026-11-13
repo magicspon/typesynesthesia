@@ -1,8 +1,8 @@
-import type { Composition, RealisedTrack } from '@codedocs/codesong/browser'
+import type { Composition, RealisedTrack } from '@tsyn/codesong/browser'
 import { useEffect, useRef, useState } from 'react'
 import { takeOver, type Handover } from './handover.ts'
 import { Player } from './player.ts'
-import type { Sound } from './sound.ts'
+import type { Sound } from '@tsyn/codesong/browser'
 
 /** What the page can ask of the player. */
 interface Actions {

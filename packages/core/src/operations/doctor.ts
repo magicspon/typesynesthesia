@@ -71,7 +71,7 @@ export interface SpecifierEvidence {
   readonly sites: number
   /** The files that wrote it, sorted. */
   readonly files: readonly FilePath[]
-  /** What `codedocs.jsonc` says clears it, or `null` — there is no built-in table. */
+  /** What `tsyn.jsonc` says clears it, or `null` — there is no built-in table. */
   readonly remediation: string | null
 }
 
@@ -108,7 +108,7 @@ export interface IndexReport {
 /** How `doctor` was asked to run, and what it needs to name a remediation. */
 export interface DoctorOptions {
   readonly root: string
-  /** The repository's own `codedocs.jsonc`, which is where `missing-generated`'s command lives. */
+  /** The repository's own `tsyn.jsonc`, which is where `missing-generated`'s command lives. */
   readonly config: Config
   /** Re-run signals 1-3 against the working tree and name the disagreements. */
   readonly measure: boolean
@@ -133,7 +133,7 @@ export type DoctorEnvelope = Envelope<readonly Precondition[]> & {
   /**
    * What the label layer decided, and where it is least sure.
    *
-   * ADR 0003 asks for it here because `classify` in `codedocs.jsonc` is the
+   * ADR 0003 asks for it here because `classify` in `tsyn.jsonc` is the
    * escape hatch, and a user who cannot see what the signals decided has no way
    * to discover that it exists.
    */
@@ -160,7 +160,7 @@ export interface HeldBaseline {
 /** What `doctor` says about the baselines on disk. */
 export interface BaselineReport {
   readonly held: readonly HeldBaseline[]
-  /** The cap in force, from `codedocs.jsonc`. `0` means capture is disabled. */
+  /** The cap in force, from `tsyn.jsonc`. `0` means capture is disabled. */
   readonly cap: number
   /** Commits between `HEAD` and the newest usable baseline, where git can say. */
   readonly distance: number | null

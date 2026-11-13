@@ -60,7 +60,7 @@ export interface DraftBlindSpot {
 }
 
 /** The marker a candidate claim carries, which `docs check` does not read. */
-export const CANDIDATE_MARKER = '<!-- codedocs?:'
+export const CANDIDATE_MARKER = '<!-- tsyn?:'
 
 /**
  * Render one draft.
@@ -106,10 +106,10 @@ function preamble(header: DraftHeader): string[] {
         : `${header.written} of ${header.available} sections — pass --limit for the rest`
   return [
     '<!--',
-    `Drafted by codedocs from \`${escaped(header.subject)}\` at ${at}: ${counted}.`,
+    `Drafted by tsyn from \`${escaped(header.subject)}\` at ${at}: ${counted}.`,
     '',
-    'codedocs wrote no prose. Everything below is a fact read from the index, and',
-    'the paragraphs are yours. Each `codedocs?:` comment is a *candidate* claim:',
+    'tsyn wrote no prose. Everything below is a fact read from the index, and',
+    'the paragraphs are yours. Each `tsyn?:` comment is a *candidate* claim:',
     'delete the `?` to endorse it, and `docs check` verifies it from then on.',
     'Until you endorse one, this file is not a document and nothing checks it.',
     '-->',
@@ -117,7 +117,7 @@ function preamble(header: DraftHeader): string[] {
   ]
 }
 
-/** One section: the question codedocs cannot answer, its facts, its candidates. */
+/** One section: the question tsyn cannot answer, its facts, its candidates. */
 function section(body: DraftBody): string[] {
   return [
     `## ${body.heading}`,
@@ -149,13 +149,13 @@ const group = (facts: DraftFactGroup): string[] => [
  * The prompt a section opens with.
  *
  * Phrased as a question rather than as `TODO`, because what is missing is not a
- * task codedocs left half-done — it is the half codedocs is constitutionally
+ * task tsyn left half-done — it is the half tsyn is constitutionally
  * unable to do, and the question is the most useful thing it can leave in its
  * place.
  */
 const question = (body: DraftBody): string =>
   `What is \`${body.heading}\` for, and why does it exist? ` +
-  'codedocs does not know, and will not guess.'
+  'tsyn does not know, and will not guess.'
 
 /** The blind spots, or nothing at all where the answer was complete. */
 function footer(blindSpots: readonly DraftBlindSpot[]): string[] {
@@ -163,7 +163,7 @@ function footer(blindSpots: readonly DraftBlindSpot[]): string[] {
   return [
     '---',
     '',
-    'codedocs could not see these while drafting, and any of them could have',
+    'tsyn could not see these while drafting, and any of them could have',
     'changed the facts above:',
     '',
     ...blindSpots.map((spot) => `- \`${spot.subject}\` — ${spot.reason}`),
@@ -175,6 +175,6 @@ function footer(blindSpots: readonly DraftBlindSpot[]): string[] {
  * early defused.
  *
  * The subject is whatever the caller typed, so it is the one string in a draft
- * that codedocs did not choose.
+ * that tsyn did not choose.
  */
 const escaped = (text: string): string => text.replaceAll('-->', '--&gt;')

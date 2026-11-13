@@ -5,7 +5,7 @@ import { fromAtlas, seriesOf, type Series } from './series.ts'
 type Load = () => Promise<Atlas | Timeline>
 
 /**
- * Datasets `codedocs art` wrote into the page, as
+ * Datasets `tsyn art` wrote into the page, as
  * `<script type="application/json" data-dataset="name">`. Parsed only when
  * opened: a timeline can run to tens of MB.
  */
@@ -37,7 +37,7 @@ function sources(): Record<string, Load> {
   // literal, so the list lives here and in `names.ts`. Symbol names are not
   // a dataset; `names.ts` loads them on demand.
   const modules = import.meta.glob<{ default: Atlas | Timeline }>(
-    '../data/{nextjs,nuxt,opencode,payload,router,sentry,sst,typescript,vscode}.json',
+    '../data/{tsyn,nextjs,nuxt,opencode,payload,router,sentry,sst,typescript,vscode}.json',
   )
   return Object.fromEntries(
     Object.entries(modules).map(([path, load]) => [

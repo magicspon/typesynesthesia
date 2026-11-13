@@ -35,7 +35,7 @@ Highest precedence first. Union, not first-match, except where user config overr
 
 | Axis         | Derivation         | Signal                                                           | Provenance      |
 | ------------ | ------------------ | ---------------------------------------------------------------- | --------------- |
-| both         | `user-config`      | a `classify` glob in `codedocs.jsonc`                            | `deterministic` |
+| both         | `user-config`      | a `classify` glob in `tsyn.jsonc`                                | `deterministic` |
 | `authorship` | `git-untracked`    | present on disk, not tracked by git                              | `deterministic` |
 | `authorship` | `generated-header` | `@generated`-style sentinel in the first 5 lines                 | `syntactic`     |
 | `authorship` | `codegen-path`     | `*.generated.*`, `next-env.d.ts`, `.next/types/**`, `.prisma/**` | `inferred`      |
@@ -64,7 +64,7 @@ Defaults: `role: source`, `authorship: authored`.
 - **Test-runner config as a signal.** Rejected because it is unreadable, not because it is
   uninformative. Five of cal.com's seven runner configs are `jest.config.ts`, `vitest.config.mts` and
   `playwright.config.ts` — TypeScript whose globs exist only after evaluation — and ADR 0001 forbids
-  codedocs executing repository code under any flag. `jest.config.json` is read when present. This is
+  Typesynesthesia executing repository code under any flag. `jest.config.json` is read when present. This is
   the reason `role` cannot claim to be deterministic and must not pretend otherwise.
 - **A `fixture` role.** Rejected: the 172 non-test-named files inside test directories are exactly
   the population a separate role would create, and every caller that excludes tests wants them
@@ -73,7 +73,7 @@ Defaults: `role: source`, `authorship: authored`.
 - **A `vendored` role.** Rejected on absence: all three fixtures contain **zero** vendored TypeScript,
   and cal.com's only `linguist-vendored` rule points at `/.yarn/**`. Settled constraint 5 applies to
   our own vocabulary as much as to dependencies. A user with vendored code maps it to
-  `authorship: generated` in `codedocs.jsonc` and gets the behaviour they want with no new term.
+  `authorship: generated` in `tsyn.jsonc` and gets the behaviour they want with no new term.
 - **A `declaration` role for `.d.ts`.** Rejected on measurement: cal.com's 49 tracked `.d.ts` are 14
   ambient `next-env`/`global` files and 35 hand-authored type modules (`IRedisService.d.ts`,
   `lib/dto/types.d.ts`) — genuinely authored source. All **134** generated `.d.ts` were untracked and
@@ -92,8 +92,8 @@ Defaults: `role: source`, `authorship: authored`.
 - **Incremental label invalidation.** Rejected on cost. The full pass is ~0.9 s on cal.com —
   `git ls-files` 0.01 s, the on-disk sweep 0.79 s, the header scan 0.07 s for all 5,025 files — against
   **22.9 s** for the call-graph sweep it precedes. Tracking dependencies for a label whose inputs
-  include a repo-wide `.gitignore` and `codedocs.jsonc` is real machinery to save under a second, and
-  it buys a staleness bug where an edited `codedocs.jsonc` leaves old labels behind.
+  include a repo-wide `.gitignore` and `tsyn.jsonc` is real machinery to save under a second, and
+  it buys a staleness bug where an edited `tsyn.jsonc` leaves old labels behind.
 - **Storing directory classifications.** Rejected: PRD §6's "source directories" and "test
   directories" are a render-time summary over file labels. cal.com has test files inside
   `packages/*/src` and source files inside `apps/*/test`, so a stored directory label is wrong for
@@ -117,11 +117,11 @@ Defaults: `role: source`, `authorship: authored`.
   excluded, as a blind spot in ADR 0001's sense. The `role` default is deliberately permissive:
   hiding test callers from `callers` makes tested-but-unreferenced code look dead, which is precisely
   the Redwood Cells trap the backend spike found and named. Any per-operation deviation is
-  [#10](https://github.com/magicspon/codedocs/issues/10)'s to argue, not this ADR's to grant.
+  [#10](https://github.com/magicspon/typesynesthesia/issues/10)'s to argue, not this ADR's to grant.
 - **`role` is mostly `inferred` and `authorship` mostly `deterministic`**, and that asymmetry is the
   honest report rather than a defect to be engineered away. It follows directly from the fact that git
   knows what it does not track, while nothing but convention knows what a test is.
-- **The escape hatch is a `classify` block in `codedocs.jsonc`** at the repository root: glob to
+- **The escape hatch is a `classify` block in `tsyn.jsonc`** at the repository root: glob to
   partial label, last match wins, highest precedence. It may set `role` and `authorship` on files
   already in the index and **may not add files**, because membership belongs to the projects.
   Overrides are labels like any other, so an answer can always name the line that caused a file to be
@@ -132,4 +132,4 @@ Defaults: `role: source`, `authorship: authored`.
   inside `src/`. That list is the only way a user discovers the escape hatch exists.
 - **A repository whose tsconfig admits its own `dist` gets duplicate symbols.** This is the residue of
   making membership the projects' answer. It is a defect in that repository, and `doctor` names it
-  rather than codedocs papering over it with a heuristic.
+  rather than Typesynesthesia papering over it with a heuristic.

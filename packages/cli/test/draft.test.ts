@@ -1,6 +1,6 @@
 /**
  * `docs draft` through the CLI binding: where the Markdown goes, and what
- * codedocs refuses to do with it.
+ * tsyn refuses to do with it.
  *
  * ADR 0013 lands a draft beside the code it is about — `docs/<file>.<symbol>.md`
  * next to the file the subject is declared in — so `--out` is an override and
@@ -33,7 +33,7 @@ let out: string
 let derived: string
 
 beforeAll(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-draft-cli-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-draft-cli-'))
   cpSync(fixture, root, { recursive: true })
   cpSync(join(here, 'package.fixture.json'), join(root, 'package.json'))
   out = join(root, 'notes.md')
@@ -79,7 +79,7 @@ describe('where the draft goes', () => {
     const result = invoke('docs', 'draft', 'checkout', '--out', '-')
     expect(result.code).toBe(0)
     expect(result.stdout).toContain('## checkout')
-    expect(result.stdout).toContain('<!-- codedocs?:')
+    expect(result.stdout).toContain('<!-- tsyn?:')
     // Nothing about the run leaks into the bytes somebody is redirecting.
     expect(result.stdout).not.toContain('candidate claim')
     expect(result.stderr).toContain('candidate claim')
@@ -103,7 +103,7 @@ describe('what it refuses', () => {
     writeFileSync(derived, '# mine\n')
     const result = invoke('docs', 'draft', 'checkout')
     expect(result.code).toBe(2)
-    // Named as the repository spells it, which is where codedocs put it.
+    // Named as the repository spells it, which is where tsyn put it.
     expect(result.stderr).toContain(
       'src/docs/checkout.checkout.md already exists',
     )
@@ -151,10 +151,7 @@ describe('what a drafted file is not', () => {
     invoke('docs', 'draft', 'checkout')
     writeFileSync(
       derived,
-      readFileSync(derived, 'utf8').replace(
-        '<!-- codedocs?:',
-        '<!-- codedocs:',
-      ),
+      readFileSync(derived, 'utf8').replace('<!-- tsyn?:', '<!-- tsyn:'),
     )
     expect(invoke('docs', 'check').stdout).toContain('checkout.checkout.md')
   })
@@ -189,7 +186,7 @@ describe('the path a draft derives', () => {
   it('will not turn a separator in a descriptor into a directory', () => {
     // An object-literal key is a [[Descriptor path]] segment and can be a
     // string, so the name it contributes is not a path segment until it is made
-    // one — otherwise codedocs derives a directory out of somebody's literal.
+    // one — otherwise tsyn derives a directory out of somebody's literal.
     expect(derive('src/routes.ts#routes.a/b')).toBe(
       join('/repo', 'src', 'docs', 'routes.routes.a-b.md'),
     )

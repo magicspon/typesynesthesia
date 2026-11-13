@@ -7,7 +7,7 @@ status: accepted
 `docs draft <subject>` writes a Markdown file prefilled with everything the index holds about one
 symbol or one file: the facts as readable prose material, and every [[Claim]] those facts would
 support, as **candidates**. It writes no sentences, and it writes no claim either — a candidate
-carries the marker `<!-- codedocs?: … -->`, which [`docs check`](0005-document-claims-and-verdicts.md)
+carries the marker `<!-- tsyn?: … -->`, which [`docs check`](0005-document-claims-and-verdicts.md)
 does not read. A drafted file is therefore not a [[Document]] at all until a person deletes a `?`.
 
 This **reverses** [ADR 0006](0006-operation-set-and-renderer-contract.md), which deleted
@@ -19,13 +19,13 @@ the one this decision has to answer in full.
 
 ## What the two objections were, and what answers them
 
-**"It is codedocs writing a document."** ADR 0005 refused codedocs writing to documents, and the two
+**"It is Typesynesthesia writing a document."** ADR 0005 refused Typesynesthesia writing to documents, and the two
 examples it gave say what it was refusing: a verification timestamp, which is "a committed lie the
 moment anyone edits the code", and a claim repaired after a rename, which "writes an `inferred` fact
 into a committed file". Both are **unattended writes into a file someone else already owns**. A draft
 is neither. It is asked for by name, it lands at a path derived from the subject, and it **refuses to
-write over an existing file** — there is no flag to make it. codedocs still never edits a document;
-`report-bug`, which writes `./codedocs-report.json` unless told otherwise, is the existing precedent
+write over an existing file** — there is no flag to make it. Typesynesthesia still never edits a document;
+`report-bug`, which writes `./tsyn-report.json` unless told otherwise, is the existing precedent
 for an operation that writes the one file it was asked for and nothing else.
 
 **"It inverts the coverage measure."** This is the real one. Coverage exists to say _this prose is
@@ -34,11 +34,11 @@ covered` while nothing has been written, which is the exact overstatement ADR 00
 prevent. The answer is that a drafted claim is not a claim:
 
 ```markdown
-<!-- codedocs?: calls(src/checkout/service.ts#CheckoutService.charge,
+<!-- tsyn?: calls(src/checkout/service.ts#CheckoutService.charge,
                       src/payments/service.ts#PaymentService.capture) -->
 ```
 
-`docs check` discovers documents by scanning for `<!-- codedocs:`, and `<!-- codedocs?:` does not
+`docs check` discovers documents by scanning for `<!-- tsyn:`, and `<!-- tsyn?:` does not
 match it. So a freshly drafted file has coverage of **nothing**, because it is not a document. Each
 `?` a person deletes is one assertion they have read the prose for and are prepared to commit to, and
 coverage counts exactly those. The measure is not inverted; it is moved to where the judgement is.
@@ -59,7 +59,7 @@ every preview, plain text in a diff, one character to remove, and impossible to 
 
 The default is a path rather than stdout because **a draft is a file about to be edited**, and the
 edit happens in an editor, not in a pipe. A default of stdout makes the first thing every caller
-does a shell redirect — the one write codedocs cannot refuse, over a file it cannot see, which is
+does a shell redirect — the one write Typesynesthesia cannot refuse, over a file it cannot see, which is
 the loss this ADR built the overwrite refusal to prevent. Making the write the default moves that
 gesture inside the refusal.
 
@@ -116,11 +116,11 @@ byte-identical output, and a drafted-at line would break it on every run for no 
   `AGENTS.md` recipe. Rejected on what it asks of the caller: the facts are already there, but every
   agent then invents its own layout, its own heading depth and its own idea of which facts matter, and
   a person writing by hand gets nothing at all. The recipe is still worth writing
-  ([#18](https://github.com/magicspon/codedocs/issues/18)); it is not a substitute for one command.
+  ([#18](https://github.com/magicspon/typesynesthesia/issues/18)); it is not a substitute for one command.
 - **Emitting the skeleton to stdout only**, never writing. It survives ADR 0005 untouched and it was
   the safer half of this decision. Rejected because the refusal to overwrite is what makes the write
   safe, and a shell redirect has no such refusal — `> notes.md` over an existing file is the loss the
-  design was trying to prevent, moved into the user's shell where codedocs cannot decline it.
+  design was trying to prevent, moved into the user's shell where Typesynesthesia cannot decline it.
 - **Stdout by default, with `--out` to write.** The first shape of this decision, and rejected for
   the reason above turned one step further: if the redirect is the unsafe path, defaulting to the
   output that _needs_ a redirect makes the unsafe path the ordinary one. `--out -` keeps stdout for
@@ -149,13 +149,13 @@ byte-identical output, and a drafted-at line would break it on every run for no 
 
 - **ADR 0006's operation table gains a row**, and its rejection of `docs generate` is superseded on
   both grounds. The name is different because the operation is: `generate` promised prose, and
-  settled constraint 2 still forbids it. codedocs writes facts, markers and headings, and not one
+  settled constraint 2 still forbids it. Typesynesthesia writes facts, markers and headings, and not one
   sentence about what the code is for.
 - **A new marker enters the vocabulary**, and only `docs draft` writes it. `docs check` ignores it by
-  construction rather than by rule — the discovery scan tests for `<!-- codedocs:`, which
-  `<!-- codedocs?:` is not a case of — so nothing has to remember to keep them apart.
+  construction rather than by rule — the discovery scan tests for `<!-- tsyn:`, which
+  `<!-- tsyn?:` is not a case of — so nothing has to remember to keep them apart.
 - **`--out` is a second operation's flag now.** ADR 0006 keeps per-operation flags additive, so the
-  spelling is shared and the defaults are not: `report-bug` writes `./codedocs-report.json`, and
+  spelling is shared and the defaults are not: `report-bug` writes `./tsyn-report.json`, and
   `docs draft` writes a path derived from its subject. Both take `-` for stdout.
 - **The overwrite refusal is load-bearing, not a courtesy.** It was the guard on a flag somebody had
   to pass; it is now the guard on what happens when nobody says anything. A change that ever softens
@@ -167,7 +167,7 @@ byte-identical output, and a drafted-at line would break it on every run for no 
   document has to delete it first, which is a gesture a person can see in the diff.
 - **A draft can be re-run and diffed.** Byte-identical output at the same commit means a draft taken
   again after an edit is a diff against the file on disk, which is the closest thing to updating a
-  document that codedocs may do without editing one.
+  document that Typesynesthesia may do without editing one.
 - **Coverage stays a measure of what a person vouched for.** This is the load-bearing consequence: if
   a later change ever makes drafted claims count, ADR 0005's coverage measure is dead and this ADR
   should be reopened rather than worked around.

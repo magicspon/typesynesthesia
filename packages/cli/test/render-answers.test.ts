@@ -9,7 +9,7 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_SCOPE } from '@codedocs/core'
+import { DEFAULT_SCOPE } from '@tsyn/core'
 import type {
   BaselineUsed,
   BatchedEnvelope,
@@ -35,7 +35,7 @@ import type {
   ScopeFilter,
   SectionReport,
   SymbolNode,
-} from '@codedocs/core'
+} from '@tsyn/core'
 
 import {
   renderAnalyse,
@@ -786,7 +786,7 @@ describe('a docs answer', () => {
     )
     expect(
       faulted({ code: 'label-invalid', axis: 'role', value: 'nope' }),
-    ).toContain('`role=nope` is not a label codedocs knows')
+    ).toContain('`role=nope` is not a label tsyn knows')
   })
 
   it('reports what the scan cost, so the measurement stays visible', () => {
@@ -810,7 +810,7 @@ describe('a bug report', () => {
       request: { ...shell.request, subject: null, resolved: [] },
       result: {
         repositoryFacts: 'excluded',
-        contains: 'codedocs and machine facts only',
+        contains: 'tsyn and machine facts only',
         carries: {
           blindSpotReasons: 2,
           paths: 0,
@@ -833,8 +833,8 @@ describe('a bug report', () => {
     }) as unknown as ReportEnvelope
 
   it('names the file it wrote and what the file carries', () => {
-    const out = renderReport(reportEnvelope(), 'codedocs-report.json', plain)
-    expect(out).toContain('wrote codedocs-report.json')
+    const out = renderReport(reportEnvelope(), 'tsyn-report.json', plain)
+    expect(out).toContain('wrote tsyn-report.json')
     expect(out).toContain(
       '2 blind-spot reasons, 0 paths, 0 symbol names, 1 module specifier',
     )
@@ -878,7 +878,7 @@ describe('a bug report', () => {
       null,
       plain,
     )
-    expect(out).toContain('reproduced `nothing codedocs knows`')
+    expect(out).toContain('reproduced `nothing tsyn knows`')
     expect(out).toContain('— operation-unknown')
   })
 })
@@ -1072,7 +1072,7 @@ describe('the doctor notes', () => {
     const out = doctor({ result: [found] })
     expect(out).toContain('files no project claims')
     // `unmapped` gets no remediation at all, not even the line offering one.
-    expect(out).not.toContain('declare one in codedocs.jsonc')
+    expect(out).not.toContain('declare one in tsyn.jsonc')
   })
 
   it('names a specifier written across several files by the count, not by one of them', () => {

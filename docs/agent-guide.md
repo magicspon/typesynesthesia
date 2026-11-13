@@ -1,9 +1,9 @@
-# Using codedocs from an agent
+# Using Typesynesthesia from an agent
 
-For an agent working in a repository that has codedocs installed. Paste it into your `AGENTS.md`,
+For an agent working in a repository that has Typesynesthesia installed. Paste it into your `AGENTS.md`,
 your `CLAUDE.md`, or your system prompt.
 
-codedocs gives you a structural view of the repository. Use it to answer questions about **code
+Typesynesthesia gives you a structural view of the repository. Use it to answer questions about **code
 structure and relationships** before you start opening source files.
 
 The goal is not to replace reading source. The goal is to stop rediscovering deterministic structure
@@ -11,7 +11,7 @@ through repeated search and file reads.
 
 ## When to reach for it
 
-Reach for codedocs when you need to know:
+Reach for Typesynesthesia when you need to know:
 
 - where a symbol is defined;
 - what calls a symbol, or what it calls;
@@ -25,10 +25,10 @@ Read the source instead when you need:
 - what the code actually does, line by line;
 - comments, or anything written in prose;
 - a string or content search;
-- control flow codedocs cannot represent — dynamic dispatch, reflection, a call through a string key;
-- anything codedocs itself reports as a blind spot.
+- control flow Typesynesthesia cannot represent — dynamic dispatch, reflection, a call through a string key;
+- anything Typesynesthesia itself reports as a blind spot.
 
-Do not reach for codedocs because it is there. Reach for it when it saves you exploring.
+Do not reach for Typesynesthesia because it is there. Reach for it when it saves you exploring.
 
 ## Choosing a tool
 
@@ -49,7 +49,7 @@ Pick the smallest tool that answers the question.
 | A file to start writing documentation in     | `docs draft`    |
 | Why an answer is thin                        | `doctor`        |
 | Build the index as a step of its own         | `analyse`       |
-| codedocs itself is wrong                     | `report-bug`    |
+| Typesynesthesia itself is wrong              | `report-bug`    |
 
 Over MCP the names are the same, with one transliteration: `docs check` is `docs_check` and
 `docs affected` is `docs_affected`, because a tool name may not carry a space.
@@ -76,7 +76,7 @@ Bound it with `depth` unless you have a reason not to.
 
 **`docs draft` writes a file, and every claim in it is a candidate.** Reach for it when the task is
 to document something, rather than calling `evidence` and inventing a layout. What comes back is the
-facts already arranged, with each claim under a `codedocs?:` marker that `docs check` does not read —
+facts already arranged, with each claim under a `tsyn?:` marker that `docs check` does not read —
 so the file is not a document until somebody deletes a `?`. **Do not delete the `?` yourself on a
 claim you have not written the prose for**: that marker is how the coverage measure stays a record of
 what a person vouched for. Write the paragraph, then endorse the claim that justifies it.
@@ -94,12 +94,12 @@ evidence (or a narrower operation)
     ↓
 answered?
     ├── yes → use it
-    └── no → narrower or wider codedocs query
+    └── no → narrower or wider tsyn query
               ↓
          still not answered → read the source
 ```
 
-Once codedocs has answered a structural question, **do not go and rediscover the same fact by
+Once Typesynesthesia has answered a structural question, **do not go and rediscover the same fact by
 searching**. Search again only to verify something or to investigate a named blind spot.
 
 For a bug fix, a reasonable sequence is:
@@ -132,9 +132,9 @@ thousand callers can never spend a second subject's budget. `request.subjects` e
 in order, and `request.resolved` names what each one resolved to, one entry per input. `conditions`
 still sits at the top: it is the union of every project any subject in the call touched.
 
-Three things are easy to blur into one and codedocs keeps apart:
+Three things are easy to blur into one and Typesynesthesia keeps apart:
 
-- a **blind spot** is something codedocs could not see, so it does not know what it missed;
+- a **blind spot** is something Typesynesthesia could not see, so it does not know what it missed;
 - **truncation** is something it withheld on purpose, and it knows exactly how much;
 - **scope** is something you excluded, and it was part of your question.
 
@@ -142,7 +142,7 @@ Three things are easy to blur into one and codedocs keeps apart:
 says which analysis ran — not how good the code is. If an answer looks thin and `conditions` says
 `syntactic`, run `doctor`: it names the unmet precondition and the command that clears it.
 
-**A missing relationship is not proof that none exists.** If codedocs reports that something could not
+**A missing relationship is not proof that none exists.** If Typesynesthesia reports that something could not
 be resolved, read the source rather than concluding the edge is absent.
 
 Exit codes: `0` is an answer, `1` is a negative finding — still an answer — and `2` means there is no
@@ -150,7 +150,7 @@ envelope at all. Over MCP, only exit 2 comes back as an error.
 
 ## Keep the two jobs apart
 
-codedocs answers:
+Typesynesthesia answers:
 
 > What is structurally true about this code?
 
@@ -158,5 +158,5 @@ You answer:
 
 > What does that mean for this task?
 
-Do not ask codedocs to infer intent it cannot establish from the code, and do not invent an
+Do not ask Typesynesthesia to infer intent it cannot establish from the code, and do not invent an
 explanation when the structural evidence does not support one.

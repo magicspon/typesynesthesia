@@ -1,6 +1,6 @@
 # Issue tracker: GitHub
 
-Issues and PRDs for this repo live as GitHub issues on `magicspon/codedocs`. Use the `gh` CLI for all operations.
+Issues and PRDs for this repo live as GitHub issues on `magicspon/typesynesthesia`. Use the `gh` CLI for all operations.
 
 ## Conventions
 
@@ -40,14 +40,14 @@ Both APIs take the issue's **database id** (`.id`), not its number, and both nee
 (typed) rather than `-f` (string) — `-f` fails with a 422 "not of type integer".
 
 ```bash
-ID=$(gh api repos/magicspon/codedocs/issues/<child> --jq '.id')
+ID=$(gh api repos/magicspon/typesynesthesia/issues/<child> --jq '.id')
 
 # make <child> a sub-issue of <map>
-gh api -X POST repos/magicspon/codedocs/issues/<map>/sub_issues -F sub_issue_id=$ID
+gh api -X POST repos/magicspon/typesynesthesia/issues/<map>/sub_issues -F sub_issue_id=$ID
 
 # mark <issue> as blocked by <blocker>
-BLOCKER=$(gh api repos/magicspon/codedocs/issues/<blocker> --jq '.id')
-gh api -X POST repos/magicspon/codedocs/issues/<issue>/dependencies/blocked_by -F issue_id=$BLOCKER
+BLOCKER=$(gh api repos/magicspon/typesynesthesia/issues/<blocker> --jq '.id')
+gh api -X POST repos/magicspon/typesynesthesia/issues/<issue>/dependencies/blocked_by -F issue_id=$BLOCKER
 ```
 
 Issues must exist before they can reference each other, so always create in one pass and wire in a

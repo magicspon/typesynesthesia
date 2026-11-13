@@ -10,7 +10,7 @@
 import type { Arm, RunRecord, Toolset } from './types.ts'
 
 /** The toolsets an arm may be built on. Anything else is a typo, not an arm. */
-const TOOLSETS: Toolset[] = ['baseline', 'codedocs']
+const TOOLSETS: Toolset[] = ['baseline', 'tsyn']
 
 /**
  * The short name a model goes by in an arm id and in the table.
@@ -23,7 +23,7 @@ function modelLabel(model: string): string {
   return model.replace(/^claude-/, '').replace(/-\d{8}$/, '')
 }
 
-/** The id an arm is known by, on disk and in the report: `codedocs@haiku-4-5`. */
+/** The id an arm is known by, on disk and in the report: `tsyn@haiku-4-5`. */
 function armId(toolset: Toolset, model: string): string {
   return `${toolset}@${modelLabel(model)}`
 }
@@ -34,7 +34,7 @@ function makeArm(toolset: Toolset, model: string): Arm {
 }
 
 /**
- * Reads one `--arms` entry: `codedocs`, or `codedocs@claude-opus-5`.
+ * Reads one `--arms` entry: `tsyn`, or `tsyn@claude-opus-5`.
  *
  * The model after `@` is a full model id rather than a label, because it is
  * passed to the agent verbatim. An entry without one runs on the session's

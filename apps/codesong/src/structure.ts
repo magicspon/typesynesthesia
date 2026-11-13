@@ -3,7 +3,7 @@
  * with its fan-in, fan-out, depth and centrality, each also as a 0–1 rank.
  */
 
-import { isTest, ROLES, type Atlas } from '@codedocs/code-art/atlas'
+import { isTest, ROLES, type Atlas } from '@tsyn/code-art/atlas'
 import { depths, pageRank, rankNormalise, type Adjacency } from './metrics.ts'
 
 /** One source file and where it sits in the graph. */

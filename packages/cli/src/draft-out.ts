@@ -1,5 +1,5 @@
 /**
- * Where a draft lands, and what codedocs refuses to do to get it there.
+ * Where a draft lands, and what tsyn refuses to do to get it there.
  *
  * [ADR 0013](../../../docs/adr/0013-drafting-a-document.md) gives `docs draft` a
  * derived default rather than stdout: a draft is a file about to be edited, and
@@ -19,9 +19,9 @@ import {
   splitShorthand,
   type DraftSection,
   type EnvelopeError,
-} from '@codedocs/core'
+} from '@tsyn/core'
 
-import { codedocsFrames, messageOf } from './stack.ts'
+import { tsynFrames, messageOf } from './stack.ts'
 
 /** The directory a derived draft goes in, made if it is not there yet. */
 const FOLDER = 'docs'
@@ -54,7 +54,7 @@ export function derivedDraftPath(
   return resolve(root, dirname(path), FOLDER, `${segment(named)}.md`)
 }
 
-/** Every character a file name may not carry, on any platform codedocs runs on. */
+/** Every character a file name may not carry, on any platform tsyn runs on. */
 const UNSAFE = /[/\\<>:"|?*]+/g
 
 /**
@@ -62,7 +62,7 @@ const UNSAFE = /[/\\<>:"|?*]+/g
  *
  * A [[Descriptor path]] segment is what the author wrote, and an object-literal
  * key can be a string holding a slash — so a symbol name is not a file name
- * until the separators are out of it, or codedocs would derive a directory out
+ * until the separators are out of it, or tsyn would derive a directory out
  * of somebody's string literal and then create it. Only what a path or a
  * platform forbids is replaced: a symbol called `café` drafts a file named
  * after it.
@@ -74,8 +74,8 @@ const segment = (name: string): string => name.replaceAll(UNSAFE, '-')
  *
  * @param out - The path as the note and any refusal should spell it, which is
  * what the user typed where they typed one.
- * @param derived - Whether codedocs chose the path. Only then is the parent
- * directory created: a path codedocs derived includes a folder it is entitled to
+ * @param derived - Whether tsyn chose the path. Only then is the parent
+ * directory created: a path tsyn derived includes a folder it is entitled to
  * make, while an `--out` that names a directory nobody made is a typo worth
  * hearing about rather than a tree worth creating.
  */
@@ -93,7 +93,7 @@ export function writeDraft(
     return {
       code: 'draft-unwritable',
       params: { out, detail: messageOf(error) },
-      stack: codedocsFrames(error),
+      stack: tsynFrames(error),
     }
   }
   return null

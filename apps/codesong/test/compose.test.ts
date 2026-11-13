@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Atlas } from '@codedocs/code-art/atlas'
+import type { Atlas } from '@tsyn/code-art/atlas'
 import { describe, expect, it } from 'vitest'
 import { compose, DEFAULT_OPTIONS, tonic } from '../src/compose/compose.ts'
 import type { Composition } from '../src/model.ts'
@@ -14,7 +14,7 @@ function exported(name: string): Atlas {
   return JSON.parse(readFileSync(path, 'utf8')) as Atlas
 }
 
-const codedocs = analyse(readStructure(exported('codedocs')))
+const tsyn = analyse(readStructure(exported('tsyn')))
 const vscode = analyse(readStructure(exported('vscode')))
 
 const bars = (piece: Composition): number =>
@@ -34,14 +34,14 @@ describe('compose', () => {
   const piece = compose(vscode, { ...DEFAULT_OPTIONS, genre: 'lofi' })
 
   it('is deterministic', () => {
-    expect(compose(codedocs, DEFAULT_OPTIONS)).toEqual(
-      compose(codedocs, DEFAULT_OPTIONS),
+    expect(compose(tsyn, DEFAULT_OPTIONS)).toEqual(
+      compose(tsyn, DEFAULT_OPTIONS),
     )
   })
 
   it('varies with the seed but keeps what the piece is derived from', () => {
-    const a = compose(codedocs, DEFAULT_OPTIONS)
-    const b = compose(codedocs, { ...DEFAULT_OPTIONS, seed: 1234 })
+    const a = compose(tsyn, DEFAULT_OPTIONS)
+    const b = compose(tsyn, { ...DEFAULT_OPTIONS, seed: 1234 })
     expect(b).not.toEqual(a)
     expect(b.sections).toEqual(a.sections)
     expect(b.key).toBe(a.key)
@@ -52,7 +52,7 @@ describe('compose', () => {
 
   it('takes the key from how tightly the files are coupled', () => {
     const coupled = (meanFanOut: number) =>
-      tonic({ ...codedocs.structure, meanFanOut })
+      tonic({ ...tsyn.structure, meanFanOut })
     expect(coupled(0)).toBe(0) // C
     expect(coupled(2)).toBe(9) // A, three fifths up
     expect(coupled(4)).toBe(6) // F#, six fifths up
@@ -101,8 +101,8 @@ describe('compose', () => {
   })
 
   it('does not grow with the repository', () => {
-    // vscode has sixty times the files of codedocs.
-    const small = bars(compose(codedocs, DEFAULT_OPTIONS))
+    // vscode has sixty times the files of tsyn.
+    const small = bars(compose(tsyn, DEFAULT_OPTIONS))
     const large = bars(piece)
     expect(small).toBeGreaterThanOrEqual(48)
     expect(large).toBeLessThanOrEqual(small * 1.25)
@@ -119,7 +119,7 @@ describe('compose', () => {
   })
 
   it('drops roles from the end of the budget', () => {
-    const small = compose(codedocs, { ...DEFAULT_OPTIONS, tracks: 2 })
+    const small = compose(tsyn, { ...DEFAULT_OPTIONS, tracks: 2 })
     expect(small.tracks.map((t) => t.role)).toEqual(['lead', 'bass'])
     expect(small.motifs.some((m) => m.id.startsWith('pad:'))).toBe(false)
   })

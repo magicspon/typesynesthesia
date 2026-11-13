@@ -1,12 +1,12 @@
 # code-art
 
-Interactive 3D art made from a codedocs index. Every picture is a function of
+Interactive 3D art made from a Typesynesthesia index. Every picture is a function of
 the data, so each shape can be read back as a fact about the code.
 
 ## Run it
 
-Anyone with the CLI installed can run `codedocs art` in a repo. This writes
-the viewer, with the data inlined, to `.codedocs/art/index.html`. Add
+Anyone with the CLI installed can run `tsyn art` in a repo. This writes
+the viewer, with the data inlined, to `.tsyn/art/index.html`. Add
 `--frames 16` for a timeline. The rest of this page covers working on the art
 itself.
 
@@ -14,8 +14,8 @@ From the repo root:
 
 ```sh
 # 1. Export an index (a repo root, or a path to any index.db)
-pnpm --filter @codedocs/code-art export .
-pnpm --filter @codedocs/code-art export repos/vscode
+pnpm --filter @tsyn/code-art export .
+pnpm --filter @tsyn/code-art export repos/vscode
 
 # 2. Start the viewer, then open the address it prints
 pnpm art
@@ -23,7 +23,7 @@ pnpm art
 
 Add `--skip examples` to leave out every file under a folder of that name, at
 any depth; repeat it for more folders. It catches files a parent tsconfig still
-includes after `discover.skip` has kept codedocs out of the folder's own
+includes after `discover.skip` has kept Typesynesthesia out of the folder's own
 projects.
 
 Exports land in `src/data/` and are git-ignored. Each export also writes
@@ -72,7 +72,7 @@ Type part of a path in the search box, or click any file, to trace it. Press
 - A trace starts from at most 60 matches, and a busy file shows only its 24
   heaviest links at each hop. This keeps the picture readable.
 - `&q=` in the URL opens a search directly, for example
-  `?data=codedocs&q=operations/trace.ts`.
+  `?data=tsyn&q=operations/trace.ts`.
 
 ## Health readings
 
@@ -118,8 +118,8 @@ it back. It is not built or tested.
 ## Watch a repo grow
 
 ```sh
-pnpm build   # the timeline runs the codedocs CLI, so it needs a build
-pnpm --filter @codedocs/code-art timeline . --frames 16
+pnpm build   # the timeline runs the tsyn CLI, so it needs a build
+pnpm --filter @tsyn/code-art timeline . --frames 16
 ```
 
 This analyses 16 commits spread evenly along the main line of history, oldest
@@ -132,7 +132,7 @@ automatically; use the bar at the bottom to pause or drag through the commits.
   get full type-checked analysis. Workspace packages are pointed at the old
   commit's own copy, not today's.
 - Frames are cached in `.cache/` by commit, so asking for more frames later only
-  analyses the new ones. codedocs itself takes about 2 seconds a commit;
+  analyses the new ones. Typesynesthesia itself takes about 2 seconds a commit;
   vscode takes 1½–4 minutes a commit, so 12 frames is about 25 minutes.
 - With fallow on your PATH, each frame also gets health readings. fallow's
   results are cached apart from the analysis, so adding fallow to an old
@@ -247,11 +247,11 @@ drives. The info button explains each shape.
 - `src/scenes/*.tsx` draw those buffers with React Three Fiber.
 - `scripts/snapshot.ts` and `scripts/history.ts` are the export and the
   timeline as functions. `export.ts` and `timeline.ts` wrap them for the dev
-  viewer, and `codedocs art` imports them through `scripts/pipeline.ts`.
+  viewer, and `tsyn art` imports them through `scripts/pipeline.ts`.
 
 The dev viewer loads data as modules, not requests (ADR 0011).
 
-## What `codedocs art` ships
+## What `tsyn art` ships
 
 `pnpm build` here runs `vite build --mode embed`. That makes one
 self-contained `dist/index.html`, and the CLI build copies it to
@@ -260,7 +260,7 @@ self-contained `dist/index.html`, and the CLI build copies it to
 - The script and stylesheet are inlined (`scripts/single-file.ts`). A
   browser will not load a module from a file on disk, but it will run the
   same code inline.
-- No dev export goes into the page. `codedocs art` adds each dataset as a
+- No dev export goes into the page. `tsyn art` adds each dataset as a
   `<script type="application/json" data-dataset>` block (`scripts/page.ts`),
   and the viewer parses one only when it is opened.
 - The page has a Content-Security-Policy of `default-src 'none'`. three.js

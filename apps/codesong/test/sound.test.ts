@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { GENRE_NAMES } from '@codedocs/codesong/browser'
-import { GENRE_SOUND } from '../src/audio/genres.ts'
-import { controls, defaults, SETTINGS } from '../src/audio/sound.ts'
+import { GENRE_NAMES } from '../src/compose/genre.ts'
+import { GENRE_SOUND } from '../src/sound/genres.ts'
+import { controls, defaults, SETTINGS } from '../src/sound/settings.ts'
 
 describe('SETTINGS', () => {
   for (const [role, groups] of Object.entries(SETTINGS)) {

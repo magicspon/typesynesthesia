@@ -44,8 +44,7 @@ export function Landing(): JSX.Element {
         <header className="landing-head">
           <h1>No data yet</h1>
           <p className="intro">
-            Run{' '}
-            <code>pnpm --filter @codedocs/code-art export &lt;repo&gt;</code>{' '}
+            Run <code>pnpm --filter @tsyn/code-art export &lt;repo&gt;</code>{' '}
             and reload.
           </p>
         </header>

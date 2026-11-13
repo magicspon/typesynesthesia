@@ -1,6 +1,6 @@
 # Reconciling the edge count: the spike's 81,888 against the skeleton's 26,091
 
-Resolves [#27](https://github.com/magicspon/codedocs/issues/27). Measured against
+Resolves [#27](https://github.com/magicspon/typesynesthesia/issues/27). Measured against
 `repos/cal.com` at `176037d0af`, prepared as ADR 0001 requires, on TypeScript 7.0.2 and Node
 v24.19.0. Harness: throwaway, run from a scratch directory, not committed — the numbers below are
 the artefact.
@@ -168,11 +168,11 @@ path rather than ordinal"; the descriptor path does not separate these, and it r
 for reasons that still hold. The consequence is bounded — the merged ids are non-durable locals,
 overwhelmingly in test files — but a `callers` answer for such an id over-reports, so it is a real
 imprecision rather than a cosmetic one. Filed as
-[#34](https://github.com/magicspon/codedocs/issues/34).
+[#34](https://github.com/magicspon/typesynesthesia/issues/34).
 
 ## 9. Hand-off to #29
 
-[#29](https://github.com/magicspon/codedocs/issues/29) is scoped against a corpus that no longer
+[#29](https://github.com/magicspon/typesynesthesia/issues/29) is scoped against a corpus that no longer
 exists, and its target moves. ADR 0004 sized the index from a 40 MB JSON dump of **48,517 symbols
 and 81,888 edges**; the real index holds **41,771 symbols and 26,091 edges** and still measures
 **51,302,400 bytes**. So the overshoot is worse than 48 MB against 20 MB — it is 48 MB for a third of

@@ -1,4 +1,4 @@
-import type { Composition, RealisedTrack } from '@codedocs/codesong/browser'
+import type { Composition, RealisedTrack } from '@tsyn/codesong/browser'
 import { OrbitControls } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useRef, type JSX } from 'react'

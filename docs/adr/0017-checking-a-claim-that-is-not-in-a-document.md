@@ -5,11 +5,11 @@ status: proposed
 # A claim can be asked without being written down
 
 ADR 0005 built a claim language, a per-claim evaluator and four [[Verdict]]s, and put exactly one
-door in front of them: a [[Claim]] must be inside a [[Document]] before codedocs will evaluate it.
+door in front of them: a [[Claim]] must be inside a [[Document]] before Typesynesthesia will evaluate it.
 `checkClaim(context, claim)` already takes one claim on its own; nothing but the operation surface
 requires that claim to have come from a file.
 
-[#122](https://github.com/magicspon/codedocs/issues/122) proposes `verify '<claim>' ['<claim>' …]` —
+[#122](https://github.com/magicspon/typesynesthesia/issues/122) proposes `verify '<claim>' ['<claim>' …]` —
 the same evaluator, with the claim source moved from a Markdown file to the argument list, writing
 nothing.
 
@@ -19,7 +19,7 @@ imports the legacy gateway any more"_ are both propositions the index can settle
 way to ask is to write a document you did not want.
 
 ```sh
-codedocs verify 'calls(src/checkout.ts#charge, src/payments.ts#capture)' \
+tsyn verify 'calls(src/checkout.ts#charge, src/payments.ts#capture)' \
                 'not imports(src/checkout.ts, src/legacy/gateway.ts)'
 ```
 
@@ -29,7 +29,7 @@ ADR 0012 deleted `review` by splitting PRD §16 and finding an owner for each ha
 and dependency-hygiene halves are `fallow`'s, and what remained was `impact` and `docs affected`
 printed next to each other, which is a renderer's job.
 
-`verify` is neither half, because **the proposition comes from the caller**. codedocs is not asked
+`verify` is neither half, because **the proposition comes from the caller**. Typesynesthesia is not asked
 whether a change is good, whether a dependency direction is right, or whether a pattern was followed.
 It is handed a statement and returns a verdict on that statement alone. It cannot produce a finding
 nobody asked for, and it cannot rank two of them, so neither the judgement objection nor the
@@ -49,7 +49,7 @@ property of a document — a ratio over the sections of a file on disk. A claim 
 has no section to cover and no file to be measured against, so it cannot enter the measure by any
 path. Two rules keep it that way:
 
-- **`verify` writes nothing.** It has no `--out`, and it never adds a `codedocs:` marker to any file.
+- **`verify` writes nothing.** It has no `--out`, and it never adds a `tsyn:` marker to any file.
   A caller who wants a claim endorsed writes it into a document themselves, which is the act ADR 0013
   made deliberate.
 - **`verify` is not a preview of endorsement.** A passing verdict says the index agrees today. It says

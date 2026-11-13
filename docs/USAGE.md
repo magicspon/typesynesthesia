@@ -1,16 +1,16 @@
-# codedocs (working title)
+# Typesynesthesia (working title)
 
 A local codebase index for TypeScript, built for the questions an editor cannot answer.
 
-Your editor tells you who calls one function, inside one project. codedocs indexes the whole
+Your editor tells you who calls one function, inside one project. Typesynesthesia indexes the whole
 repository — every symbol, every call edge, every project — into a single SQLite file beside your
 working tree, then answers questions **across** it, from the command line or from an agent.
 
 ```sh
-codedocs callers 'AuthService.login'          # who calls this, from anywhere
-codedocs trace 'handleCancelBooking.ts#handler' # what actually happens when this runs
-codedocs impact --label role=test             # which tests does my change reach
-codedocs docs check                           # which docs does my change contradict
+tsyn callers 'AuthService.login'          # who calls this, from anywhere
+tsyn trace 'handleCancelBooking.ts#handler' # what actually happens when this runs
+tsyn impact --label role=test             # which tests does my change reach
+tsyn docs check                           # which docs does my change contradict
 ```
 
 No LLM, no API key, no network, no daemon. Every answer is deterministic, and every answer says what
@@ -26,7 +26,7 @@ the analysis could not see.
 - [Commands](#commands) — [analyse](#analyse) · [symbol](#symbol) · [callers / callees](#callers-and-callees) · [references](#references) · [file](#file) · [trace](#trace) · [evidence](#evidence) · [impact](#impact) · [docs check](#docs-check) · [docs affected](#docs-affected) · [docs draft](#docs-draft) · [doctor](#doctor) · [report-bug](#report-bug)
 - [Naming a subject](#naming-a-subject) · [Filtering an answer](#filtering-an-answer) · [Flags](#flags) · [Exit codes](#exit-codes)
 - [Configuration](#configuration) · [JSON output](#json-output) · [Using it from an agent](#using-it-from-an-agent)
-- [Reading an answer honestly](#reading-an-answer-honestly) · [codedocs and fallow](#codedocs-and-fallow) · [Troubleshooting](#troubleshooting)
+- [Reading an answer honestly](#reading-an-answer-honestly) · [Typesynesthesia and fallow](#tsyn-and-fallow) · [Troubleshooting](#troubleshooting)
 
 ## Requirements
 
@@ -36,17 +36,17 @@ there is no native module to compile and no post-install step.
 ## Install
 
 ```sh
-npm install -g @codedocs/cli
+npm install -g @tsyn/cli
 ```
 
-That puts a `codedocs` command on your `PATH`. The package is scoped because the unscoped `codedocs`
-name on npm belongs to an unrelated project; the command it installs is `codedocs` either way.
+That puts a `tsyn` command on your `PATH`. The package is scoped because the unscoped `tsyn`
+name on npm belongs to an unrelated project; the command it installs is `tsyn` either way.
 
-Every command takes `--cwd`, so you never have to run codedocs from inside the repository it is
+Every command takes `--cwd`, so you never have to run Typesynesthesia from inside the repository it is
 reading:
 
 ```sh
-codedocs analyse --cwd /path/to/your/repo
+tsyn analyse --cwd /path/to/your/repo
 ```
 
 The examples below are written as if you were standing in the repository being read.
@@ -54,11 +54,11 @@ The examples below are written as if you were standing in the repository being r
 ### From source
 
 ```sh
-git clone git@github.com:magicspon/codedocs.git
-cd codedocs
+git clone git@github.com:magicspon/typesynesthesia.git
+cd tsyn
 pnpm install
 pnpm build
-./node_modules/.bin/codedocs analyse --cwd /path/to/your/repo
+./node_modules/.bin/tsyn analyse --cwd /path/to/your/repo
 ```
 
 `pnpm build` is required here and not for a published install: Node refuses to strip types inside
@@ -69,7 +69,7 @@ pnpm build
 **1. Build the index.** One row per TypeScript project, and totals underneath:
 
 ```console
-$ codedocs analyse --limit 6
+$ tsyn analyse --limit 6
   apps/api/v2/tsconfig.json  1863 files  typed
   apps/docs/tsconfig.json  7 files  typed
   apps/web/tsconfig.json  2316 files  typed
@@ -91,10 +91,10 @@ answers**, so an edit costs the repair (about 0.8 s for one file) and not a rebu
 takes roughly 0.3 s including process start.
 
 ```console
-$ codedocs symbol 'getPaymentAppData'
+$ tsyn symbol 'getPaymentAppData'
   packages/app-store/_utils/payments/getPaymentAppData.ts#getPaymentAppData  function  packages/app-store/_utils/payments/getPaymentAppData.ts:11
 
-$ codedocs callers 'getPaymentAppData' --limit 3
+$ tsyn callers 'getPaymentAppData' --limit 3
   apps/web/app/(use-page-wrapper)/payment/[uid]/PaymentPage.tsx#PaymentPage  apps/web/app/(use-page-wrapper)/payment/[uid]/PaymentPage.tsx:70
   apps/web/components/booking/BookingListItem.tsx#BookingListItem  apps/web/components/booking/BookingListItem.tsx:178
   apps/web/modules/bookings/components/AvailableTimes.tsx#SlotItem  apps/web/modules/bookings/components/AvailableTimes.tsx:105
@@ -132,8 +132,8 @@ Build the index, or bring it up to date. Reports what it did — a cold build, a
 and captures a [baseline](#impact) if the tree is clean.
 
 ```sh
-codedocs analyse
-codedocs analyse --limit 40      # show more than the default 20 projects
+tsyn analyse
+tsyn analyse --limit 40      # show more than the default 20 projects
 ```
 
 ### symbol
@@ -142,9 +142,9 @@ Find a symbol when you do not know its path. The only command that takes a glob,
 the declared name and the qualified name:
 
 ```sh
-codedocs symbol 'AuthService.login'
-codedocs symbol '*Repository'
-codedocs symbol '*'              # everything
+tsyn symbol 'AuthService.login'
+tsyn symbol '*Repository'
+tsyn symbol '*'              # everything
 ```
 
 It does no ranking, ever. Results are sorted, never scored.
@@ -152,7 +152,7 @@ It does no ranking, ever. Results are sorted, never scored.
 ### callers and callees
 
 ```console
-$ codedocs callers 'getPaymentAppData' --limit 5
+$ tsyn callers 'getPaymentAppData' --limit 5
   apps/web/app/(use-page-wrapper)/payment/[uid]/PaymentPage.tsx#PaymentPage  apps/web/app/(use-page-wrapper)/payment/[uid]/PaymentPage.tsx:70
   apps/web/components/booking/BookingListItem.tsx#BookingListItem  apps/web/components/booking/BookingListItem.tsx:178
   apps/web/modules/bookings/components/BookEventForm/BookEventForm.tsx#BookEventForm  apps/web/modules/bookings/components/BookEventForm/BookEventForm.tsx:83
@@ -170,7 +170,7 @@ Everything that **names** a subject without calling it — a type in a signature
 `extends`, a value passed by name. `callers` cannot see any of it.
 
 ```sh
-codedocs references 'Money'
+tsyn references 'Money'
 ```
 
 Four kinds are kept apart: `extends`, `implements`, `typeReferences`, and plain `references`. A call
@@ -184,7 +184,7 @@ same edge read from two ends.
 What the index holds about one file, without having to guess a symbol name first:
 
 ```console
-$ codedocs file src/types.ts
+$ tsyn file src/types.ts
   src/types.ts  typed
     in tsconfig.json *
     declares (5)
@@ -198,7 +198,7 @@ $ codedocs file src/types.ts
       src/wallet.ts
 ```
 
-It takes a repository-relative path or the tail of one, so `codedocs file types.ts` finds the same
+It takes a repository-relative path or the tail of one, so `tsyn file types.ts` finds the same
 file. The `*` marks the canonical project — the one the file's facts were produced in, and so the one
 whose fidelity applies.
 
@@ -208,7 +208,7 @@ The one no editor offers. `trace` walks outward from a root and returns **paths*
 with each shared prefix collapsed onto the line before it:
 
 ```console
-$ codedocs trace 'packages/features/bookings/lib/handleCancelBooking.ts#handler' --limit 8
+$ tsyn trace 'packages/features/bookings/lib/handleCancelBooking.ts#handler' --limit 8
   packages/features/bookings/lib/handleCancelBooking.ts#handler
     → packages/emails/email-manager.ts#sendCancelledEmailsAndSMS  packages/features/bookings/lib/handleCancelBooking.ts:509
       → packages/emails/email-manager.ts#eventTypeDisableHostEmail  packages/emails/email-manager.ts:519
@@ -242,7 +242,7 @@ Every kind of fact the index holds about one subject, in one answer — so an ag
 writing a document has them all without asking six questions:
 
 ```console
-$ codedocs evidence 'scopeTo' --limit 3
+$ tsyn evidence 'scopeTo' --limit 3
   symbols (1)
     packages/core/src/operations/scope.ts#scopeTo  function  packages/core/src/operations/scope.ts:31
   files (1)
@@ -272,7 +272,7 @@ each kind reports its own truncation, so a fourth caller cannot quietly evict th
 never has to invent the syntax:
 
 ```console
-$ codedocs evidence 'scopeTo' --claims --json | jq -r '.claims[0:3][]'
+$ tsyn evidence 'scopeTo' --claims --json | jq -r '.claims[0:3][]'
 exists(packages/core/src/operations/scope.ts#scopeTo)
 imports(packages/core/src/operations/scope.ts, packages/core/src/envelope.ts)
 imports(packages/core/src/operations/scope.ts, packages/core/src/model.ts)
@@ -284,7 +284,7 @@ What a change could reach: a walk **inward** through call and reference edges, f
 working tree edited.
 
 ```console
-$ codedocs impact --depth 2
+$ tsyn impact --depth 2
   changed
     src/core.ts#core
   1 step out
@@ -299,15 +299,15 @@ $ codedocs impact --depth 2
 ```
 
 ```sh
-codedocs impact                        # against the merge base with the default branch
-codedocs impact --base main            # against a named commit
-codedocs impact --label role=test      # which tests does this change reach
+tsyn impact                        # against the merge base with the default branch
+tsyn impact --base main            # against a named commit
+tsyn impact --label role=test      # which tests does this change reach
 ```
 
 **Which tests does this change reach** is `impact --label role=test`. There is no `affected-tests`
 command and there will not be one — a second traversal is a second thing to keep correct.
 
-`impact` compares against a **baseline**: an index codedocs kept from a commit it once analysed.
+`impact` compares against a **baseline**: an index Typesynesthesia kept from a commit it once analysed.
 Baselines are recorded as a side effect of `analyse` over a clean tree, never built on demand, and
 never leave the machine. Three are kept. If there is no usable baseline, the answer still comes back
 — the edits still come from git and the walk still runs — with the missing comparison named as a
@@ -322,7 +322,7 @@ GitHub and in every editor preview, and plain text in a diff.
 ```markdown
 Checkout charges through the payment service before it writes the order.
 
-<!-- codedocs: calls(src/checkout/service.ts#CheckoutService.charge,
+<!-- tsyn: calls(src/checkout/service.ts#CheckoutService.charge,
                      src/payments/service.ts#PaymentService.capture) -->
 ```
 
@@ -330,7 +330,7 @@ Writing a claim is how a file opts in. There is no configuration and no `docs/**
 discovery is a repository-wide scan for the marker, 46 ms over cal.com's 380 Markdown files.
 
 ```console
-$ codedocs docs check
+$ tsyn docs check
   docs/payments.md  contradicted, 3 of 5 sections covered
     Charging  verified  :6
       calls(src/payments.ts#charge, src/payments.ts#audit)  verified  :10
@@ -364,43 +364,43 @@ the text you need to repair the claim.
 signals of that character measure at 59–77% false alarms, and wiring one to a red build is how this
 gets removed from CI within a month. Raise the bar with `--fail-on <verdict>` if you want it.
 
-codedocs never writes to a document — no verification stamp, and no unattended repair after a rename.
+Typesynesthesia never writes to a document — no verification stamp, and no unattended repair after a rename.
 
 ### docs affected
 
 The change half of the same question, and it needs no baseline:
 
 ```sh
-codedocs docs affected              # what have I broken right now
-codedocs docs affected --base main  # everything since this commit
+tsyn docs affected              # what have I broken right now
+tsyn docs affected --base main  # everything since this commit
 ```
 
-With no argument the changed set is the drift codedocs already computes before every answer, so it
+With no argument the changed set is the drift Typesynesthesia already computes before every answer, so it
 needs no git and no configuration — usable inside a pre-commit hook. It never exits 1: reaching a
 document is not a finding.
 
 ### docs draft
 
 The other half of `evidence`: the same facts, shaped as the file you were going to open anyway. It
-writes **no prose** and **no claims** — every claim it writes is a _candidate_, under a `codedocs?:`
+writes **no prose** and **no claims** — every claim it writes is a _candidate_, under a `tsyn?:`
 marker that `docs check` does not read.
 
 ```console
-$ codedocs docs draft 'CheckoutService.charge'
+$ tsyn docs draft 'CheckoutService.charge'
 # CheckoutService.charge
 
 <!--
-Drafted by codedocs from `CheckoutService.charge` at commit 8f3a2c1: 1 section.
+Drafted by tsyn from `CheckoutService.charge` at commit 8f3a2c1: 1 section.
 
-codedocs wrote no prose. Everything below is a fact read from the index, and
-the paragraphs are yours. Each `codedocs?:` comment is a *candidate* claim:
+tsyn wrote no prose. Everything below is a fact read from the index, and
+the paragraphs are yours. Each `tsyn?:` comment is a *candidate* claim:
 delete the `?` to endorse it, and `docs check` verifies it from then on.
 Until you endorse one, this file is not a document and nothing checks it.
 -->
 
 ## CheckoutService.charge
 
-_What is `CheckoutService.charge` for, and why does it exist? codedocs does not know, and will not guess._
+_What is `CheckoutService.charge` for, and why does it exist? tsyn does not know, and will not guess._
 
 A `method` declared at `src/checkout/service.ts:42`, analysed at `typed` fidelity.
 
@@ -408,20 +408,20 @@ A `method` declared at `src/checkout/service.ts:42`, analysed at `typed` fidelit
   - `src/payments/service.ts#PaymentService.capture` (src/checkout/service.ts:47)
 ...
 
-<!-- codedocs?: exists(src/checkout/service.ts#CheckoutService.charge) -->
-<!-- codedocs?: calls(src/checkout/service.ts#CheckoutService.charge, src/payments/service.ts#PaymentService.capture) -->
+<!-- tsyn?: exists(src/checkout/service.ts#CheckoutService.charge) -->
+<!-- tsyn?: calls(src/checkout/service.ts#CheckoutService.charge, src/payments/service.ts#PaymentService.capture) -->
 ```
 
-**A draft is not a document.** The scan that finds documents looks for `<!-- codedocs:`, and
-`<!-- codedocs?:` is not that. So a drafted file has no [claim coverage](#docs-check) to overstate
+**A draft is not a document.** The scan that finds documents looks for `<!-- tsyn:`, and
+`<!-- tsyn?:` is not that. So a drafted file has no [claim coverage](#docs-check) to overstate
 until you have read a fact, written the paragraph it justifies, and deleted the `?` — which is the
-one judgement codedocs cannot make for you.
+one judgement Typesynesthesia cannot make for you.
 
 The subject is a symbol or a **path**. A path drafts the file and a section per durable symbol in
 it, which is what `--limit` counts:
 
 ```console
-$ codedocs docs draft src/checkout/service.ts --limit 5 --out docs/checkout.md
+$ tsyn docs draft src/checkout/service.ts --limit 5 --out docs/checkout.md
   src/checkout/service.ts  4 candidate claims
   CheckoutService  2 candidate claims
   ...
@@ -450,7 +450,7 @@ than a cap on the answer. See [ADR 0013](docs/adr/0013-drafting-a-document.md).
 Every unmet precondition in the repository, grouped so that one cause is one finding:
 
 ```console
-$ codedocs doctor
+$ tsyn doctor
   tsconfig.json  typed
     unprepared
       left-pad — 1 site in src/app.ts
@@ -461,13 +461,13 @@ $ codedocs doctor
     broken
       ./nowhere — 1 site in src/app.ts
 
-  1 project, 7 files, built by codedocs 0.0.0 against TypeScript 7.0.2
+  1 project, 7 files, built by tsyn 0.0.0 against TypeScript 7.0.2
 ```
 
 - **Static and instant.** It renders what the index already stored. No program is opened and no sweep
   of its own runs.
 - **A remediation, or an honest silence.** An install command is read from the lockfile and a codegen
-  command from [`codedocs.jsonc`](#configuration). `unmapped` and `broken` get no command — none
+  command from [`tsyn.jsonc`](#configuration). `unmapped` and `broken` get no command — none
   would help the first, and none _is_ a command for the second.
 - **`--measure`** re-runs the filesystem signals against the working tree and names where they
   disagree with the index. It is the escape hatch for the one thing stored signals cannot see: an
@@ -481,18 +481,18 @@ build that cannot be cleared is noise.
 Reproduce a failing command and write one file you can attach to an issue:
 
 ```sh
-codedocs report-bug -- callers 'Thing.method'
-codedocs report-bug --with-repository -- trace 'src/app.ts#main'
-codedocs report-bug --out - -- doctor          # to stdout
+tsyn report-bug -- callers 'Thing.method'
+tsyn report-bug --with-repository -- trace 'src/app.ts#main'
+tsyn report-bug --out - -- doctor          # to stdout
 ```
 
-The default report carries facts about codedocs and your machine alone, so it is **safe to paste in
+The default report carries facts about Typesynesthesia and your machine alone, so it is **safe to paste in
 public unread**. `--with-repository` adds the facts that name your code. Nothing is logged and
-nothing is transmitted — codedocs writes the file, and you decide where it goes.
+nothing is transmitted — Typesynesthesia writes the file, and you decide where it goes.
 
 ## Naming a subject
 
-Whatever codedocs prints as an identifier, it accepts as input. Two forms:
+Whatever Typesynesthesia prints as an identifier, it accepts as input. Two forms:
 
 ```
 packages/app-store/_utils/payments/getPaymentAppData.ts#getPaymentAppData   exact
@@ -515,7 +515,7 @@ Every file carries two labels, on axes that are deliberately independent:
 Filter any answer with the same generic pair, rather than bespoke flags like `--no-tests`:
 
 ```console
-$ codedocs callers charge --exclude-label role=test
+$ tsyn callers charge --exclude-label role=test
   …
   scope authorship=authored, not role=test — 4 excluded by it
 ```
@@ -524,7 +524,7 @@ $ codedocs callers charge --exclude-label role=test
   default: hiding them makes tested-but-unreferenced code look dead.
 - **`--label` on an axis replaces the default for that axis alone**, so `--label
 authorship=generated` asks about exactly what the default hides.
-- **An exclusion is a count, never a blind spot.** codedocs knows exactly what it withheld, and the
+- **An exclusion is a count, never a blind spot.** Typesynesthesia knows exactly what it withheld, and the
   applied scope is echoed on every answer.
 
 Both flags are repeatable, one per axis.
@@ -562,7 +562,7 @@ Both flags are repeatable, one per axis.
 
 `report-bug` only:
   --with-repository    add the facts that name your code
-  --out <path>         where to write it; `-` is stdout (default ./codedocs-report.json)
+  --out <path>         where to write it; `-` is stdout (default ./tsyn-report.json)
 ```
 
 A per-command flag passed to another command is **refused**, never ignored: `callers --depth 2` is an
@@ -576,11 +576,11 @@ error, because otherwise you would read a one-hop answer as a bounded walk.
 | `1`  | a negative finding | `doctor` (a clearable precondition), `docs check` (contradicted) |
 | `2`  | could not answer   | a bad command line, an invalid config, an unreadable index       |
 
-The convention matches [`fallow`](#codedocs-and-fallow), so both can sit in the same CI script.
+The convention matches [`fallow`](#tsyn-and-fallow), so both can sit in the same CI script.
 
 ## Configuration
 
-Optional. `codedocs.jsonc` at the repository root holds the facts about a repository codedocs cannot
+Optional. `tsyn.jsonc` at the repository root holds the facts about a repository Typesynesthesia cannot
 determine and must be told. Every key has a default, so a fresh clone needs no file at all.
 
 ```jsonc
@@ -598,7 +598,7 @@ determine and must be told. Every key has a default, so a fresh clone needs no f
 }
 ```
 
-| Key            | Default                      | What it tells codedocs                                                    |
+| Key            | Default                      | What it tells Typesynesthesia                                             |
 | -------------- | ---------------------------- | ------------------------------------------------------------------------- |
 | `version`      | `1`                          | Which shape this file is for                                              |
 | `classify`     | `{}`                         | Glob to `role` / `authorship`, last match wins, highest precedence        |
@@ -611,7 +611,7 @@ walk already found; `discover.skip` is added to the skip list, so `node_modules`
 from it. Neither decides membership: a file is in the index if and only if a project globs it.
 
 **It holds facts, never preferences.** A default `--limit`, an output format, a colour setting —
-codedocs can determine all of them, so none may enter. Nor may a key change what is _reported_ about
+Typesynesthesia can determine all of them, so none may enter. Nor may a key change what is _reported_ about
 what was analysed: no blind spot, truncation, fidelity or provenance can be configured away.
 
 **Parsing is strict.** Comments and trailing commas are read, as `.jsonc` promises. A file that is
@@ -633,7 +633,7 @@ and an agent all read — there is no separate agent surface.
   "request": {
     "subject": "…#getPaymentAppData",
     "resolved": [
-      "codedocs npm @calcom/app-store . `…/getPaymentAppData.ts`/getPaymentAppData().",
+      "tsyn npm @calcom/app-store . `…/getPaymentAppData.ts`/getPaymentAppData().",
     ],
     "limit": null,
     "depth": null,
@@ -678,7 +678,7 @@ parser never meets a second shape:
 ```jsonc
 "error": {
   "code": "config-invalid",
-  "params": { "key": "exlucde", "expectation": "is not a key codedocs knows — did you mean `exclude`?" },
+  "params": { "key": "exlucde", "expectation": "is not a key tsyn knows — did you mean `exclude`?" },
 }
 ```
 
@@ -702,15 +702,15 @@ Four things you can rely on:
 
 Two ways, and they return the same bytes.
 
-**Shell out** to `codedocs <command> --json` and parse the envelope above.
+**Shell out** to `tsyn <command> --json` and parse the envelope above.
 
-**Or speak MCP.** `codedocs mcp` serves the same commands over stdio:
+**Or speak MCP.** `tsyn mcp` serves the same commands over stdio:
 
 ```json
 {
   "mcpServers": {
-    "codedocs": {
-      "command": "codedocs",
+    "tsyn": {
+      "command": "tsyn",
       "args": ["mcp"]
     }
   }
@@ -726,32 +726,32 @@ in one call, and `--claims` gives back the claim syntax for writing the result i
 `docs check` will then keep honest.
 
 **[docs/agent-guide.md](docs/agent-guide.md)** is written for the agent rather than for you — which
-command to reach for, how to investigate without re-searching what codedocs has already answered, and
+command to reach for, how to investigate without re-searching what Typesynesthesia has already answered, and
 how to read the honesty fields. Paste it into your `AGENTS.md` or `CLAUDE.md`.
 
 ## Reading an answer honestly
 
-An answer that cannot say what it missed is worse than no answer. codedocs separates three things
+An answer that cannot say what it missed is worse than no answer. Typesynesthesia separates three things
 that are usually blurred into one score, and every answer carries all three:
 
-| Channel        | Means                    | Does codedocs know what it missed? |
-| -------------- | ------------------------ | ---------------------------------- |
-| **Blind spot** | could not see it         | no — that is why it is named       |
-| **Truncation** | withheld it deliberately | yes, exactly                       |
-| **Scope**      | you excluded it          | it was part of the question        |
+| Channel        | Means                    | Does Typesynesthesia know what it missed? |
+| -------------- | ------------------------ | ----------------------------------------- |
+| **Blind spot** | could not see it         | no — that is why it is named              |
+| **Truncation** | withheld it deliberately | yes, exactly                              |
+| **Scope**      | you excluded it          | it was part of the question               |
 
 `conditions` carries the **fidelity** of only the projects your answer touched — `typed` where the
 type checker ran, `syntactic` where a precondition was unmet. Fidelity is never a percentage and never
 a grade: it says which analysis ran, not how good your code is.
 
-**codedocs never executes your repository's code**, under any flag. A missing install or an un-run
+**Typesynesthesia never executes your repository's code**, under any flag. A missing install or an un-run
 codegen step lowers a file's fidelity and names the cost, rather than being fixed behind your back.
-Run `codedocs doctor` to see what would clear it.
+Run `tsyn doctor` to see what would clear it.
 
-## codedocs and fallow
+## Typesynesthesia and fallow
 
 [`fallow`](https://docs.fallow.tools) reads a repository's text and reports its hygiene.
-codedocs resolves its symbols and reports its relationships. **codedocs implements no analysis
+Typesynesthesia resolves its symbols and reports its relationships. **Typesynesthesia implements no analysis
 `fallow` already ships** — not because the overlap would be hard, but because two tools answering one
 question about one repository will disagree, and you would have no way to decide which is right.
 
@@ -762,37 +762,37 @@ question about one repository will disagree, and you would have no way to decide
 | Is this logic duplicated?                    | `fallow dupes`                                |
 | Which files are complexity hotspots?         | `fallow health`                               |
 | Did this branch cross an architecture layer? | `fallow audit --base main`                    |
-| What calls this, across every project?       | `codedocs callers`                            |
-| What actually happens when this runs?        | `codedocs trace`                              |
-| What does this change reach?                 | `codedocs impact`                             |
-| Which tests does this change reach?          | `codedocs impact --label role=test`           |
-| Which docs does this change contradict?      | `codedocs docs check`                         |
+| What calls this, across every project?       | `tsyn callers`                                |
+| What actually happens when this runs?        | `tsyn trace`                                  |
+| What does this change reach?                 | `tsyn impact`                                 |
+| Which tests does this change reach?          | `tsyn impact --label role=test`               |
+| Which docs does this change contradict?      | `tsyn docs check`                             |
 
 ## Troubleshooting
 
 **Everything says `syntactic`.** A precondition is unmet — usually an install that has not run, or a
-codegen step. `codedocs doctor` names each one and the command that would clear it. codedocs will not
+codegen step. `tsyn doctor` names each one and the command that would clear it. Typesynesthesia will not
 run your install for you.
 
-**A `missing-generated` specifier has no remediation.** codedocs ships with no built-in framework
+**A `missing-generated` specifier has no remediation.** Typesynesthesia ships with no built-in framework
 table, so it will not guess a codegen command. Tell it once in
-[`codedocs.jsonc`](#configuration) under `remediations`.
+[`tsyn.jsonc`](#configuration) under `remediations`.
 
 **The first question after `git pull` is slow.** That is the repair, and it is doing the work
-`analyse` would have done. Put `codedocs analyse` in your post-checkout hook or your CI setup step if
+`analyse` would have done. Put `tsyn analyse` in your post-checkout hook or your CI setup step if
 you would rather pay it visibly.
 
 **A symbol I can see is not in the index.** A file is in the index if and only if a `tsconfig` globs
-it. Check with `codedocs file <path>` — `matched no file` means no project globs it, so add the
+it. Check with `tsyn file <path>` — `matched no file` means no project globs it, so add the
 project under `discover.projects`.
 
-**I want to force a cold build.** Delete `.codedocs/`. It is a derived artefact and always safe to
-remove — codedocs recreates it, `.gitignore` and all.
+**I want to force a cold build.** Delete `.tsyn/`. It is a derived artefact and always safe to
+remove — Typesynesthesia recreates it, `.gitignore` and all.
 
-**An answer looks wrong.** `codedocs report-bug -- <the command that failed>` reproduces it and
+**An answer looks wrong.** `tsyn report-bug -- <the command that failed>` reproduces it and
 writes a file you can attach to an issue. The default shape names nothing about your code.
 
-**Should I commit `.codedocs/`?** No. It is binary, so git cannot delta it: six commits of about a
+**Should I commit `.tsyn/`?** No. It is binary, so git cannot delta it: six commits of about a
 hundred rows grew `.git` by 25 MB in testing.
 
 ## Where the design lives
@@ -800,25 +800,25 @@ hundred rows grew `.git` by 25 MB in testing.
 The architecture is written down before it is built, and the reasoning is usually more useful than the
 code:
 
-- **[`docs/solution.md`](docs/solution.md)** — how codedocs works: the two packages, the path of one
+- **[`docs/solution.md`](docs/solution.md)** — how Typesynesthesia works: the two packages, the path of one
   command, the index, and the map of the source tree.
 - **[`CONTEXT.md`](CONTEXT.md)** — the glossary. One meaning per term, and the words to avoid.
 - **[`docs/adr/`](docs/adr)** — one ADR per hard-to-reverse decision: analysis preconditions, the
   internal representation, classification, index storage, document claims, the operation set,
   cross-commit continuity, baseline retention, what preflight measures, what may enter the
-  configuration file, what a bug report may carry, where codedocs stops and `fallow` starts, and
+  configuration file, what a bug report may carry, where Typesynesthesia stops and `fallow` starts, and
   what a drafted document may assert on its author's behalf.
 - **[`docs/research/`](docs/research)** — the measurements the ADRs rest on.
-- **[`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md)** — what codedocs is for, who it is for, and what
+- **[`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md)** — what Typesynesthesia is for, who it is for, and what
   it will not do.
-- **[`bench/`](bench)** — the fix benchmark: whether an agent holding codedocs reaches the same fix
+- **[`bench/`](bench)** — the fix benchmark: whether an agent holding Typesynesthesia reaches the same fix
   for less. [`bench/README.md`](bench/README.md) is the method,
   [`bench/RESULTS.md`](bench/RESULTS.md) the generated write-up. Read it as a second measurement
   rather than as the product's validation criterion — [ADR 0012](docs/adr/0012-audience-and-the-fallow-boundary.md)
-  makes the reader a developer, so what codedocs has to establish is a developer question answered
+  makes the reader a developer, so what Typesynesthesia has to establish is a developer question answered
   correctly that ripgrep and an editor could not answer at all.
 
-Open work lives in [GitHub issues](https://github.com/magicspon/codedocs/issues).
+Open work lives in [GitHub issues](https://github.com/magicspon/typesynesthesia/issues).
 
 ## Development
 

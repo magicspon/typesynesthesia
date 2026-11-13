@@ -1,4 +1,4 @@
-/** Reading each top-level key of `codedocs.jsonc`, or falling back to its default. */
+/** Reading each top-level key of `tsyn.jsonc`, or falling back to its default. */
 
 import type { Authorship, Role } from '../model.ts'
 import { invalid } from './errors.ts'

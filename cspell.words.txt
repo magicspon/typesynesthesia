@@ -1,12 +1,15 @@
 ablx
+afplay
+ALLPASSES
 arps
 attero
+blep
 boombap
+breezystack
 calcom
 callees
 chaikin
 charang
-codedocs
 codegen
 codegens
 codeguide
@@ -23,6 +26,7 @@ fatsquare
 fattriangle
 fooking
 fract
+Freeverb
 frontmatter
 gitdir
 glsl
@@ -35,6 +39,7 @@ inspectable
 interner
 interners
 Kythe
+lamejs
 lerp
 LLBT
 lockfiles
@@ -84,8 +89,10 @@ Thinger
 treemap
 trimmable
 tsdown
+tsyn
 turba
 turbopack
+typesynesthesia
 unbatchable
 unconfig
 unioned
@@ -105,4 +112,5 @@ wayfinder
 wayfinding
 worktree
 worktrees
+xorshift
 yargs

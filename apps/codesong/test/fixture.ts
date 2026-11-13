@@ -3,7 +3,7 @@
  * to a shared model, plus a test and a generated file the composer must skip.
  */
 
-import type { Atlas, FileDatum } from '@codedocs/code-art/atlas'
+import type { Atlas, FileDatum } from '@tsyn/code-art/atlas'
 
 function file(path: string, extra: Partial<FileDatum> = {}): FileDatum {
   return {

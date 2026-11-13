@@ -30,7 +30,7 @@ let session: Session
 // One index for the whole file: nothing here writes to the tree, so a build per
 // test would pay for an analysis four times over to assert on the same rows.
 beforeAll(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-trace-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-trace-'))
   cpSync(fixture, root, { recursive: true })
   writeFileSync(
     join(root, 'package.json'),

@@ -2,24 +2,24 @@
  * The task put to the agent, and the one difference between the two arms.
  *
  * Both arms read the same issue and are asked for the same thing: the fix,
- * left in the worktree. The codedocs arm is additionally told the tool exists,
+ * left in the worktree. The tsyn arm is additionally told the tool exists,
  * and pays for that briefing in input tokens on every turn.
  */
 
-import { CODEDOCS } from '../core/paths.ts'
+import { TSYN } from '../core/paths.ts'
 import type { Arm, BenchCase } from '../core/types.ts'
 
 /**
- * The extra briefing the codedocs arm gets, and the baseline does not. Its cost
- * in input tokens is charged to the codedocs arm on every turn, which is the
+ * The extra briefing the tsyn arm gets, and the baseline does not. Its cost
+ * in input tokens is charged to the tsyn arm on every turn, which is the
  * real cost of putting a tool in front of an agent.
  */
-function codedocsBriefing(root: string): string {
+function tsynBriefing(root: string): string {
   return `
-This repository has a codedocs index already built. codedocs answers structural
+This repository has a tsyn index already built. tsyn answers structural
 questions about the code without you opening files. Run it as:
 
-  ${CODEDOCS} <operation> <subject> --cwd ${root}
+  ${TSYN} <operation> <subject> --cwd ${root}
 
   symbol <glob>      every symbol whose name matches, with file:line
   callers <subject>  every call edge into a subject
@@ -44,8 +44,7 @@ Use it as much or as little as you find useful.
  * would be measured on work no case is scored against.
  */
 export function buildPrompt(bench: BenchCase, arm: Arm, root: string): string {
-  const briefing =
-    arm.toolset === 'codedocs' ? `\n${codedocsBriefing(root)}\n` : ''
+  const briefing = arm.toolset === 'tsyn' ? `\n${tsynBriefing(root)}\n` : ''
   return `You are working in the VS Code repository. Below is a bug report filed against it.
 
 Your job is to fix it. Edit the source in this checkout and leave the fix in the

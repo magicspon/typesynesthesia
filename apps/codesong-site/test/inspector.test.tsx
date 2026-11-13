@@ -1,4 +1,4 @@
-import { realise } from '@codedocs/codesong/browser'
+import { realise } from '@tsyn/codesong/browser'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { Inspector, type Selection } from '../src/inspect/Inspector.tsx'

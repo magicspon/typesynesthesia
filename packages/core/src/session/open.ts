@@ -55,7 +55,7 @@ export interface SessionOptions {
 export interface Session {
   readonly root: string
   readonly store: Store
-  /** The repository's own `codedocs.jsonc`, or the defaults it did not override. */
+  /** The repository's own `tsyn.jsonc`, or the defaults it did not override. */
   readonly config: Config
   readonly context: AnswerContext
   /**
@@ -279,7 +279,7 @@ function withheld(root: string, outstanding: Outstanding): BlindSpot[] {
   return [
     {
       subject: root,
-      reason: `${stale}, and --no-update was passed; run \`codedocs analyse\``,
+      reason: `${stale}, and --no-update was passed; run \`tsyn analyse\``,
     },
   ]
 }
@@ -307,7 +307,7 @@ function staleReason(
   }
   if (empty) return 'the index is empty'
   if (header.toolVersion !== TOOL_VERSION) {
-    return `the index was built by codedocs ${header.toolVersion}, not ${TOOL_VERSION}`
+    return `the index was built by tsyn ${header.toolVersion}, not ${TOOL_VERSION}`
   }
   const typescript = typescriptVersion()
   if (header.typescriptVersion !== typescript) {

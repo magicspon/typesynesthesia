@@ -6,21 +6,21 @@
 >
 > The architecture and reasoning are documented in [`docs/`](docs/), so if you're interested in how it works, that's the place to start.
 
-News flash... This doesn't work. First test saved 35% in token usage, second took 185% more. maybe there is something here, maybe not... What there is though, there is fooking awesome art. run `codedocs art` in a typescript repo and you'll get a galaxy and city visualisation of your codebase. The city is a bit meh, the galaxy is fucking awesome.
+News flash... This doesn't work. First test saved 35% in token usage, second took 185% more. maybe there is something here, maybe not... What there is though, there is fooking awesome art. run `tsyn art` in a typescript repo and you'll get a galaxy and city visualisation of your codebase. The city is a bit meh, the galaxy is fucking awesome.
 
-# codedocs
+# Typesynesthesia
 
 **A deterministic structural index for TypeScript repositories.**
 
-Your editor is excellent at navigating local code. `codedocs` answers questions about the **structure of an entire repository** — across files, projects and packages.
+Your editor is excellent at navigating local code. `tsyn` answers questions about the **structure of an entire repository** — across files, projects and packages.
 
 It indexes symbols, calls, references, files and projects into a local SQLite database, then lets you query the resulting graph from the command line or from an agent.
 
 ```sh
-codedocs callers 'AuthService.login'
-codedocs trace 'handleCancelBooking.ts#handler'
-codedocs impact --label role=test
-codedocs docs check
+tsyn callers 'AuthService.login'
+tsyn trace 'handleCancelBooking.ts#handler'
+tsyn impact --label role=test
+tsyn docs check
 ```
 
 No LLM. No API key. No network. No daemon.
@@ -31,7 +31,7 @@ The answers are deterministic, reproducible and explicit about what the analysis
 
 ---
 
-## Why codedocs?
+## Why Typesynesthesia?
 
 Text search tells you where something is mentioned.
 
@@ -48,7 +48,7 @@ But some questions are fundamentally **repository-wide structural questions**:
 
 Those are questions about relationships, not text.
 
-`codedocs` builds those relationships once and lets you query them.
+`tsyn` builds those relationships once and lets you query them.
 
 ---
 
@@ -56,34 +56,39 @@ Those are questions about relationships, not text.
 
 ### 1. Install
 
-Requires **Node 24.19+**.
+Typesynesthesia is not on npm yet, so build it from source. You need **Node 24.19+** and [pnpm](https://pnpm.io).
 
 ```sh
-npm install -g @codedocs/cli
+git clone git@github.com:magicspon/typesynesthesia.git
+cd tsyn
+pnpm install
+pnpm build
 ```
 
-The command is simply:
+The command is now at `packages/cli/dist/bin.js`. To type `tsyn` from any folder, add an alias to your shell profile (for example `~/.zshrc`), then open a new terminal:
 
 ```sh
-codedocs
+alias tsyn="node /path/to/tsyn/packages/cli/dist/bin.js"
 ```
 
-Every command accepts `--cwd`, so you can query another repository without changing directory:
+To get the latest version later, run `git pull` and `pnpm build` again.
+
+Every command accepts `--cwd`, so you can use another repository without changing directory:
 
 ```sh
-codedocs analyse --cwd /path/to/repository
+tsyn analyse --cwd /path/to/repository
 ```
 
 ### 2. Analyse a repository
 
 ```sh
-codedocs analyse
+tsyn analyse
 ```
 
 For example, analysing cal.com:
 
 ```console
-$ codedocs analyse --limit 6
+$ tsyn analyse --limit 6
   apps/api/v2/tsconfig.json  1863 files  typed
   apps/docs/tsconfig.json  7 files  typed
   apps/web/tsconfig.json  2316 files  typed
@@ -104,7 +109,7 @@ That repository contains 4,827 TypeScript files across 28 projects. The cold ana
 Once the index exists, commands keep it up to date automatically.
 
 ```console
-$ codedocs callers 'getPaymentAppData'
+$ tsyn callers 'getPaymentAppData'
   apps/web/app/(use-page-wrapper)/payment/[uid]/PaymentPage.tsx#PaymentPage
   apps/web/components/booking/BookingListItem.tsx#BookingListItem
   apps/web/modules/bookings/components/AvailableTimes.tsx#SlotItem
@@ -128,7 +133,7 @@ There is no daemon and no watcher. Every command is a one-shot process.
 | `callers <subject>`    | What calls this?                                       |
 | `callees <subject>`    | What does this call?                                   |
 | `references <subject>` | What structurally references this?                     |
-| `file <path>`          | What does codedocs know about this file?               |
+| `file <path>`          | What does Typesynesthesia know about this file?        |
 | `trace <root>`         | What statically reachable call paths lead out of this? |
 | `evidence <subject>`   | What facts does the index hold about this subject?     |
 | `impact`               | What does this change reach?                           |
@@ -140,7 +145,7 @@ There is no daemon and no watcher. Every command is a one-shot process.
 
 The commands are deliberately composable. There isn't a separate "AI mode" or a different API for agents.
 
-`symbol`, `callers`, `callees`, `references`, `file` and `evidence` take more than one subject in a single call — `codedocs evidence 'AuthService.login' 'SessionService.refresh'` — so an agent that already has a list of symbols pays one round trip and one envelope instead of one per symbol. See [JSON](#json) below for the shape this returns.
+`symbol`, `callers`, `callees`, `references`, `file` and `evidence` take more than one subject in a single call — `tsyn evidence 'AuthService.login' 'SessionService.refresh'` — so an agent that already has a list of symbols pays one round trip and one envelope instead of one per symbol. See [JSON](#json) below for the shape this returns.
 
 ---
 
@@ -149,16 +154,16 @@ The commands are deliberately composable. There isn't a separate "AI mode" or a 
 Find a symbol when you don't know its path.
 
 ```sh
-codedocs symbol 'AuthService.login'
-codedocs symbol '*Repository'
-codedocs symbol '*'
+tsyn symbol 'AuthService.login'
+tsyn symbol '*Repository'
+tsyn symbol '*'
 ```
 
 Matching is against both the declared name and qualified name.
 
 There is no ranking or scoring. Results are sorted.
 
-If a name is ambiguous, codedocs does not make you resolve it first. It returns every match and records what the subject resolved to.
+If a name is ambiguous, Typesynesthesia does not make you resolve it first. It returns every match and records what the subject resolved to.
 
 ---
 
@@ -167,8 +172,8 @@ If a name is ambiguous, codedocs does not make you resolve it first. It returns 
 Ask either direction of the call graph.
 
 ```sh
-codedocs callers 'getPaymentAppData'
-codedocs callees 'getPaymentAppData'
+tsyn callers 'getPaymentAppData'
+tsyn callees 'getPaymentAppData'
 ```
 
 Calls through barrel files and renamed re-exports are followed to their declarations.
@@ -182,7 +187,7 @@ Call sites remain distinct, so two calls from the same function are two results.
 Calls aren't the only useful relationship.
 
 ```sh
-codedocs references 'Money'
+tsyn references 'Money'
 ```
 
 References include:
@@ -205,7 +210,7 @@ This lets you ask questions such as:
 `trace` walks outward through the call graph and returns paths.
 
 ```console
-$ codedocs trace 'handleCancelBooking.ts#handler' --limit 8
+$ tsyn trace 'handleCancelBooking.ts#handler' --limit 8
   handleCancelBooking.ts#handler
     → email-manager.ts#sendCancelledEmailsAndSMS
       → email-manager.ts#sendEmail
@@ -219,7 +224,7 @@ $ codedocs trace 'handleCancelBooking.ts#handler' --limit 8
   showing 8 of 250 — pass --limit for more
 ```
 
-This is not an execution trace. It is a **static traversal of the relationships codedocs could establish**.
+This is not an execution trace. It is a **static traversal of the relationships Typesynesthesia could establish**.
 
 Three details matter:
 
@@ -236,15 +241,15 @@ If analysis could not establish a relationship, the answer says so rather than p
 Ask what a change could reach.
 
 ```sh
-codedocs impact
-codedocs impact --base main
-codedocs impact --label role=test
+tsyn impact
+tsyn impact --base main
+tsyn impact --label role=test
 ```
 
 For example:
 
 ```console
-$ codedocs impact --depth 2
+$ tsyn impact --depth 2
   changed
     src/core.ts#core
   1 step out
@@ -263,7 +268,7 @@ The same traversal can answer:
 > **Which tests does this change reach?**
 
 ```sh
-codedocs impact --label role=test
+tsyn impact --label role=test
 ```
 
 There is deliberately no separate `affected-tests` operation.
@@ -277,7 +282,7 @@ There is deliberately no separate `affected-tests` operation.
 `evidence` is the broadest query for one subject.
 
 ```sh
-codedocs evidence 'scopeTo'
+tsyn evidence 'scopeTo'
 ```
 
 It can return:
@@ -292,7 +297,7 @@ It can return:
 - provenance
 - analysis conditions
 
-An agent can therefore ask one question and receive the facts codedocs already has, rather than rediscovering them through several searches.
+An agent can therefore ask one question and receive the facts Typesynesthesia already has, rather than rediscovering them through several searches.
 
 With `--claims --json`, those facts can also be expressed using the same claim syntax understood by `docs check`.
 
@@ -300,14 +305,14 @@ With `--claims --json`, those facts can also be expressed using the same claim s
 
 # Documentation that can be checked
 
-One unusual feature of codedocs is that documentation can contain **machine-checkable claims**.
+One unusual feature of Typesynesthesia is that documentation can contain **machine-checkable claims**.
 
-A Markdown file becomes a codedocs document simply by containing a claim:
+A Markdown file becomes a Typesynesthesia document simply by containing a claim:
 
 ```markdown
 Checkout charges through the payment service before it writes the order.
 
-<!-- codedocs: calls(src/checkout/service.ts#CheckoutService.charge,
+<!-- tsyn: calls(src/checkout/service.ts#CheckoutService.charge,
                      src/payments/service.ts#PaymentService.capture) -->
 ```
 
@@ -316,7 +321,7 @@ The prose remains normal Markdown. The claim is invisible in GitHub and editor p
 Then:
 
 ```sh
-codedocs docs check
+tsyn docs check
 ```
 
 can tell you whether the documented relationship still exists.
@@ -346,18 +351,18 @@ as well as negation, scoped callers and counts.
 | `potentially stale` | Claims hold, but relevant code changed                   |
 | `unable to verify`  | The required symbol or analysis could not be established |
 
-A vanished symbol is **not** automatically treated as a contradiction. If codedocs can find a plausible relocation, it reports that instead.
+A vanished symbol is **not** automatically treated as a contradiction. If Typesynesthesia can find a plausible relocation, it reports that instead.
 
 By default, only `contradicted` produces exit code 1.
 
-The important rule is that codedocs **never silently turns uncertainty into failure**.
+The important rule is that Typesynesthesia **never silently turns uncertainty into failure**.
 
 ---
 
 # Documentation drafts
 
 ```sh
-codedocs docs draft 'CheckoutService.charge'
+tsyn docs draft 'CheckoutService.charge'
 ```
 
 creates a Markdown document containing facts from the index.
@@ -369,14 +374,14 @@ It does **not** create endorsed claims.
 Candidate claims are marked:
 
 ```markdown
-<!-- codedocs?: exists(...) -->
+<!-- tsyn?: exists(...) -->
 ```
 
-Changing `codedocs?:` to `codedocs:` is the explicit act of endorsing the claim.
+Changing `tsyn?:` to `tsyn:` is the explicit act of endorsing the claim.
 
 This keeps the distinction between:
 
-> **codedocs knows this fact**
+> **Typesynesthesia knows this fact**
 
 and:
 
@@ -388,27 +393,27 @@ and:
 
 Static analysis is never omniscient.
 
-codedocs therefore separates three different reasons an answer may be incomplete:
+Typesynesthesia therefore separates three different reasons an answer may be incomplete:
 
-| Signal         | Meaning                                |
-| -------------- | -------------------------------------- |
-| **Blind spot** | codedocs could not establish something |
-| **Truncation** | you deliberately limited the answer    |
-| **Scope**      | you deliberately excluded something    |
+| Signal         | Meaning                                       |
+| -------------- | --------------------------------------------- |
+| **Blind spot** | Typesynesthesia could not establish something |
+| **Truncation** | you deliberately limited the answer           |
+| **Scope**      | you deliberately excluded something           |
 
 These are not collapsed into a confidence score.
 
 Every answer also carries the analysis **fidelity** of the projects involved:
 
 - `typed` — TypeScript's type checker was available
-- `syntactic` — codedocs could only perform syntactic analysis
+- `syntactic` — Typesynesthesia could only perform syntactic analysis
 
 A missing dependency or generated file does not get silently repaired.
 
 Run:
 
 ```sh
-codedocs doctor
+tsyn doctor
 ```
 
 to find out what is preventing typed analysis.
@@ -441,8 +446,8 @@ So tests remain visible by default.
 You can change the scope on any query:
 
 ```sh
-codedocs callers charge --exclude-label role=test
-codedocs evidence scopeTo --label authorship=generated
+tsyn callers charge --exclude-label role=test
+tsyn evidence scopeTo --label authorship=generated
 ```
 
 Excluded results are counted and reported rather than disappearing silently.
@@ -494,7 +499,7 @@ Most operations — `analyse`, `trace`, `impact`, `docs check`, `docs affected`,
 `symbol`, `evidence`, `callers`, `callees`, `references` and `file` take one or more subjects in a single call, and `result` is always an array keyed by subject — one entry whether one subject was given or many, so an agent that names several symbols pays one round trip and one envelope rather than one of each per symbol. `budget` and `blindSpots` have no top-level field on this shape: each entry owns its own, so a shared pool can never let one subject's answer evict another's.
 
 ```sh
-codedocs callees 'getPaymentAppData' 'chargePayment' --json
+tsyn callees 'getPaymentAppData' 'chargePayment' --json
 ```
 
 ```json
@@ -553,14 +558,14 @@ JSON output is **unbounded by default**. `--limit` must be explicit.
 
 ---
 
-# Using codedocs from an agent
+# Using Typesynesthesia from an agent
 
 There is no special agent implementation.
 
 An agent can either shell out:
 
 ```sh
-codedocs callers 'Thing.method' --json
+tsyn callers 'Thing.method' --json
 ```
 
 or use MCP:
@@ -568,8 +573,8 @@ or use MCP:
 ```json
 {
   "mcpServers": {
-    "codedocs": {
-      "command": "codedocs",
+    "tsyn": {
+      "command": "tsyn",
       "args": ["mcp"]
     }
   }
@@ -590,7 +595,7 @@ See [`docs/agent-guide.md`](docs/agent-guide.md) for the recommended investigati
 
 Most repositories need no configuration.
 
-An optional `codedocs.jsonc` can provide facts that codedocs cannot infer:
+An optional `tsyn.jsonc` can provide facts that Typesynesthesia cannot infer:
 
 ```jsonc
 {
@@ -641,7 +646,7 @@ The file is parsed strictly. Unknown keys and invalid values are errors.
 When analysis cannot use TypeScript's full type information:
 
 ```sh
-codedocs doctor
+tsyn doctor
 ```
 
 reports the cause and, where possible, the command that would clear it.
@@ -649,7 +654,7 @@ reports the cause and, where possible, the command that would clear it.
 For example:
 
 ```console
-$ codedocs doctor
+$ tsyn doctor
   tsconfig.json  typed
     unprepared
       left-pad — 1 site in src/app.ts
@@ -666,7 +671,7 @@ $ codedocs doctor
 With:
 
 ```sh
-codedocs doctor --measure
+tsyn doctor --measure
 ```
 
 it can additionally compare the stored signals with the current filesystem.
@@ -678,69 +683,161 @@ it can additionally compare the stored signals with the current filesystem.
 When something looks wrong:
 
 ```sh
-codedocs report-bug -- callers 'Thing.method'
+tsyn report-bug -- callers 'Thing.method'
 ```
 
 creates a reproducible report.
 
-By default it contains information about codedocs and the machine, but not your repository.
+By default it contains information about Typesynesthesia and the machine, but not your repository.
 
 If you explicitly want repository facts:
 
 ```sh
-codedocs report-bug --with-repository -- trace 'src/app.ts#main'
+tsyn report-bug --with-repository -- trace 'src/app.ts#main'
 ```
 
 Nothing is transmitted automatically.
 
 ---
 
-# `codedocs art`
+# Art and music
+
+Typesynesthesia can turn a repository into art and music. `tsyn art` draws it as an interactive 3D page, and `tsyn song` plays it as a piece of music. Both work on any TypeScript repository, and neither makes a network request.
+
+## Set up
+
+First, install Typesynesthesia as described in [Quick start](#1-install).
+
+You don't need to run `tsyn analyse` first. `art` and `song` index the repository themselves, then keep that index up to date on later runs.
+
+Run either command from inside the repository you want to use, or point at it with `--cwd`:
+
+```sh
+cd /path/to/your/repository
+tsyn art
+
+# or, from anywhere:
+tsyn art --cwd /path/to/your/repository
+```
+
+Add `--help` to either command to see its options.
+
+## `tsyn art`
 
 Draws the index as an interactive 3D galaxy:
 
 ```sh
-codedocs art
+tsyn art
 ```
 
-This writes `.codedocs/art/index.html`. Open it in a browser. It is one file, and it makes no network requests.
+This writes `.tsyn/art/index.html` in the repository. Open it in a browser. It is a single file, so you can also send it to someone else.
 
 Each shape stands for a fact about the code. For example, each folder is a spiral arm, each file is a cluster of stars, and each star is one symbol, coloured by its kind.
+
+The page has three scenes: a galaxy, a city you can drive around, and a landscape. You can switch scenes on the page. To write a page that opens on a particular scene, name the scene:
+
+```sh
+tsyn art galaxy      # writes .tsyn/art/galaxy.html
+tsyn art city        # writes .tsyn/art/city.html
+tsyn art landscape   # writes .tsyn/art/landscape.html
+```
 
 To watch the repository grow, add `--frames` to replay that many commits from its history:
 
 ```sh
-codedocs art --frames 16
+tsyn art --frames 16
 ```
 
 - Each commit is checked out into a temporary git worktree, then removed. Your working tree is never touched.
-- Frames are cached in `.codedocs/art/cache`, so a later run only analyses new commits.
+- Frames are saved in `.tsyn/art/cache`, so a later run only analyses new commits.
 - A later run without `--frames` keeps the timeline you already built.
 
-If [`fallow`](https://docs.fallow.tools) is on your `PATH`, the art also shows its health readings, such as hotspots and hard-to-change files. Add `--no-fallow` to skip them.
+If [`fallow`](https://docs.fallow.tools) is on your `PATH`, the art also shows its health readings, such as hotspots and files that are hard to change. Add `--no-fallow` to skip them.
+
+| Option                          | What it does                                                       |
+| ------------------------------- | ------------------------------------------------------------------ |
+| `galaxy`, `city` or `landscape` | Opens the page on that scene.                                      |
+| `--frames <n>`                  | Replays the last `n` commits as a timeline. `n` must be 2 or more. |
+| `--no-fallow`                   | Leaves out fallow's health readings.                               |
+| `--cwd <path>`                  | Uses the repository at `path`.                                     |
+
+## `tsyn song`
+
+Plays the index as a piece of music and writes it as an MP3:
+
+```sh
+tsyn song
+```
+
+This writes `.tsyn/song/<name>.<genre>.mp3`, where `<name>` is the repository's folder name. Rendering takes a few seconds for each minute of music.
+
+The music comes from the code's structure. For example, each subsystem becomes a section of the song, dependency paths become melodies, and dependency cycles become arpeggios.
+
+Without `--genre`, the code suggests a genre, and the command tells you which one it chose. To pick one yourself:
+
+```sh
+tsyn song --genre jazz
+```
+
+| Genre      | Style         |
+| ---------- | ------------- |
+| `ambient`  | Ambient       |
+| `lofi`     | Lo-fi hip hop |
+| `techno`   | Techno        |
+| `dnb`      | Drum and bass |
+| `jazz`     | Jazz          |
+| `mathrock` | Math rock     |
+
+The same code and genre always give the same song. For a different version, change the seed:
+
+```sh
+tsyn song --genre techno --seed 3
+```
+
+To open the song in a music program such as Ableton Live or GarageBand, write it as MIDI. You can write MIDI on its own, or next to the MP3:
+
+```sh
+tsyn song --format mid   # MIDI only
+tsyn song --midi         # the MP3, and a .mid file with the same name
+```
+
+The command prints the path of each file it writes, one on each line. This means you can play the song straight away. For example, on macOS:
+
+```sh
+afplay "$(tsyn song --genre lofi)"
+```
+
+| Option                         | What it does                                                                         |
+| ------------------------------ | ------------------------------------------------------------------------------------ |
+| `--genre <name>`               | Plays the song in this genre. See the table above.                                   |
+| `--format mp3`, `wav` or `mid` | Writes this type of file. The default is `mp3`.                                      |
+| `--midi`                       | Also writes a MIDI file next to the MP3 or WAV.                                      |
+| `--out <path>`                 | Writes the file to `path`. Its extension (`.mp3`, `.wav` or `.mid`) sets the format. |
+| `--seed <n>`                   | Gives a different version of the same song. The default is `0`.                      |
+| `--cwd <path>`                 | Uses the repository at `path`.                                                       |
 
 ---
 
-# codedocs and fallow
+# Typesynesthesia and fallow
 
-codedocs deliberately does not try to become a general-purpose repository analyser.
+Typesynesthesia deliberately does not try to become a general-purpose repository analyser.
 
 [`fallow`](https://docs.fallow.tools) answers questions about repository hygiene and code health.
 
-codedocs answers questions about **structural relationships**.
+Typesynesthesia answers questions about **structural relationships**.
 
-| Question                                             | Tool                                |
-| ---------------------------------------------------- | ----------------------------------- |
-| Is this export unused?                               | `fallow dead-code`                  |
-| Are there import cycles?                             | `fallow dead-code`                  |
-| Is this logic duplicated?                            | `fallow dupes`                      |
-| Where are the complexity hotspots?                   | `fallow health`                     |
-| Did this branch cross an architecture layer?         | `fallow audit`                      |
-| What calls this across the repository?               | `codedocs callers`                  |
-| What statically reachable paths leave this function? | `codedocs trace`                    |
-| What does this change reach?                         | `codedocs impact`                   |
-| Which tests does this change reach?                  | `codedocs impact --label role=test` |
-| Which docs contradict the code?                      | `codedocs docs check`               |
+| Question                                             | Tool                            |
+| ---------------------------------------------------- | ------------------------------- |
+| Is this export unused?                               | `fallow dead-code`              |
+| Are there import cycles?                             | `fallow dead-code`              |
+| Is this logic duplicated?                            | `fallow dupes`                  |
+| Where are the complexity hotspots?                   | `fallow health`                 |
+| Did this branch cross an architecture layer?         | `fallow audit`                  |
+| What calls this across the repository?               | `tsyn callers`                  |
+| What statically reachable paths leave this function? | `tsyn trace`                    |
+| What does this change reach?                         | `tsyn impact`                   |
+| Which tests does this change reach?                  | `tsyn impact --label role=test` |
+| Which docs contradict the code?                      | `tsyn docs check`               |
 
 The boundary is deliberate: two tools answering the same question with different algorithms is a recipe for disagreement.
 
@@ -777,15 +874,7 @@ pnpm format         # oxfmt && oxlint --fix
 pnpm spell-check    # cspell
 ```
 
-To build from source:
-
-```sh
-git clone git@github.com:magicspon/codedocs.git
-cd codedocs
-pnpm install
-pnpm build
-./node_modules/.bin/codedocs analyse --cwd /path/to/repository
-```
+To build from source, follow [Quick start](#1-install).
 
 ---
 
@@ -793,16 +882,16 @@ pnpm build
 
 The implementation is deliberately documented before the code.
 
-- [`docs/SOLUTION.md`](docs/SOLUTION.md) — how codedocs works
+- [`docs/SOLUTION.md`](docs/SOLUTION.md) — how Typesynesthesia works
 - [`CONTEXT.md`](CONTEXT.md) — the project glossary
 - [`docs/adr/`](docs/adr) — architectural decisions
 - [`docs/research/`](docs/research) — measurements behind those decisions
 - [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) — requirements and boundaries
-- [`docs/agent-guide.md`](docs/agent-guide.md) — using codedocs from an agent
+- [`docs/agent-guide.md`](docs/agent-guide.md) — using Typesynesthesia from an agent
 - [`bench/`](bench) — fix benchmark and methodology
 - [`bench/RESULTS.md`](bench/RESULTS.md) — generated benchmark results
 
-The README explains **what codedocs does**.
+The README explains **what Typesynesthesia does**.
 
 The ADRs explain **why it does it that way**.
 
@@ -810,7 +899,7 @@ The ADRs explain **why it does it that way**.
 
 # Status
 
-codedocs is **pre-alpha and unreleased**.
+Typesynesthesia is **pre-alpha and unreleased**.
 
 The CLI, renderers and MCP server currently work end to end on real TypeScript repositories, but the API and behaviour are not yet considered stable.
 

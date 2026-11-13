@@ -1,4 +1,4 @@
-/** The two ways `codedocs.jsonc` can be refused, and the sentence each prints. */
+/** The two ways `tsyn.jsonc` can be refused, and the sentence each prints. */
 
 import { join } from 'node:path'
 
@@ -44,7 +44,7 @@ export class ConfigError extends Error {
 export function configSentence(refusal: ConfigRefusal): string {
   if (refusal.code === 'config-misplaced') {
     const { found, expected } = refusal.params
-    return `${found} is below the repository root — codedocs reads one ${CONFIG_FILE}, at ${expected}. Move its keys there, or delete it.`
+    return `${found} is below the repository root — tsyn reads one ${CONFIG_FILE}, at ${expected}. Move its keys there, or delete it.`
   }
   const { key, expectation } = refusal.params
   const subject = key === '' ? 'the file' : `\`${key}\``

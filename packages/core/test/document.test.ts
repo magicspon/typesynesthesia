@@ -56,7 +56,7 @@ describe('sections', () => {
     const document = parse(
       '# One',
       '',
-      '<!-- codedocs: exists(src/a.ts#a) -->',
+      '<!-- tsyn: exists(src/a.ts#a) -->',
       '',
       '# Two',
       '',
@@ -74,7 +74,7 @@ describe('fenced code', () => {
       '# Fenced',
       '',
       '```markdown',
-      '<!-- codedocs: calls(src/a.ts#a, src/b.ts#b) -->',
+      '<!-- tsyn: calls(src/a.ts#a, src/b.ts#b) -->',
       '## Not a heading',
       '```',
     )
@@ -87,9 +87,9 @@ describe('fenced code', () => {
       '# Fenced',
       '````',
       '```',
-      '<!-- codedocs: exists(src/a.ts#a) -->',
+      '<!-- tsyn: exists(src/a.ts#a) -->',
       '````',
-      '<!-- codedocs: exists(src/b.ts#b) -->',
+      '<!-- tsyn: exists(src/b.ts#b) -->',
     )
     // The inner ``` neither closed the outer ```` nor opened a second fence, so
     // only the claim after the real close is read.
@@ -103,9 +103,9 @@ describe('fenced code', () => {
       '# Fenced',
       '```',
       '~~~',
-      '<!-- codedocs: exists(src/a.ts#a) -->',
+      '<!-- tsyn: exists(src/a.ts#a) -->',
       '```',
-      '<!-- codedocs: exists(src/b.ts#b) -->',
+      '<!-- tsyn: exists(src/b.ts#b) -->',
     )
     expect(document.sections[0]?.claims.map((one) => one.text)).toEqual([
       'exists(src/b.ts#b)',
@@ -116,17 +116,17 @@ describe('fenced code', () => {
 describe('inline code', () => {
   it('is not content: mentioning the marker in a code span is prose, not a claim', () => {
     // docs/USAGE.md and packages/cli/README.md both explain the syntax with
-    // `` `<!-- codedocs:` `` — a code span, not a comment — and a plain
+    // `` `<!-- tsyn:` `` — a code span, not a comment — and a plain
     // substring search read it as an unterminated marker, consuming the rest
     // of the file as its expression.
     const document = parse(
       '# Explaining the marker',
       '',
-      'Discovery scans for `<!-- codedocs:`, which is not one here.',
+      'Discovery scans for `<!-- tsyn:`, which is not one here.',
       '',
       '# Next',
       '',
-      '<!-- codedocs: exists(src/a.ts#a) -->',
+      '<!-- tsyn: exists(src/a.ts#a) -->',
     )
     expect(document.sections[0]?.claims).toEqual([])
     expect(document.sections[1]?.claims.map((one) => one.text)).toEqual([
@@ -140,7 +140,7 @@ describe('claims', () => {
     // ADR 0005's own example wraps a claim to keep a paragraph readable.
     const document = parse(
       '# Wrapped',
-      '<!-- codedocs: reaches(src/checkout.ts#checkout,',
+      '<!-- tsyn: reaches(src/checkout.ts#checkout,',
       '                      src/payments.ts#audit) -->',
       'Prose after it.',
     )
@@ -156,14 +156,14 @@ describe('claims', () => {
   it('ignores a marker that never closes, rather than swallowing the file', () => {
     const document = parse(
       '# Unclosed',
-      '<!-- codedocs: exists(src/a.ts#a)',
+      '<!-- tsyn: exists(src/a.ts#a)',
       'and the file simply ends',
     )
     expect(document.sections[0]?.claims).toEqual([])
   })
 
   it('keeps a claim it cannot parse, so the fault can be reported against it', () => {
-    const claim = parse('# Bad', '<!-- codedocs: not a claim -->').sections[0]
+    const claim = parse('# Bad', '<!-- tsyn: not a claim -->').sections[0]
       ?.claims[0]
     expect(claim?.text).toBe('not a claim')
     expect(claim?.parsed.ok).toBe(false)

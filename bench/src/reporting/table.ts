@@ -115,7 +115,7 @@ export function printArms(
 
 /** The title and column header, which fix the widths every row then follows. */
 export function printHeader(reference: Arm | undefined, arms: Arm[]): void {
-  console.log('\ncodedocs fix benchmark — microsoft/vscode, medians per cell')
+  console.log('\ntsyn fix benchmark — microsoft/vscode, medians per cell')
   console.log('  cases grouped by difficulty level; see bench/DIFFICULTY.md')
   console.log(
     `  an arm is a toolset and a model; deltas are against ${reference?.id ?? 'the first arm'}`,

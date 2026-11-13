@@ -42,7 +42,7 @@ export type RunInputs = {
 /** Folds one run's stream and patch into the record the report reads. */
 export function recordFrom(inputs: RunInputs): RunRecord {
   const { lines, patch, bench, arm, replicate, startedAt } = inputs
-  const { metrics, usedCodedocs, rateLimitedUntil } = parseStream(lines)
+  const { metrics, usedTsyn, rateLimitedUntil } = parseStream(lines)
   if (rateLimitedUntil !== null) throw new RateLimited(rateLimitedUntil)
   const changed = parseDiff(patch)
   return {
@@ -53,13 +53,8 @@ export function recordFrom(inputs: RunInputs): RunRecord {
     baseCommit: bench.base.commit,
     metrics,
     diff: changed.length > 0 ? scoreDiff(changed, bench) : null,
-    usedCodedocs,
-    invalid: invalidReason(
-      arm.toolset,
-      metrics,
-      changed.length > 0,
-      usedCodedocs,
-    ),
+    usedTsyn,
+    invalid: invalidReason(arm.toolset, metrics, changed.length > 0, usedTsyn),
     judgement: inputs.judgement ?? null,
   }
 }

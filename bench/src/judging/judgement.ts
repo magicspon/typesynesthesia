@@ -19,7 +19,7 @@ import type { BenchCase, JudgeVerdict, RunJudgement } from '../core/types.ts'
 import { upstreamFix } from '../execution/upstream.ts'
 
 /** The one way a patch can tell the judge which arm wrote it. */
-const NAMES_THE_TOOL = /codedocs/i
+const NAMES_THE_TOOL = /tsyn/i
 
 /**
  * What the fields of a key are joined on.

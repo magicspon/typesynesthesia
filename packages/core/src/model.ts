@@ -9,7 +9,7 @@
 /**
  * A symbol's name in the index: ADR 0002's normalised SCIP symbol string.
  *
- * ``codedocs npm @codedocs/core . `src/auth/service.ts`/AuthService#login().``
+ * ``tsyn npm @tsyn/core . `src/auth/service.ts`/AuthService#login().``
  * — deterministic and snapshot-scoped, so it says what a symbol is called in
  * this working tree at this commit and nothing about the past. `symbol-id.ts`
  * owns the scheme; ADR 0005's shorthand is a projection of it, and is what both
@@ -94,7 +94,7 @@ export type SymbolKind =
 export type CallerAttribution = 'symbol' | 'variable' | 'file'
 
 /**
- * Why a call site produced no edge. `dynamic` is the one cause where codedocs
+ * Why a call site produced no edge. `dynamic` is the one cause where tsyn
  * cannot know what it missed, so it is recorded even though there is nothing to
  * point at.
  */
@@ -108,7 +108,7 @@ export type Fidelity = 'typed' | 'syntactic'
  * let them collapse: `next.config.ts` is config *and* type-checked source, and
  * `apps.metadata.generated.ts` is generated *and* real source.
  *
- * Declared here because `codedocs.jsonc`'s `classify` block validates against
+ * Declared here because `tsyn.jsonc`'s `classify` block validates against
  * them; the label store that produces them is ADR 0003's to build.
  */
 export type Role = 'source' | 'test' | 'config'
@@ -121,7 +121,7 @@ export type Authorship = 'authored' | 'generated'
  *
  * The first two have a remediation and the last two do not, for opposite
  * reasons: nothing would help a `broken` import, and no *command* would help an
- * `unmapped` one — it resolves under a framework's own resolver, which codedocs
+ * `unmapped` one — it resolves under a framework's own resolver, which tsyn
  * declines to run. A cause is what `doctor` deduplicates across signals, so the
  * same missing codegen seen twice is reported once.
  */

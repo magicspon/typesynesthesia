@@ -4,7 +4,7 @@
  * One rule decides every verdict here, and it is ADR 0001's rather than
  * ADR 0005's: **a blind spot can only turn a would-be `contradicted` into
  * `unable to verify`, never a `verified` into one.** A claim that holds rests on
- * a fact that is *present*, and nothing codedocs failed to see can remove a
+ * a fact that is *present*, and nothing tsyn failed to see can remove a
  * present fact; a claim that fails rests on an *absence*, and an absence is
  * exactly what a `syntactic` file or an unresolved specifier can manufacture.
  * Applied to a negation the rule inverts by itself — `!calls(a, b)` is decided
@@ -325,7 +325,7 @@ function relationClaim(
  *
  * Strongest rather than weakest because a claim needs one witness: a pair joined
  * by both a checker-resolved edge and an inferred one is verified by the first,
- * and reporting the second would understate what codedocs actually knows.
+ * and reporting the second would understate what tsyn actually knows.
  */
 function witnessFor(
   store: Store,

@@ -1,7 +1,7 @@
 /**
  * `report-bug` — one reproduced failure, in a shape that is safe to paste.
  *
- * ADR 0011 draws the line and this applies it: **a fact about codedocs or the
+ * ADR 0011 draws the line and this applies it: **a fact about tsyn or the
  * machine is in the default report, and a fact that names the user's code is
  * behind `--with-repository`**. The default is what someone pastes into a public
  * issue without reading it, which is the only assumption worth designing
@@ -46,17 +46,17 @@ import {
 /**
  * Where a report lands unless `--out` moves it.
  *
- * Not inside `.codedocs/`: ADR 0004 documents that directory as invisible to
+ * Not inside `.tsyn/`: ADR 0004 documents that directory as invisible to
  * `git status` and safe to delete, and a file the user is meant to find, read
  * and attach fails both.
  */
-export const REPORT_FILE = 'codedocs-report.json'
+export const REPORT_FILE = 'tsyn-report.json'
 
 /** What the failing command was, and what running it again just did. */
 export interface Reproduction {
   /** The command as typed, after `--`. It names the subject, so it travels only under the flag. */
   readonly argv: readonly string[]
-  /** The operation it named, or `null` where it named nothing codedocs knows. */
+  /** The operation it named, or `null` where it named nothing tsyn knows. */
   readonly operation: string | null
   /** The flags it gave, recognised by the parser and stripped of their values. */
   readonly flags: readonly string[]
@@ -75,8 +75,8 @@ export interface Reproduction {
   readonly error: EnvelopeError | null
 }
 
-/** The versions of codedocs itself, none of which name the repository. */
-export interface CodedocsFacts {
+/** The versions of tsyn itself, none of which name the repository. */
+export interface TsynFacts {
   readonly version: string
   readonly schemaVersion: number
   readonly storeSchemaVersion: number
@@ -114,7 +114,7 @@ export interface ReportedError {
   readonly code: string
   /** Free text and user input, so ADR 0011 keeps it behind the flag. */
   readonly params?: Readonly<Record<string, unknown>>
-  /** Frames inside codedocs' own packages, already package-relative when captured. */
+  /** Frames inside tsyn's own packages, already package-relative when captured. */
   readonly stack?: readonly string[]
 }
 
@@ -163,7 +163,7 @@ export interface SpecifierTotals {
   readonly byCause: Readonly<Record<string, number>>
 }
 
-/** How large the index was, and how much of it codedocs could not see. */
+/** How large the index was, and how much of it tsyn could not see. */
 export interface IndexFacts {
   readonly projects: number
   readonly files: number
@@ -194,7 +194,7 @@ export interface Disclosure {
   readonly moduleSpecifiers: number
 }
 
-/** `codedocs.jsonc`: which keys are set, and — behind the flag — what they say. */
+/** `tsyn.jsonc`: which keys are set, and — behind the flag — what they say. */
 export interface ConfigReport {
   readonly present: boolean
   readonly readable: boolean
@@ -212,7 +212,7 @@ export interface Report {
   readonly repositoryFacts: 'excluded' | 'included'
   readonly contains: string
   readonly carries: Disclosure
-  readonly codedocs: CodedocsFacts
+  readonly tsyn: TsynFacts
   readonly machine: MachineFacts
   readonly reproduction: ReproductionFacts
   /** `null` where the index could not be opened at all. */
@@ -225,10 +225,10 @@ export interface Report {
 /** What each shape promises, in the file, for a reader who has only the file. */
 const CONTAINS: Readonly<Record<'excluded' | 'included', string>> = {
   excluded:
-    'codedocs and machine facts only: no file paths, symbol names, module ' +
+    'tsyn and machine facts only: no file paths, symbol names, module ' +
     'specifiers, dependency versions or commit',
   included:
-    'codedocs and machine facts, plus facts that name this repository: file ' +
+    'tsyn and machine facts, plus facts that name this repository: file ' +
     'paths, symbol names, module specifiers, dependency versions and the commit',
 }
 
@@ -335,7 +335,7 @@ export function reportBug(
     repositoryFacts: shape,
     contains: CONTAINS[shape],
     carries: disclosure(answer, index.facts, withRepository),
-    codedocs: {
+    tsyn: {
       version: TOOL_VERSION,
       schemaVersion: SCHEMA_VERSION,
       storeSchemaVersion: STORE_SCHEMA_VERSION,
@@ -459,7 +459,7 @@ function named(
  * The failure, split where ADR 0011 splits it.
  *
  * The stack is in both shapes: `stack.ts` keeps only the frames inside
- * codedocs' own packages and rewrites them package-relative at capture, so what
+ * tsyn's own packages and rewrites them package-relative at capture, so what
  * survives names our code and neither the user's nor their machine.
  */
 function reportedError(
@@ -623,7 +623,7 @@ function manifestAt(root: string): Record<string, unknown> {
   }
 }
 
-/** `codedocs.jsonc`'s keys always, its values only under the flag. */
+/** `tsyn.jsonc`'s keys always, its values only under the flag. */
 function configReport(
   facts: ConfigFacts,
   withRepository: boolean,

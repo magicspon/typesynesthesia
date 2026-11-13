@@ -1,4 +1,4 @@
-import type { RealisedTrack } from '@codedocs/codesong/browser'
+import type { RealisedTrack } from '@tsyn/codesong/browser'
 import type { NotePick } from '../scene/Notes.tsx'
 import type { Selection } from './Inspector.tsx'
 

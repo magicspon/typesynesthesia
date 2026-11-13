@@ -1,5 +1,5 @@
 /**
- * Baselines: the indexes codedocs kept from commits it once analysed.
+ * Baselines: the indexes tsyn kept from commits it once analysed.
  *
  * Split by concern: `store.ts` is capture, retention and opening one, and
  * `select.ts` is which one an answer uses and what to say when it is not the one

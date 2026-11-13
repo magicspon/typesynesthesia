@@ -4,18 +4,18 @@ status: proposed
 
 # The package boundary is a filter on an edge, not a report about a package
 
-REQUIREMENTS §4 says codedocs "starts where the project boundary does", and it is the one line of the
+REQUIREMENTS §4 says Typesynesthesia "starts where the project boundary does", and it is the one line of the
 product's own pitch that no query can express. The developer's question behind it is the change-safety
 question a monorepo forces every day: **is this a local rename, or a breaking change?** — which is
 `callers`, restricted to the callers that live outside the subject's own [[Package]].
 
-[#123](https://github.com/magicspon/codedocs/issues/123) proposes a **boundary filter in the
+[#123](https://github.com/magicspon/typesynesthesia/issues/123) proposes a **boundary filter in the
 [[Scope]] channel**: `--outside package` and `--outside project`, applied to the far end of each
 edge, relative to the subject's own.
 
 ```sh
-codedocs callers 'CheckoutService.charge' --outside package
-codedocs references 'Money' --outside project
+tsyn callers 'CheckoutService.charge' --outside package
+tsyn references 'Money' --outside project
 ```
 
 ## Why this is not the export-reachability question ADR 0012 refused
@@ -27,7 +27,7 @@ ADR 0012 refused dead-code analysis **even where the typed graph would answer it
 `fallow`'s syntactic pass**, on the grounds that the accuracy gain is unmeasured and the confusion of
 two tools answering one question is certain. That refusal stands, and it is what rules out the shape
 this feature first took: a `surface <package>` operation, enumerating a package's exports and marking
-the ones nothing outside consumes. That answer _is_ `fallow dead-code` with a codedocs badge on it,
+the ones nothing outside consumes. That answer _is_ `fallow dead-code` with a Typesynesthesia badge on it,
 whatever the algorithm underneath.
 
 What survives the refusal is the opposite framing:
@@ -38,7 +38,7 @@ What survives the refusal is the opposite framing:
 | Shape of the answer | a verdict about each export | the edges that cross a boundary, named |
 | An empty result     | "this export is unused"     | "no crossing edge resolved"            |
 
-The second column is a [[Scope]] applied to a relationship question codedocs already answers. It
+The second column is a [[Scope]] applied to a relationship question Typesynesthesia already answers. It
 names consumers; it never says an export is unused, because it never enumerates exports and never
 consults an entry-point set — the `entry` list is `fallow`'s, and reachability from one is `fallow`'s
 question.
@@ -64,7 +64,7 @@ So `Scope` gains a third member beside `include` and `exclude`:
   two filters sharing one count is the same hiding one level down: a caller who passed both could not
   tell which one emptied the answer.
 
-It stays in the scope channel and not in a blind spot for the reason that channel exists: codedocs
+It stays in the scope channel and not in a blind spot for the reason that channel exists: Typesynesthesia
 knows exactly what it withheld, and filing a known exclusion as something it could not see is the one
 move that would destroy the [[Blind spot]] signal.
 
@@ -79,7 +79,7 @@ in the index at all.
 
 An answer scoped to a boundary therefore reports the [[Analysis conditions]] of **every project it
 crossed into**, not only the subject's own, so a caller can see that the empty result came from a
-package codedocs could barely read. `doctor` names the remediation as usual.
+package Typesynesthesia could barely read. `doctor` names the remediation as usual.
 
 ## Considered Options
 
@@ -87,7 +87,7 @@ package codedocs could barely read. `doctor` names the remediation as usual.
   and its empty rows would be read as deletion advice however carefully they were worded.
 - **A `package=<name>` label axis.** Rejected: a label is an absolute property of a file and this is a
   relation to the subject. It would also make the caller name the package they are asking about, which
-  is the fact they came to codedocs to learn.
+  is the fact they came to Typesynesthesia to learn.
 - **Computing it caller-side from paths.** Rejected: a package boundary is not a path prefix in every
   repository — ADR 0003 resolves [[Package]] and [[Project]] from the manifests and tsconfigs, and the
   index already holds the answer. Making every caller re-derive it from strings guarantees they derive

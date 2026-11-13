@@ -15,7 +15,7 @@
  *
  * **The whole set is recomputed rather than invalidated.** ~0.9 s on cal.com
  * against the 22.9 s call-graph sweep it precedes, and incremental invalidation
- * buys under a second at the cost of a staleness bug: an edited `codedocs.jsonc`
+ * buys under a second at the cost of a staleness bug: an edited `tsyn.jsonc`
  * that leaves old labels behind.
  *
  * Split by concern: `signals.ts` is one function per signal, `scope.ts` is the
@@ -89,7 +89,7 @@ function labelsFor(
   tracked: ReadonlySet<FilePath> | null,
 ): Label[] {
   // The defaults, stored rather than assumed: a caller reading the rows must not
-  // have to know what codedocs would have said in their absence, and `default`
+  // have to know what tsyn would have said in their absence, and `default`
   // is the honest derivation for "nothing else fired" — which is also what makes
   // it lose every precedence contest.
   const found: Label[] = [
@@ -163,7 +163,7 @@ function labelsFor(
 }
 
 /**
- * The labels `codedocs.jsonc`'s `classify` block forces on a file.
+ * The labels `tsyn.jsonc`'s `classify` block forces on a file.
  *
  * Last match wins, as ADR 0003 specifies and as the parser preserves order for,
  * so a narrow rule is written below a broad one. They are labels like any other,

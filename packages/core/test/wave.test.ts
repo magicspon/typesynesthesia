@@ -34,7 +34,7 @@ const fixture = join(
 let root: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-wave-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-wave-'))
   cpSync(fixture, root, { recursive: true })
   // With no `.git` above it, `findRepositoryRoot` falls back to the nearest
   // `package.json`, so the temp tree needs one or the walk escapes into the
@@ -379,7 +379,7 @@ describe('a wave and a cold build', () => {
 
   /** Throw the index away and analyse the tree from scratch. */
   const cold = (): string => {
-    rmSync(join(root, '.codedocs'), { recursive: true, force: true })
+    rmSync(join(root, '.tsyn'), { recursive: true, force: true })
     return dump()
   }
 

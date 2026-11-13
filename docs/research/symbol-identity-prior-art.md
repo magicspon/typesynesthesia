@@ -1,6 +1,6 @@
 # Prior art: how existing code-intelligence indexes model and persist symbols
 
-Research for [issue #4](https://github.com/magicspon/codedocs/issues/4). Investigated against primary
+Research for [issue #4](https://github.com/magicspon/typesynesthesia/issues/4). Investigated against primary
 sources (specifications and source repositories) on 2026-08-30.
 
 ---
@@ -9,7 +9,7 @@ sources (specifications and source repositories) on 2026-08-30.
 
 **Adapt SCIP, in two separable pieces, and reject the third.**
 
-1. **Adopt the SCIP symbol string grammar as codedocs' `SymbolId`, verbatim.** Do not invent a
+1. **Adopt the SCIP symbol string grammar as Typesynesthesia's `SymbolId`, verbatim.** Do not invent a
    symbol ID format. SCIP's grammar is an open, Apache-2.0, versioned, actively maintained
    specification that already solves fully-qualified cross-package naming for TypeScript, and has
    working bindings in TypeScript. PRD §25's `Symbol` gets a **name**, not just a shape.
@@ -28,11 +28,11 @@ And the finding that matters most for PRD §12/§17:
 
 4. **No system in the prior art has a rename- or move-stable symbol identity.** Not one. Every
    surveyed format derives identity from _name + path_ and re-derives it per snapshot. Identity
-   continuity across commits must be an explicit, separate, **inferred** layer in codedocs
+   continuity across commits must be an explicit, separate, **inferred** layer in Typesynesthesia
    (PRD §27's "inferred results"), computed by matching two snapshots. It cannot be baked into the
    ID, because nobody has managed to bake it into an ID.
 
-The one-line defence codedocs owes the world: _we did not invent a symbol ID format; we adopted
+The one-line defence Typesynesthesia owes the world: _we did not invent a symbol ID format; we adopted
 SCIP's, normalised two fields that make it unstable within a single repository's history, and built
 our own store because SCIP's authors explicitly say it is not one._
 
@@ -159,7 +159,7 @@ whether you get incrementality depends entirely on the indexer.**
 The `scip` CLI ships `lint`, `print`, `snapshot`, `test`, `stats` and `expt-convert` — the last being
 _"[EXPERIMENTAL] Convert a SCIP index to a SQLite database"_, with tables `documents`, `chunks`,
 `global_symbols`, `mentions`, `defn_enclosing_ranges` and occurrences _"stored opaquely as a blob to
-prevent the DB size from growing very quickly."_[^scip-cli] Worth reading as prior art for codedocs'
+prevent the DB size from growing very quickly."_[^scip-cli] Worth reading as prior art for Typesynesthesia'
 own store schema; too experimental to depend on.
 
 ### The tool: `scip-typescript`
@@ -177,7 +177,7 @@ Apache-2.0, `sourcegraph/scip-typescript`, 111 stars. Reality check as of 2026-0
   PRD §26.
 - **No programmatic API.** `main: ./dist/src/main.js` is also the `bin`; no `exports`, no `types`.
   Integration means shelling out — which does at least match settled constraint 3 in the map
-  (codedocs already shells out to `graphify` and `fallow`).
+  (Typesynesthesia already shells out to `graphify` and `fallow`).
 - **Bundles its own TypeScript** (`"typescript": "^5.6.2"` as a direct dependency), so it indexes
   with its compiler rather than the project's.
 - **No call/reference distinction.** SCIP's `SymbolRole` bitset is `Definition | Import |
@@ -207,7 +207,7 @@ Consequences:
 **PRD §8 requires `callers`/`callees` as first-class commands.** SCIP alone gives you "references
 within", not calls. Recovering the distinction requires the TypeScript AST.
 
-### Could codedocs consume SCIP as its substrate? What would it lose?
+### Could Typesynesthesia consume SCIP as its substrate? What would it lose?
 
 **As a wire format for symbol identity: yes, and it should.** Parse `index.scip` with
 `@scip-code/scip` + `@bufbuild/protobuf` in a few lines.[^scip-tsbindings]
@@ -255,7 +255,7 @@ and removed."_ The named causes were the graph-of-integer-IDs encoding (_"we've 
 in indexers cause code navigation to fail repo-wide"_) and the wholesale-merge indexer shape that
 resisted parallelism and file-level incrementality.[^scip-design]
 
-**Verdict for codedocs: dead end.** Deprecated by its largest consumer, superseded by SCIP, no
+**Verdict for Typesynesthesia: dead end.** Deprecated by its largest consumer, superseded by SCIP, no
 standard symbol grammar. Reading it is only useful for understanding why SCIP is shaped as it is.
 
 ---
@@ -289,8 +289,8 @@ To force a re-index, add the `-f` flag."_ **This is genuinely per-file increment
 compiler and no build.** It is the only surveyed system with real file-level incrementality out of
 the box.
 
-**Could codedocs consume it?** No — as a source of symbols. It resolves names but does not name them;
-codedocs needs exportable identifiers. And it is archived, which under the map's tool-selection
+**Could Typesynesthesia consume it?** No — as a source of symbols. It resolves names but does not name them;
+Typesynesthesia needs exportable identifiers. And it is archived, which under the map's tool-selection
 criteria is close to disqualifying.
 
 **But copy the storage model.** `(file, content-tag) → serialised per-file analysis, skip on tag
@@ -343,7 +343,7 @@ build serving tables to query it.
 **Incremental?** Per-compilation-unit analysis is the natural granularity, but the storage doc makes
 no incrementality claim.
 
-**Could codedocs consume it?** No. Bazel-centric, entry/triple model is far heavier than PRD §25
+**Could Typesynesthesia consume it?** No. Bazel-centric, entry/triple model is far heavier than PRD §25
 needs, TypeScript support is a side project, and the ecosystem outside Google is thin. The
 `(source, kind, target)` triple is worth noting as the maximally-general alternative to a typed
 node/edge schema — and worth rejecting for exactly that reason: it pushes all schema into
@@ -390,7 +390,7 @@ org to attempt this.
 **Storage / incrementality.** Immutable stacked RocksDB databases; incrementality by stacking a delta
 DB over a base rather than by mutating.
 
-**Could codedocs consume it?** No — Haskell/Hack build, server-oriented, operationally heavy for a
+**Could Typesynesthesia consume it?** No — Haskell/Hack build, server-oriented, operationally heavy for a
 local-first CLI. But it is the single strongest corroboration of the recommendation.
 
 ---
@@ -407,8 +407,8 @@ that is not an Open Source Codebase (e.g., code in a private repo in GitHub)"_ a
 generating a database _"for or during automated analysis, CI or CD"_ outside that. The only relief is
 _"a paid customer license for GitHub Advanced Security."_
 
-codedocs is a local-first tool aimed at private codebases (PRD §28) with a commercial model (§31).
-**Any dependency on the CodeQL CLI would make codedocs unusable by its own target users.** Note the
+Typesynesthesia is a local-first tool aimed at private codebases (PRD §28) with a commercial model (§31).
+**Any dependency on the CodeQL CLI would make Typesynesthesia unusable by its own target users.** Note the
 trap: `github/codeql` (the _queries_) is MIT; the _CLI_ is not. Easy to get wrong.
 
 Technically, for the record: a CodeQL database is _"queryable data extracted from a codebase, for a
@@ -437,7 +437,7 @@ from a single snapshot** — it requires comparing two, and the comparison is he
 detection, descriptor matching, signature matching). Every one of these systems correctly refused to
 put a heuristic inside a primary key.
 
-**Implication for codedocs.** PRD §12 (documentation impact analysis) and §17 (change impact
+**Implication for tsyn.** PRD §12 (documentation impact analysis) and §17 (change impact
 analysis) both want to say "this symbol changed" across a diff. That capability must be built as a
 **snapshot-matching layer** that emits _inferred_ results under PRD §27's taxonomy — never as a
 property of the `SymbolId`. The `SymbolId` stays deterministic and snapshot-scoped; "is this the same
@@ -456,7 +456,7 @@ address, is the **naming scheme inside `Symbol`**. That is where SCIP wins outri
 ### C. Version-in-the-ID is wrong for a single-repo tool
 
 SCIP puts `<version>` in `<package>` because Sourcegraph indexes many repos at many versions and
-needs to distinguish `lodash@4` from `lodash@5`. codedocs indexes **one working tree at one commit**.
+needs to distinguish `lodash@4` from `lodash@5`. Typesynesthesia indexes **one working tree at one commit**.
 Inside that tree, embedding `package.json` versions means a routine `version` bump in a monorepo
 package silently invalidates every symbol in it and every cross-package reference to it. Normalise it
 away for first-party workspace packages; keep it for third-party dependency symbols, where it carries
@@ -466,15 +466,15 @@ real information.
 
 `local 0`, `local 1`, … are (a) document-scoped, so not globally unique, and (b) traversal-ordinal,
 so unstable under any edit that inserts an earlier binding. Glean's fix — prefix the document path —
-solves (a) but not (b). codedocs should do both: prefix the path, **and** treat local symbols as
+solves (a) but not (b). Typesynesthesia should do both: prefix the path, **and** treat local symbols as
 non-durable, excluded from anything that must survive an edit (documentation anchors, impact
 baselines).
 
 ---
 
-## What this means concretely for codedocs
+## What this means concretely for Typesynesthesia
 
-1. **`SymbolId` is a SCIP symbol string**, in codedocs' own scheme (e.g. `codedocs`), with two
+1. **`SymbolId` is a SCIP symbol string**, in Typesynesthesia's own scheme (e.g. `tsyn`), with two
    normalisations:
    - workspace-package `<version>` replaced with a fixed placeholder;
    - `local N` rewritten as `<relative-path>/local N`, and flagged non-durable.
@@ -485,7 +485,7 @@ baselines).
 3. **Producer decision is separate and still open.** The evidence does not say "use
    `scip-typescript`" — it is stale, non-incremental, memory-hungry, has no library API, and cannot
    distinguish calls from references, which PRD §8 requires. Nor does it say "write a parser" — PRD
-   §24 forbids that, and rightly. The live option is codedocs' own extractor over the **TypeScript
+   §24 forbids that, and rightly. The live option is Typesynesthesia's own extractor over the **TypeScript
    compiler API** (a mature existing tool, not a custom parser — §24-compliant), emitting
    SCIP-format symbol IDs. That keeps §24 satisfied, gets the call/reference distinction, gets
    incrementality, and keeps the door open to ingesting third-party `.scip` indexes later. **This
@@ -501,7 +501,7 @@ baselines).
 
 - Benchmark: `scip-typescript` on a real target repo — wall time, peak RSS, index size, and how
   much of PRD §6/§8 is recoverable from the output. Settles item 3 with numbers rather than argument.
-- Does codedocs need `<scheme>` = `codedocs` or `scip-typescript`? Using `scip-typescript`'s scheme
+- Does Typesynesthesia need `<scheme>` = `tsyn` or `scip-typescript`? Using `scip-typescript`'s scheme
   makes indexes directly comparable for validation; using its own is more honest. Probably: own
   scheme, with a documented equivalence mapping.
 - Snapshot-matching algorithm for cross-commit identity — git rename detection plus descriptor-suffix

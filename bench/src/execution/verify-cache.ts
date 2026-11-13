@@ -11,7 +11,7 @@
  *      would look identical from outside except for the clock.
  *   2. **It answers.** A restored index that is present but stale, truncated or
  *      keyed to the tree it was built in would answer nothing and read as a
- *      repository with no such symbol — which is exactly what a codedocs arm
+ *      repository with no such symbol — which is exactly what a tsyn arm
  *      failing to find anything looks like.
  *
  * Runs no agent and spends no quota.
@@ -19,20 +19,16 @@
 
 import { execFileSync } from 'node:child_process'
 import { loadCases } from '../cases/cases.ts'
-import { CODEDOCS } from '../core/paths.ts'
+import { TSYN } from '../core/paths.ts'
 import { isCached, warmIndex } from './warm.ts'
 import { createWorktree } from './worktree.ts'
 
 /** Asks the restored index for a symbol the case's ground truth names. */
 function ask(root: string, symbol: string): string {
-  return execFileSync(
-    CODEDOCS,
-    ['symbol', symbol, '--cwd', root, '--limit', '3'],
-    {
-      encoding: 'utf8',
-      maxBuffer: 64 * 1024 * 1024,
-    },
-  )
+  return execFileSync(TSYN, ['symbol', symbol, '--cwd', root, '--limit', '3'], {
+    encoding: 'utf8',
+    maxBuffer: 64 * 1024 * 1024,
+  })
 }
 
 function main(): void {

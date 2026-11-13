@@ -25,7 +25,7 @@ const config: ViteUserConfig = defineConfig({
       {
         extends: 'apps/code-art/vite.config.ts',
         test: {
-          name: '@codedocs/code-art',
+          name: '@tsyn/code-art',
           root: 'apps/code-art',
           exclude: [...configDefaults.exclude, 'archive/**'],
         },
@@ -35,7 +35,7 @@ const config: ViteUserConfig = defineConfig({
       // Its site: how a played note is traced back to the files behind it.
       'apps/codesong-site',
       // The repository's own invariants belong to no package: ADR 0011's "no
-      // codedocs package reaches the network" is a fact about the workspace and
+      // tsyn package reaches the network" is a fact about the workspace and
       // its dependency closure, and there is no package it could sit inside
       // without becoming a fact about that package instead.
       { test: { name: 'repo', include: ['test/**/*.test.ts'] } },
@@ -59,7 +59,7 @@ const config: ViteUserConfig = defineConfig({
         '**/*.d.ts',
         // Fixtures are inputs the tests read, never code under test.
         '**/test/fixtures/**',
-        // The `codedocs` shim: argv parsing, a call into `run`, and the exit
+        // The `tsyn` shim: argv parsing, a call into `run`, and the exit
         // code. Importing it *is* running the CLI, so there is nothing a unit
         // test can hold; `main.ts` and `mcp.ts` behind it are covered.
         'packages/cli/src/bin.ts',

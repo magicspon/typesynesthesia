@@ -1,4 +1,4 @@
-import type { Motif } from '@codedocs/codesong/browser'
+import type { Motif } from '@tsyn/codesong/browser'
 import type { JSX } from 'react'
 import { motifKind, regionOf, sectionReason } from '../explain/explain.ts'
 import type { ViewProps } from './Inspector.tsx'

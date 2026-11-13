@@ -3,7 +3,7 @@
  *
  * ADR 0011 takes the formatted message off the wire, which only works if there
  * is somewhere else for it to live: an agent branches on `error.code`, and a
- * person still reads the line codedocs printed before. Every code is spelled out
+ * person still reads the line tsyn printed before. Every code is spelled out
  * here exactly once, so the terminal is unchanged and the machine envelope no
  * longer carries English at all.
  *
@@ -17,7 +17,7 @@ import {
   operationSpec,
   operationsTaking,
   type EnvelopeError,
-} from '@codedocs/core'
+} from '@tsyn/core'
 
 import { usage } from './args.ts'
 
@@ -40,8 +40,8 @@ export function formatError(error: EnvelopeError): string {
       // A variadic subject is a whole command line, so the example has to show
       // the `--` that starts it rather than a subject standing on its own.
       return variadic(operation)
-        ? `\`${operation}\` needs a ${noun} after \`--\`, e.g. \`codedocs ${operation} -- trace AuthService.login\``
-        : `\`${operation}\` needs a ${noun}, e.g. \`codedocs ${operation} AuthService.login\``
+        ? `\`${operation}\` needs a ${noun} after \`--\`, e.g. \`tsyn ${operation} -- trace AuthService.login\``
+        : `\`${operation}\` needs a ${noun}, e.g. \`tsyn ${operation} AuthService.login\``
     }
     case 'too-many-arguments': {
       const { operation, noun, got } = error.params
@@ -65,7 +65,7 @@ export function formatError(error: EnvelopeError): string {
       return `could not write ${error.params.out}: ${error.params.detail}`
     case 'draft-exists':
       return (
-        `${error.params.out} already exists — codedocs will not overwrite it, ` +
+        `${error.params.out} already exists — tsyn will not overwrite it, ` +
         'and has no flag that would. The draft is on stdout above; move or ' +
         'delete the file if you meant to replace it.'
       )

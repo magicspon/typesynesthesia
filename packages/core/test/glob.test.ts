@@ -4,7 +4,7 @@
  * ADR 0009 needs this to be a **deterministic function of the working tree**
  * rather than the TypeScript server's file list — the server's list costs an
  * open program, which is the 3.7 s per project a diagnostic must not spend. So
- * the glob vocabulary is codedocs' own reading, and it is worth pinning against
+ * the glob vocabulary is tsyn's own reading, and it is worth pinning against
  * the patterns real repositories write.
  */
 
@@ -132,7 +132,7 @@ describe('the filesystem primitives underneath it', () => {
   })
 
   describe('readJsonc', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'codedocs-jsonc-'))
+    const directory = mkdtempSync(join(tmpdir(), 'tsyn-jsonc-'))
 
     afterAll(() => {
       rmSync(directory, { recursive: true, force: true })
@@ -173,7 +173,7 @@ describe('the filesystem primitives underneath it', () => {
     })
 
     it('has no answer for a config it cannot parse, rather than refusing to answer', () => {
-      // A config codedocs cannot parse fingerprints as an empty one, so an edit
+      // A config tsyn cannot parse fingerprints as an empty one, so an edit
       // that makes it parse again re-analyses the project.
       expect(parsed('{ nope }')).toBeUndefined()
       // An unterminated string runs to the end of the file and still fails.

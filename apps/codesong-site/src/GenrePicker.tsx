@@ -1,4 +1,4 @@
-import { GENRE_NAMES, GENRES, type GenreName } from '@codedocs/codesong/browser'
+import { GENRE_NAMES, GENRES, type GenreName } from '@tsyn/codesong/browser'
 import type { JSX } from 'react'
 
 /**

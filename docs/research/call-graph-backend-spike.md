@@ -1,6 +1,6 @@
 # Spike: cross-file call graph on a real repo, two backends, measured
 
-Resolves [#6](https://github.com/magicspon/codedocs/issues/6). Spike code:
+Resolves [#6](https://github.com/magicspon/typesynesthesia/issues/6). Spike code:
 `spike/call-graph/` on the `spike/call-graph-backends` branch — throwaway, not part of the
 workspace, expected to be deleted once the ADR lands.
 
@@ -59,10 +59,10 @@ binary (`spike/call-graph/probe-surface.mjs`).
 | `batchRequests`                                                                 | **absent**                                                   |
 
 So the two research tickets were each half right, and the split is not where either expected.
-[Capability matrix](https://github.com/magicspon/codedocs/issues/2) was correct that TS 7 ships no
-call hierarchy and no `getImplementationAtPosition`. It was wrong that this costs codedocs PRD §8:
+[Capability matrix](https://github.com/magicspon/typesynesthesia/issues/2) was correct that TS 7 ships no
+call hierarchy and no `getImplementationAtPosition`. It was wrong that this costs Typesynesthesia PRD §8:
 `getSignatureUsage` covers callers and callees directly, and better than call hierarchy does.
-[Incremental re-analysis](https://github.com/magicspon/codedocs/issues/5) was correct that the
+[Incremental re-analysis](https://github.com/magicspon/typesynesthesia/issues/5) was correct that the
 navigation surface is real and the published guidance is stale.
 
 Two API notes for the adapter:
@@ -174,7 +174,7 @@ call-site sweep of §4 fixes, because it resolves to the declared target instead
 ### Dynamic dispatch is invisible
 
 `gateway[methodName](n)` produces no edge. No false edge either — but `impact` will under-report,
-and codedocs cannot know it did.
+and Typesynesthesia cannot know it did.
 
 ### Reachable-but-callerless code looks dead
 
@@ -308,7 +308,7 @@ Two costs, both fixable and neither load-bearing:
 
 Measured on macOS (Darwin 25.5.0), Node v24.19.0, TypeScript 7.0.2 and 6.0.3. Peak RSS is this
 process **plus every descendant**, so TS 7's figures include the spawned `tsc` server. Index size
-is the serialised symbol table plus edges — what codedocs would actually persist.
+is the serialised symbol table plus edges — what Typesynesthesia would actually persist.
 
 ### Cold analysis, full runs
 
@@ -394,7 +394,7 @@ resolves only under the framework's own resolution, not the declared `tsconfig`.
 **A remediation command can itself fail.** cal.com's `prisma generate` aborts in its own
 `prisma-enum-generator` under Node 24 (`ts-node` reading `ts.ScriptTarget` as undefined), so
 cal.com was measured in the partially-prepared state its own tooling permits. ADR 0001 rules that
-codedocs reports remediations and never runs them; this adds that a reported remediation **may not
+Typesynesthesia reports remediations and never runs them; this adds that a reported remediation **may not
 work**, for reasons internal to the repository. `doctor` must present a remediation as the command
 to try, never as a promise that fidelity will rise.
 
@@ -425,10 +425,10 @@ to try, never as a promise that fidelity will rise.
 ## 8. What was not measured
 
 - **Incremental re-analysis.** Owned by
-  [#5](https://github.com/magicspon/codedocs/issues/5), which measured 3–5 ms per changed file
+  [#5](https://github.com/magicspon/typesynesthesia/issues/5), which measured 3–5 ms per changed file
   against 535 ms cold. This spike measured cold analysis only, and its per-request numbers do not
   transfer: #5's figures are for the type-shape wave, not for call-site resolution.
-- **codedocs itself**, the ladder's intended first rung. The repo currently contains **one**
+- **Typesynesthesia itself**, the ladder's intended first rung. The repo currently contains **one**
   TypeScript file (`vitest.config.ts`), so the self-hosting rung is not yet a fixture. It returns
   as soon as there is source.
 - **`microsoft/vscode`**, held in reserve. cal.com did not defeat the sweep, so the ceiling test is

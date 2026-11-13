@@ -1,5 +1,5 @@
 /**
- * The invariant behind PRD §28 and ADR 0011: no codedocs package reaches the
+ * The invariant behind PRD §28 and ADR 0011: no tsyn package reaches the
  * network. `report-bug` writes bytes and stops; the user moves them.
  *
  * Two halves, because two different things break it:
@@ -55,7 +55,7 @@ const CODE_EXTENSIONS: readonly string[] = [
 /**
  * A declaration file declares; it never runs. Reading them would flag every
  * package that ships `lib.dom.d.ts`, which is a fact about the DOM rather than
- * about what codedocs does.
+ * about what tsyn does.
  */
 const DECLARATION = /\.d\.[cm]?ts$/
 
@@ -107,10 +107,10 @@ const ALLOWED: readonly {
 /**
  * Workspace packages whose runtime dependencies are not read, as pnpm
  * filters. code-art's runtime dependencies serve only its public website
- * (`build:web`); the page `codedocs art` ships is the `embed` build, which
+ * (`build:web`); the page `tsyn art` ships is the `embed` build, which
  * never loads them and refuses every request with its CSP.
  */
-const EXCLUDED_WORKSPACES: readonly string[] = ['@codedocs/code-art']
+const EXCLUDED_WORKSPACES: readonly string[] = ['@tsyn/code-art']
 
 /** One place in one file where the network is within reach. */
 export interface NetworkUse {
@@ -122,7 +122,7 @@ export interface NetworkUse {
   readonly evidence: string
 }
 
-/** A dependency that reaches the network, and how codedocs arrives at it. */
+/** A dependency that reaches the network, and how tsyn arrives at it. */
 export interface NetworkReach {
   /** The dependency, as `name@version`. */
   readonly dependency: string
@@ -287,7 +287,7 @@ export function isAllowed(dependency: string, use: NetworkUse): boolean {
 }
 
 /**
- * Every dependency of codedocs that can reach the network.
+ * Every dependency of tsyn that can reach the network.
  *
  * A package `pnpm list` names but this platform has not installed — an optional
  * platform binary belonging to another OS — is recorded as unread rather than
@@ -329,7 +329,7 @@ function capped(indent: string, items: readonly string[]): string[] {
 
 /** What reaches the network, named rather than counted. */
 function reachLines(reach: readonly NetworkReach[]): string[] {
-  if (reach.length === 0) return ['No codedocs package reaches the network.']
+  if (reach.length === 0) return ['No tsyn package reaches the network.']
 
   const verb = reach.length === 1 ? 'dependency reaches' : 'dependencies reach'
   const lines = [`${reach.length} runtime ${verb} the network:`, '']

@@ -30,7 +30,7 @@ export interface ProjectSummary {
 /** What `analyse` needs to capture a baseline, which only it does. */
 export interface BaselineRequest {
   readonly root: string
-  /** `codedocs.jsonc`'s `baselines`. `0` disables capture entirely. */
+  /** `tsyn.jsonc`'s `baselines`. `0` disables capture entirely. */
   readonly cap: number
 }
 

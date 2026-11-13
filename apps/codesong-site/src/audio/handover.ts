@@ -3,7 +3,7 @@
  * the player so it can be tested without Tone.js.
  */
 
-import type { Section } from '@codedocs/codesong/browser'
+import type { Section } from '@tsyn/codesong/browser'
 
 /** Where the last player was when a new composition replaced it. */
 export interface Handover {

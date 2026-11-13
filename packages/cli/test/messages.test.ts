@@ -8,7 +8,7 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import type { EnvelopeError } from '@codedocs/core'
+import type { EnvelopeError } from '@tsyn/core'
 
 import { formatError } from '../src/messages.ts'
 
@@ -47,7 +47,7 @@ const EVERY: readonly EnvelopeError[] = [
   },
   {
     code: 'config-misplaced',
-    params: { found: 'apps/web/codedocs.jsonc', expected: 'codedocs.jsonc' },
+    params: { found: 'apps/web/tsyn.jsonc', expected: 'tsyn.jsonc' },
   },
   {
     code: 'index-unavailable',
@@ -91,7 +91,7 @@ describe('formatError', () => {
         code: 'subject-required',
         params: { operation: 'callers', noun: 'subject' },
       }),
-    ).toContain('codedocs callers AuthService.login')
+    ).toContain('tsyn callers AuthService.login')
   })
 
   it('reads the operations a flag applies to off the manifest', () => {

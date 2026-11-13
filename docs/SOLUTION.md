@@ -1,4 +1,4 @@
-# How codedocs works
+# How Typesynesthesia works
 
 A high-level outline of the CLI: the pieces it is built from, the path one command takes
 through them, and where in the source each part lives.
@@ -9,7 +9,7 @@ each decision is in [`docs/adr/`](adr), and the vocabulary it uses is defined on
 
 ## The idea in one paragraph
 
-codedocs reads a TypeScript repository once, resolves its symbols with a type checker, and
+Typesynesthesia reads a TypeScript repository once, resolves its symbols with a type checker, and
 writes what it learned — symbols, call edges, reference edges, imports, labels — into a
 single SQLite file beside the working tree. Every later question is a query against that
 file. Because the file goes stale the moment you edit anything, every question also
@@ -19,13 +19,13 @@ is a one-shot process that opens the index, brings it up to date, answers, and e
 
 ## Two packages
 
-| Package          | Role                                                                        |
-| ---------------- | --------------------------------------------------------------------------- |
-| `@codedocs/core` | The engine. Everything that knows about TypeScript, SQLite and the answers. |
-| `@codedocs/cli`  | The binding. Argument parsing, the human renderer, the MCP server.          |
+| Package      | Role                                                                        |
+| ------------ | --------------------------------------------------------------------------- |
+| `@tsyn/core` | The engine. Everything that knows about TypeScript, SQLite and the answers. |
+| `@tsyn/cli`  | The binding. Argument parsing, the human renderer, the MCP server.          |
 
-`@codedocs/core` is private and never published; the shipped npm package is
-`@codedocs/cli`, bundled by tsdown into one file with `bin` pointing at `dist/bin.js`.
+`@tsyn/core` is private and never published; the shipped npm package is
+`@tsyn/cli`, bundled by tsdown into one file with `bin` pointing at `dist/bin.js`.
 
 The split is not layering for its own sake. `core` exposes one flat surface — one exported
 function per operation, in
@@ -39,7 +39,7 @@ surface to keep correct, and the CLI, `--json` and MCP would drift apart.
 argv
   │
   ▼
-bin.ts ────────────► mcp.ts          `codedocs mcp` forks here: it is a server,
+bin.ts ────────────► mcp.ts          `tsyn mcp` forks here: it is a server,
   │                    │             not an operation, so it owes no envelope
   ▼                    │
 args.ts                └──► one tool per operation, each handing an argv back to run()
@@ -83,9 +83,9 @@ name, and inventing one would tell a caller that a command it never ran had fail
 sees anything:
 
 1. **Find the repository root** — the nearest enclosing `.git`.
-2. **Read the config** — `codedocs.jsonc`, before the store is opened, because a config
+2. **Read the config** — `tsyn.jsonc`, before the store is opened, because a config
    that cannot be used means the user's intent is unknown.
-3. **Open the store** — `.codedocs/index.db`, creating it and its `.gitignore` if absent.
+3. **Open the store** — `.tsyn/index.db`, creating it and its `.gitignore` if absent.
 4. **Work out what is out of date**, in four separate senses (see below).
 5. **Repair it**, unless `--no-update` was passed, in which case the drift is reported as
    blind spots instead.
@@ -155,20 +155,20 @@ ever produce `1`.
 
 ### 6. Or: over MCP ([`packages/cli/src/mcp.ts`](../packages/cli/src/mcp.ts))
 
-`codedocs mcp` serves the same operations over stdio JSON-RPC. The tool list is generated
+`tsyn mcp` serves the same operations over stdio JSON-RPC. The tool list is generated
 from the manifest, and a tool call is answered by handing an argv to `run` — the same
 function the CLI itself calls. The bytes are the bytes `--json` produces by construction
 rather than by inspection.
 
 ## The index
 
-One SQLite file per working tree, at `.codedocs/index.db`, holding exactly one snapshot —
+One SQLite file per working tree, at `.tsyn/index.db`, holding exactly one snapshot —
 a commit plus whatever is uncommitted on top of it. It is a derived artefact: never
 committed, always safe to delete, and deleting it is the supported way to force a cold
-build. The store writes a `.gitignore` containing `*` inside `.codedocs/`, so `git status`
+build. The store writes a `.gitignore` containing `*` inside `.tsyn/`, so `git status`
 stays clean without you editing anything.
 
-It uses `node:sqlite` from the Node standard library, which is why codedocs has no native
+It uses `node:sqlite` from the Node standard library, which is why Typesynesthesia has no native
 module to compile and no post-install step.
 
 ### What it holds
@@ -235,7 +235,7 @@ rest read as unanalysed files that the next run repairs with a wave.
 
 ## Extraction ([`packages/core/src/adapter/ts7/`](../packages/core/src/adapter/ts7))
 
-The only part of codedocs that knows a TypeScript backend exists. Everything above it works
+The only part of Typesynesthesia that knows a TypeScript backend exists. Everything above it works
 in terms of nodes, edges and labels.
 
 It runs four sweeps over each project:
@@ -254,7 +254,7 @@ backend spike measured the per-symbol method at 12.6 ms a query, unbatchable, an
 
 ### Symbol identity ([`symbol-id.ts`](../packages/core/src/symbol-id.ts))
 
-A `SymbolId` is a SCIP symbol string in codedocs' own scheme, with the workspace package
+A `SymbolId` is a SCIP symbol string in Typesynesthesia's own scheme, with the workspace package
 version normalised away so a `version` bump in a manifest cannot invalidate an index.
 Locals are named by **descriptor path**: the dotted route from a file to a declaration, one
 segment per scope, each taken from what the author wrote. That is what makes an id survive
@@ -269,11 +269,11 @@ as one at an earlier commit is a separate, inferred layer —
 Three things that are usually blurred into one score are kept apart, and every answer
 carries all three:
 
-| Channel        | Means                    | Does codedocs know what it missed? |
-| -------------- | ------------------------ | ---------------------------------- |
-| **Blind spot** | could not see it         | no — that is why it is named       |
-| **Truncation** | withheld it deliberately | yes, exactly                       |
-| **Scope**      | you excluded it          | it was part of the question        |
+| Channel        | Means                    | Does Typesynesthesia know what it missed? |
+| -------------- | ------------------------ | ----------------------------------------- |
+| **Blind spot** | could not see it         | no — that is why it is named              |
+| **Truncation** | withheld it deliberately | yes, exactly                              |
+| **Scope**      | you excluded it          | it was part of the question               |
 
 Underneath them sit two per-fact properties. **Fidelity** says which analysis ran on a file
 — `typed` where a type checker was applied to its project, `syntactic` where it was parsed
@@ -288,7 +288,7 @@ a config globs anything, and every import specifier that resolved to nothing. Th
 three cost microseconds and run unconditionally; the fourth is a by-product of extraction
 and never a pass of its own.
 
-codedocs never runs your repository's code, under any flag. A missing install or an
+Typesynesthesia never runs your repository's code, under any flag. A missing install or an
 un-run codegen step lowers a file's fidelity and names the command that would clear it,
 rather than being fixed behind your back.
 
@@ -310,9 +310,9 @@ is echoed on every envelope with the count it withheld.
 
 ## Baselines and impact ([`packages/core/src/baseline/`](../packages/core/src/baseline))
 
-A **baseline** is an index codedocs kept from a commit it once analysed. It is recorded as
+A **baseline** is an index Typesynesthesia kept from a commit it once analysed. It is recorded as
 a side effect of `analyse` over a clean tree, never constructed on demand, and never leaves
-the machine — a `git worktree` of an old commit has no `node_modules`, and codedocs will
+the machine — a `git worktree` of an old commit has no `node_modules`, and Typesynesthesia will
 not run your install, so every file in a reconstructed baseline would be `syntactic`.
 
 Three are kept, evicting anything that is not an ancestor of `HEAD` first, then the oldest
@@ -334,7 +334,7 @@ with exactly one producer: `verified` and `contradicted` from the claims, `poten
 stale` from a touched file changing, and `unable to verify` from a blind spot. Nothing
 blends them and there is no score.
 
-codedocs never writes to a document — no verification stamp, and no unattended repair after
+Typesynesthesia never writes to a document — no verification stamp, and no unattended repair after
 a rename.
 
 ## The source tree
@@ -347,7 +347,7 @@ packages/cli/src/
   render.ts     the human renderer, pure over the envelope
   mcp.ts        stdio JSON-RPC server, one tool per operation
   messages.ts   error code + params → the sentence a terminal prints
-  stack.ts      codedocs-only stack frames, for report-bug
+  stack.ts      tsyn-only stack frames, for report-bug
 
 packages/core/src/
   index.ts      the flat public surface
@@ -368,7 +368,7 @@ packages/core/src/
   baseline/     capture, retention, selection
   docs/         document discovery, claim parsing, predicates, verdicts
   continuity/   matching a symbol across two commits
-  config/       codedocs.jsonc — strict parsing, typed refusals
+  config/       tsyn.jsonc — strict parsing, typed refusals
 ```
 
 ## Where to read next
@@ -378,5 +378,5 @@ packages/core/src/
 - [`docs/adr/`](adr) — one ADR per hard-to-reverse decision, and the reasoning behind
   every rule above.
 - [`docs/research/`](research) — the measurements the ADRs rest on.
-- [`docs/REQUIREMENTS.md`](REQUIREMENTS.md) — what codedocs is for, and what it will not
+- [`docs/REQUIREMENTS.md`](REQUIREMENTS.md) — what Typesynesthesia is for, and what it will not
   do.

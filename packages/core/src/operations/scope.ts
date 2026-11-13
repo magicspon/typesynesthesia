@@ -96,7 +96,7 @@ const MEANING: Record<PreconditionCause, string> = {
   unprepared: 'declared as a dependency and not on disk — install them',
   'missing-generated':
     'its target is where a generated file would be — run the repository’s codegen',
-  unmapped: 'resolves only under a resolver codedocs does not run',
+  unmapped: 'resolves only under a resolver tsyn does not run',
   broken: 'imported but declared nowhere',
 }
 

@@ -16,8 +16,8 @@ drawn precisely or the rule stops meaning anything.
 
 ## The rule
 
-> A fact about **codedocs or the machine** is in the default [[Report]]. A fact that **names the
-> user's code** is behind `--with-repository`. Nothing is disguised, and codedocs never moves the
+> A fact about **Typesynesthesia or the machine** is in the default [[Report]]. A fact that **names the
+> user's code** is behind `--with-repository`. Nothing is disguised, and Typesynesthesia never moves the
 > file.
 
 The default is what a user pastes into a public issue **without reading it**, which is the only
@@ -46,11 +46,11 @@ numbers.
 `report-bug` **takes the failing command and re-runs it**:
 
 ```bash
-codedocs report-bug -- trace 'src/auth/service.ts#AuthService.login' --depth 3
+tsyn report-bug -- trace 'src/auth/service.ts#AuthService.login' --depth 3
 ```
 
-Nothing is recorded today — the only files any codedocs package writes are `.codedocs/index.db` and
-`.codedocs/.gitignore` — so the alternative was to start keeping a log of the user's activity that
+Nothing is recorded today — the only files any Typesynesthesia package writes are `.tsyn/index.db` and
+`.tsyn/.gitignore` — so the alternative was to start keeping a log of the user's activity that
 nothing else needs. Re-running instead buys the one thing a log cannot: the payload is the envelope
 of a failure happening **now**, not a remembered one that may no longer reproduce. It also makes ADR
 0006's claim literal rather than nearly true — `request` echoing the resolved subject **is** the
@@ -66,7 +66,7 @@ the rule.
 
 | Fact                                                                  | Default | `--with-repository` |
 | --------------------------------------------------------------------- | :-----: | :-----------------: |
-| codedocs version, `SCHEMA_VERSION`, `STORE_SCHEMA_VERSION`            |   ✅    |                     |
+| Typesynesthesia version, `SCHEMA_VERSION`, `STORE_SCHEMA_VERSION`     |   ✅    |                     |
 | Node, OS and architecture, package manager name and version           |   ✅    |                     |
 | Lockfile **filename** (`pnpm-lock.yaml`)                              |   ✅    |                     |
 | `typescriptVersion` the index was built with                          |   ✅    |                     |
@@ -83,14 +83,14 @@ the rule.
 | [[Unresolved specifier]] **strings** (`@calcom/prisma/enums`)         |         |         ✅          |
 | `compilerOptions`, the [[Environment fingerprint]]                    |         |         ✅          |
 | The repository's own dependency versions                              |         |         ✅          |
-| `codedocs.jsonc`: **which keys are set**                              |   ✅    |                     |
-| `codedocs.jsonc`: their values                                        |         |         ✅          |
+| `tsyn.jsonc`: **which keys are set**                                  |   ✅    |                     |
+| `tsyn.jsonc`: their values                                            |         |         ✅          |
 
 Three rows are decisions rather than bookkeeping.
 
 **PRD §29's "relevant dependency versions" resolves to two**: TypeScript and the package manager.
-They are the only ones that change what codedocs does. A repository's own dependency list is its
-stack, its vendors and its private registry scopes, and it has never diagnosed a codedocs bug.
+They are the only ones that change what Typesynesthesia does. A repository's own dependency list is its
+stack, its vendors and its private registry scopes, and it has never diagnosed a Typesynesthesia bug.
 
 **Fidelity is reported as a distribution** — "34 projects: 31 `typed`, 3 `unprepared`" — rather than
 as one row per project. That diagnoses every fidelity bug this repo has met, where
@@ -109,7 +109,7 @@ key that names **which** repository, and the default shape's only promise is tha
 
 ## Hashing is not on the table
 
-[#16](https://github.com/magicspon/codedocs/issues/16) asked whether paths and symbol names could be
+[#16](https://github.com/magicspon/typesynesthesia/issues/16) asked whether paths and symbol names could be
 one-way hashed "given ADR 0002's ids are already structural rather than semantic". They are not. [ADR
 0002](0002-internal-representation-and-symbol-identity.md) settled that a `SymbolId` is a SCIP string
 of **name plus path**, with each descriptor segment "taken from what the author wrote" — the id _is_
@@ -118,7 +118,7 @@ ADR surveyed derive identity the same way.
 
 Hashing would therefore destroy content rather than reveal an existing structure, and it would take
 the diagnosis with it. The two identity defects this repo has actually filed are unreadable without
-the literal text: [#34](https://github.com/magicspon/codedocs/issues/34)'s **6,746 declarations
+the literal text: [#34](https://github.com/magicspon/typesynesthesia/issues/34)'s **6,746 declarations
 collapsing onto 1,571 ids**, and the `catch (err)` [[Collision]]s at **405 declarations across 330
 ids**. Both were found by reading descriptor paths.
 
@@ -150,16 +150,16 @@ expensive at fifteen. It also improves the machine renderer on its own terms: an
 a code without parsing English.
 
 Stack traces are separable and safe. `main.ts` currently keeps `error.message` and throws the stack
-away; it must keep the stack, and the report keeps the frames that resolve **inside codedocs' own
+away; it must keep the stack, and the report keeps the frames that resolve **inside Typesynesthesia's own
 installed package** and drops the rest — ours is our code, and anything below it is the user's.
 
 ## Where the file lands, and what the user is told
 
-**`./codedocs-report.json`**, in the working directory, a fixed name, overwritten each run.
+**`./tsyn-report.json`**, in the working directory, a fixed name, overwritten each run.
 `--out <path>` redirects it and `--out -` writes to stdout, which is what the agent reader pipes.
 
-Not `.codedocs/`: ADR 0004 documents that directory as invisible to `git status` and safe to delete,
-and a file the user is meant to find, read and attach fails both. codedocs writes the one file it was
+Not `.tsyn/`: ADR 0004 documents that directory as invisible to `git status` and safe to delete,
+and a file the user is meant to find, read and attach fails both. Typesynesthesia writes the one file it was
 asked for and edits nothing else — not the user's `.gitignore`, not their config.
 
 The disclosure is **in the file as well as on the terminal**, because terminal output does not travel
@@ -168,7 +168,7 @@ with an attachment pasted a week later. The file opens with a header block namin
 ```jsonc
 {
   "repositoryFacts": "excluded", // or "included", under --with-repository
-  "contains": "codedocs and machine facts only: no file paths, symbol names or commit",
+  "contains": "tsyn and machine facts only: no file paths, symbol names or commit",
 }
 ```
 
@@ -177,12 +177,12 @@ and the human renderer prints, on writing it: the path, the shape, a category su
 that `--with-repository` exists and what it adds. **No confirmation prompt**: the default is already
 the safe one, and a prompt over a safe default only teaches people to dismiss prompts.
 
-## codedocs never transmits it, and that is checked
+## Typesynesthesia never transmits it, and that is checked
 
-Writing bytes is where codedocs stops. Every step after it is the user's: no upload, no
+Writing bytes is where Typesynesthesia stops. Every step after it is the user's: no upload, no
 `gh issue create`, no offer to open a browser, and no telemetry that a report was generated.
 
-This is recorded as an **invariant with a test**, not a promise: no codedocs package may import a
+This is recorded as an **invariant with a test**, not a promise: no Typesynesthesia package may import a
 network module or depend on one that does, enforced by a check over the dependency tree. It is nearly
 free today — one runtime dependency, `typescript` — and it is worth nothing as prose the moment
 someone adds an HTTP client for an unrelated reason. `report-bug --submit` is the convenience that
@@ -208,15 +208,15 @@ table — the operation's own finding is "a report exists", and it succeeded.
 - **One-way hashing of paths and `SymbolId`s.** Rejected — see above. It is destruction wearing
   reversibility's clothes, it makes the repo's own identity defects undiagnosable, and a dictionary
   of filenames is not a hard preimage.
-- **Recording each run to `.codedocs/last-run.json` for `report-bug` to read.** Rejected: a new
+- **Recording each run to `.tsyn/last-run.json` for `report-bug` to read.** Rejected: a new
   persistent artefact about the user's activity, a class of stale-report bug, and ADR 0004 gives
-  `.codedocs/` exactly one job.
-- **Piping an envelope in** (`codedocs trace X --json | codedocs report-bug`). Rejected: it cannot
+  `.tsyn/` exactly one job.
+- **Piping an envelope in** (`tsyn trace X --json | tsyn report-bug`). Rejected: it cannot
   capture a crash, which is the case that most needs a stack.
-- **Writing the report into `.codedocs/`.** Rejected: invisible to git and documented as deletable,
+- **Writing the report into `.tsyn/`.** Rejected: invisible to git and documented as deletable,
   which are the two properties an attachment must not have.
 - **`report-bug --submit`, or opening a browser at a prefilled issue.** Rejected: it is precisely the
-  feature that turns "codedocs never transmits" from a checkable property into a claim about
+  feature that turns "Typesynesthesia never transmits" from a checkable property into a claim about
   intentions.
 - **A confirmation prompt before writing.** Rejected: a prompt over a default that is already safe
   trains dismissal, and the prompt that matters — what is in the file — is answered by the file.
@@ -225,7 +225,7 @@ table — the operation's own finding is "a report exists", and it succeeded.
 - **Propagating the re-run's exit code.** Rejected: it inverts exit 1's meaning at the one moment the
   user is already having a bad time.
 - **The repository's full dependency tree, reading PRD §29 literally.** Rejected: two of them change
-  what codedocs does and the rest is the user's stack.
+  what Typesynesthesia does and the rest is the user's stack.
 
 ## Consequences
 
@@ -234,13 +234,13 @@ table — the operation's own finding is "a report exists", and it succeeded.
   column is now the decision recorded above rather than an omission.
 - **`EnvelopeError` changes shape**: `code` plus typed `params`, no formatted `message` on the wire.
   `SCHEMA_VERSION` goes to **3**, `main.ts` stops discarding stacks, and `args.ts`'s parse failures
-  become codes. Filed as [#55](https://github.com/magicspon/codedocs/issues/55).
+  become codes. Filed as [#55](https://github.com/magicspon/typesynesthesia/issues/55).
 - **`report-bug` is the one operation exempt from ADR 0006's byte-identical reproducibility rule.**
   Its payload carries a timestamp, an OS and a Node version by design. Better an exemption written
   down than a fixtures test that fails on the second machine.
 - **The global flag set stays closed.** `--with-repository` and `--out` are per-operation flags,
   which ADR 0006 permits as additive only.
-- **codedocs writes exactly one file outside `.codedocs/`,** only when asked, at a path the user can
+- **Typesynesthesia writes exactly one file outside `.tsyn/`,** only when asked, at a path the user can
   predict.
 - **"No network" becomes a build-time check** over the dependency tree, alongside the boundary rules
   `fallow` already enforces. Any future dependency that reaches the network fails the build rather
@@ -248,9 +248,9 @@ table — the operation's own finding is "a report exists", and it succeeded.
 - **CONTEXT.md gains [[Report]]**, and [[Envelope]]'s error gains its shape — a code and typed
   parameters, never a formatted sentence.
 - **Implementation is filed, not done**: the operation, its two shapes, destination and disclosure in
-  [#56](https://github.com/magicspon/codedocs/issues/56); the typed-error change in
-  [#55](https://github.com/magicspon/codedocs/issues/55); the no-network check in
-  [#57](https://github.com/magicspon/codedocs/issues/57).
+  [#56](https://github.com/magicspon/typesynesthesia/issues/56); the typed-error change in
+  [#55](https://github.com/magicspon/typesynesthesia/issues/55); the no-network check in
+  [#57](https://github.com/magicspon/typesynesthesia/issues/57).
 - **Revisit trigger.** If maintainers routinely have to ask reporters to re-run with
   `--with-repository`, the split is in the wrong place — the measure is how many reported issues need
   a second round trip, not how many fields the default holds.

@@ -45,8 +45,8 @@ const write = (path: string, content: string): void => {
 }
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'codedocs-continuity-'))
-  bare = mkdtempSync(join(tmpdir(), 'codedocs-not-a-repo-'))
+  root = mkdtempSync(join(tmpdir(), 'tsyn-continuity-'))
+  bare = mkdtempSync(join(tmpdir(), 'tsyn-not-a-repo-'))
   mkdirSync(join(root, 'node_modules'), { recursive: true })
   write(
     'tsconfig.json',

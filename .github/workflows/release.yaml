@@ -28,11 +28,11 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           if [ -z "$GIT_PAT" ]; then
-            echo "::error::RELEASE_PAT is empty. It needs contents + pull-requests scope on magicspon/codedocs."
+            echo "::error::RELEASE_PAT is empty. It needs contents + pull-requests scope on magicspon/typesynesthesia."
             exit 1
           fi
           if [ -z "$NPM_TOKEN" ]; then
-            echo "::error::NPM_TOKEN is empty. It needs publish rights on the @codedocs scope at registry.npmjs.org."
+            echo "::error::NPM_TOKEN is empty. It needs publish rights on the @tsyn scope at registry.npmjs.org."
             exit 1
           fi
 
@@ -58,7 +58,7 @@ jobs:
           # npmjs, public. This writes the
           # `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` line, so this
           # host has to match what `changeset publish` targets or the publish
-          # goes out unauthenticated. `@codedocs/cli` carries
+          # goes out unauthenticated. `@tsyn/cli` carries
           # `publishConfig.access: public`, which is what makes a scoped package
           # publishable without a paid plan.
           registry-url: https://registry.npmjs.org

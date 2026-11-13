@@ -4,12 +4,12 @@ status: accepted
 
 # The index is one SQLite file per working tree, holding one snapshot, that heals itself
 
-The index is a **SQLite database at `.codedocs/index.db`**, opened through Node's built-in
+The index is a **SQLite database at `.tsyn/index.db`**, opened through Node's built-in
 `node:sqlite`, **gitignored**, one per working tree. It holds ADR 0002's nodes and edges and ADR
 0003's labels as tables, and it describes **exactly one snapshot** — the working tree as it stood
 when each project was last analysed.
 
-Before every answer, codedocs compares the working tree against the **stat signature** it recorded,
+Before every answer, Typesynesthesia compares the working tree against the **stat signature** it recorded,
 and where they differ it **re-analyses and then answers**. Git is not in that path. An answer that
 could not be brought up to date — because the user passed `--no-update`, or because another process
 held the write lock — is still given, with the drifted files named as **blind spots** in ADR 0001's
@@ -20,13 +20,13 @@ edges re-dumped with ADR 0002's SCIP-shaped ids — 48,517 symbols, 81,888 edges
 of JSON. It is a floor, not a ceiling: it holds no import edges, labels, analysis conditions or
 documents.
 
-> **Corrected by [#27](https://github.com/magicspon/codedocs/issues/27).** That corpus was
+> **Corrected by [#27](https://github.com/magicspon/typesynesthesia/issues/27).** That corpus was
 > over-counted: the spike swept each file once per project that globs it, and cal.com's files belong
 > to 3.5 projects apiece. The real index over the same tree holds **41,771 symbols and 26,091 edges**
 > across 4,827 files. The comparison below was run on the inflated corpus and is not re-run here —
 > this decision rests on the **ratio** between the two formats, which a uniformly smaller corpus does
 > not reverse, but read its absolute figures as an upper bound until
-> [#29](https://github.com/magicspon/codedocs/issues/29) re-measures.
+> [#29](https://github.com/magicspon/typesynesthesia/issues/29) re-measures.
 > See [`docs/research/edge-count-reconciliation.md`](../research/edge-count-reconciliation.md).
 
 ## Why SQLite, on measurement
@@ -49,7 +49,7 @@ SQLite's numbers move with the rows a query touches instead.
 
 `node:sqlite` specifically, not `better-sqlite3`: it ships inside Node 24.19 (SQLite 3.53.3), needs
 no native module built at install time, and raises no experimental warning. SQLite is public domain,
-so ticket [#3](https://github.com/magicspon/codedocs/issues/3)'s redistribution audit does not
+so ticket [#3](https://github.com/magicspon/typesynesthesia/issues/3)'s redistribution audit does not
 reapply.
 
 This is **not** a decision to use SQLite's query engine. The spike measured a warm "who calls X" at
@@ -59,8 +59,8 @@ problem; load time, memory and partial writes were.
 ## What is on disk
 
 ```
-.codedocs/
-├── .gitignore        # contains `*` — written by codedocs, keeps `git status` clean
+.tsyn/
+├── .gitignore        # contains `*` — written by tsyn, keeps `git status` clean
 ├── index.db          # the live snapshot
 └── base/<commit>.db  # baselines, see below
 ```
@@ -95,7 +95,7 @@ file no `tsconfig` globs reads as newly appeared on every query, forever: a conf
 bundle, **519 of them in this repo when the skeleton first measured it**, which in the update path
 means a full rebuild per question. The
 walk's own result is therefore a stored fact, refreshed by each detection
-([#26](https://github.com/magicspon/codedocs/issues/26)).
+([#26](https://github.com/magicspon/typesynesthesia/issues/26)).
 
 Under 120 ms buys a complete answer to "which files moved", without git. Git is deliberately absent
 from this path: it cannot see untracked or ignored files that a `Project` still globs — which ADR
@@ -113,8 +113,8 @@ the 22.9 s cold build, honestly and by itself.
 | ---------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | a file's content hash changed                                    | that file, then the wave to direct importers whose own export shape moved | ticket #5                                                                                                                                        |
 | a project's `compilerOptions` or environment fingerprint changed | every file of that project                                                | ADR 0001 — types cross files freely; the fingerprint's inputs are the lockfile hash, `compilerOptions`, and the globbed file set-hash (ADR 0009) |
-| the codedocs, schema or TypeScript version changed               | the whole file: deleted, rebuilt cold                                     | see below                                                                                                                                        |
-| a `codedocs.jsonc` `classify` block changed                      | the label set, which is recomputed every run anyway                       | ADR 0003                                                                                                                                         |
+| the Typesynesthesia, schema or TypeScript version changed        | the whole file: deleted, rebuilt cold                                     | see below                                                                                                                                        |
+| a `tsyn.jsonc` `classify` block changed                          | the label set, which is recomputed every run anyway                       | ADR 0003                                                                                                                                         |
 
 On a version mismatch the index is **discarded, never migrated**. TypeScript's own builder does
 exactly this and it is the right trade: a migration is a maintenance burden on every schema change
@@ -126,8 +126,8 @@ index-wide.
 ## One index file is one snapshot
 
 There is no snapshot dimension on the tables. A baseline for `impact`, or for
-[#11](https://github.com/magicspon/codedocs/issues/11)'s cross-commit continuity, is a **separate
-file** under `.codedocs/base/`, keyed by commit. The whole cal.com index is 20 MB and copies in 9 ms,
+[#11](https://github.com/magicspon/typesynesthesia/issues/11)'s cross-commit continuity, is a **separate
+file** under `.tsyn/base/`, keyed by commit. The whole cal.com index is 20 MB and copies in 9 ms,
 so a second file is cheap, and one keyed by commit is trivial to evict. How many to keep, and whether
 to rebuild them from git on demand instead, stays the map's **snapshot retention** question; this
 decision only guarantees the answer stays additive.
@@ -141,7 +141,7 @@ index, only an older consistent one. A second _writer_ blocked and failed with `
 - A **query** tries for the write lock briefly, and on losing it answers read-only from the last
   committed state with the drift named. That is the `--no-update` path reached by another route, not
   new machinery.
-- An explicit **`codedocs analyse`** waits, because the user asked for the write, and if it still
+- An explicit **`tsyn analyse`** waits, because the user asked for the write, and if it still
   cannot get the lock it says which process holds it rather than surfacing a database error.
 - **Watch mode** is simply the writer, committing per wave, so readers are never more than one wave
   behind.
@@ -209,7 +209,7 @@ between answers from what exists and names the unanalysed projects as blind spot
 - **The index has a header**, and it is the load-bearing part of every honest answer: the commit and
   dirty state the snapshot describes, the stat signature of every indexed file, **the paths the last
   tree walk saw** — analysed or not, because that is what drift is decided against — the schema,
-  codedocs and TypeScript versions, and per project the ADR 0001 analysis conditions and environment
+  Typesynesthesia and TypeScript versions, and per project the ADR 0001 analysis conditions and environment
   fingerprint. This is what ADR 0002 meant by demoting `Repository` from a node to the header.
 - **Every answer carries the index state it came from.** Complete, or naming its blind spots — the
   drifted files, the projects that never finished, the scope a label filter excluded. There is one
@@ -221,7 +221,7 @@ between answers from what exists and names the unanalysed projects as blind spot
   render `file:line`. They are refreshed whenever that file is re-analysed and never used to join
   across snapshots.
 - **A `Document` node is stored like any other**, and what it points at remains
-  [#8](https://github.com/magicspon/codedocs/issues/8)'s decision. Nothing here constrains it beyond
+  [#8](https://github.com/magicspon/typesynesthesia/issues/8)'s decision. Nothing here constrains it beyond
   requiring that its anchor be **durable** in ADR 0002's sense.
 - **The store is a schema, not a query language.** Operations read rows and answer in code, the way
   the spike's reverse index did. Nothing in the CLI surface may expose SQL, or SQLite becomes an

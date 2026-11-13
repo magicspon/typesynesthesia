@@ -8,7 +8,7 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_SCOPE } from '@codedocs/core'
+import { DEFAULT_SCOPE } from '@tsyn/core'
 import type {
   BatchedEnvelope,
   BatchEntry,
@@ -22,7 +22,7 @@ import type {
   Snapshot,
   SymbolNode,
   TracePath,
-} from '@codedocs/core'
+} from '@tsyn/core'
 
 import {
   renderAnalyse,
@@ -402,9 +402,7 @@ describe('the doctor report', () => {
       ]),
       plain,
     )
-    expect(codegen).toContain(
-      'no command known — declare one in codedocs.jsonc',
-    )
+    expect(codegen).toContain('no command known — declare one in tsyn.jsonc')
   })
 
   it('counts the specifiers it did not name, rather than dropping them', () => {
@@ -427,7 +425,7 @@ describe('the doctor report', () => {
 
   it('reports the index header, so a stale tool version is discoverable', () => {
     expect(renderDoctor(doctorEnvelope([]), plain)).toContain(
-      'built by codedocs 0.0.0 against TypeScript 7.0.0',
+      'built by tsyn 0.0.0 against TypeScript 7.0.0',
     )
   })
 

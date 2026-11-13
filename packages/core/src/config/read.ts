@@ -1,5 +1,5 @@
 /**
- * The entry points: reading `codedocs.jsonc` off disk, resolved or as written,
+ * The entry points: reading `tsyn.jsonc` off disk, resolved or as written,
  * and looking up the one thing a resolved config is queried for afterwards.
  */
 
@@ -31,9 +31,9 @@ export function loadConfig(root: string): Config {
 }
 
 /**
- * `codedocs.jsonc` as it is written, rather than as it resolves.
+ * `tsyn.jsonc` as it is written, rather than as it resolves.
  *
- * ADR 0011 splits the file in two — which keys are set is a fact about codedocs,
+ * ADR 0011 splits the file in two — which keys are set is a fact about tsyn,
  * and what they are set to is a fact about the repository — and `loadConfig`
  * answers neither, because it returns every key with its default filled in. It
  * never throws: a file that cannot be parsed is one of the likelier things a
@@ -50,7 +50,7 @@ export interface ConfigFacts {
   readonly values: Readonly<Record<string, unknown>>
 }
 
-/** Read `codedocs.jsonc` for its keys and their values, or report it absent. */
+/** Read `tsyn.jsonc` for its keys and their values, or report it absent. */
 export function configFacts(root: string): ConfigFacts {
   const path = join(root, CONFIG_FILE)
   if (!existsSync(path)) {
